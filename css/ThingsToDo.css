@@ -1,0 +1,559 @@
+/* Things To Do Page Styles */
+
+/* Hero Section */
+.things-to-do-hero {
+    position: relative;
+    height: 50vh;
+    background: url('../images/ThingsToDo.jpg') no-repeat center center;
+    background-size: cover;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: #fff;
+    margin-bottom: 3rem;
+}
+
+.things-to-do-hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1;
+}
+
+.things-to-do-hero .hero-content {
+    position: relative;
+    z-index: 2;
+    max-width: 800px;
+    padding: 0 20px;
+}
+
+.things-to-do-hero .subtitle {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    color: var(--white);
+}
+
+.things-to-do-hero .title {
+    font-size: 3.5rem;
+    margin-bottom: 1.5rem;
+    font-weight: 700;
+    color: var(--white);
+}
+
+.things-to-do-hero p {
+    font-size: 1.2rem;
+    max-width: 600px;
+    margin: 0 auto;
+    color: var(--white);
+}
+
+/* Destination Filter Section */
+.destination-filter {
+    padding: 2rem 0;
+    background-color: #f9f9f9;
+}
+
+.filter-wrapper {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+    margin-bottom: 3rem;
+}
+
+.filter-wrapper h2 {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    color: #333;
+    font-size: 1.8rem;
+}
+
+.filter-selectors {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1.5rem;
+}
+
+.selector-group {
+    flex: 1;
+    min-width: 200px;
+}
+
+.selector-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: #555;
+}
+
+.selector-group select {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1rem;
+    color: #333;
+    background-color: #fff;
+    transition: border-color 0.3s;
+}
+
+.selector-group select:focus {
+    border-color: #3dbb91;
+    outline: none;
+}
+
+.selector-group select:disabled {
+    background-color: #f7f7f7;
+    cursor: not-allowed;
+}
+
+.search-button {
+    padding: 12px 25px;
+    background-color: #3dbb91;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-top: 1.8rem;
+    min-width: 200px;
+}
+
+.search-button:hover {
+    background: transparent;
+    color: var(--primary);
+    border: 2px solid var(--primary);
+}
+
+.search-button:disabled {
+    background-color: #a0a0a0;
+    cursor: not-allowed;
+}
+
+/* Results Section */
+.attractions-results {
+    padding: 3rem 0;
+}
+
+.results-wrapper {
+    text-align: center;
+}
+
+.results-wrapper h2 {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+    color: #333;
+}
+
+.results-wrapper .subtitle {
+    font-size: 1.2rem;
+    color: #666;
+    margin-bottom: 3rem;
+}
+
+.results-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.attraction-card {
+    background-color: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s;
+}
+
+.attraction-card:hover {
+    transform: translateY(-10px);
+}
+
+.attraction-image {
+    height: 200px;
+    position: relative;
+    overflow: hidden;
+}
+
+.attraction-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s;
+}
+
+.attraction-card:hover .attraction-image img {
+    transform: scale(1.1);
+}
+
+.attraction-category {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background-color: #FFC107;
+    color: #333;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.attraction-content {
+    padding: 1.5rem;
+}
+
+.attraction-content h3 {
+    font-size: 1.3rem;
+    margin-bottom: 0.5rem;
+    color: #333;
+}
+
+.attraction-content p {
+    color: #666;
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+.attraction-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 1rem;
+    border-top: 1px solid #eee;
+}
+
+.attraction-meta span {
+    font-size: 0.9rem;
+    color: #555;
+}
+
+.attraction-meta span i {
+    color: #FFC107;
+    margin-right: 5px;
+}
+
+.attraction-meta .price {
+    font-weight: 600;
+    color: #3dbb91;
+}
+
+.attraction-actions {
+    margin-top: 1rem;
+}
+
+.view-details {
+    display: inline-block;
+    padding: 8px 15px;
+    background-color: #3dbb91;
+    color: white;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: background-color 0.3s;
+}
+
+.view-details:hover {
+    background-color: #388E3C;
+}
+
+.initial-state {
+    text-align: center;
+    padding: 4rem 0;
+    color: #777;
+}
+
+.initial-state i {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    color: #3dbb91;
+}
+
+.initial-state h3 {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.no-results {
+    text-align: center;
+    padding: 4rem 0;
+    color: #777;
+}
+
+.no-results i {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    color: #FFC107;
+}
+
+.no-results h3 {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.hidden {
+    display: none;
+}
+
+/* Featured Experiences Section */
+.featured-experiences {
+    padding: 4rem 0;
+    background-color: #f9f9f9;
+}
+
+.featured-experiences .title {
+    text-align: center;
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+    color: #333;
+}
+
+.featured-experiences .subtitle {
+    text-align: center;
+    font-size: 1.2rem;
+    color: #666;
+    margin-bottom: 3rem;
+}
+
+.experiences-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 2rem;
+}
+
+.experience-card {
+    background-color: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s;
+}
+
+.experience-card:hover {
+    transform: translateY(-10px);
+}
+
+.experience-image {
+    height: 180px;
+    position: relative;
+    overflow: hidden;
+}
+
+.experience-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s;
+}
+
+.experience-card:hover .experience-image img {
+    transform: scale(1.1);
+}
+
+.experience-tag {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background-color: #FFC107;
+    color: #333;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.experience-content {
+    padding: 1.5rem;
+}
+
+.experience-content h3 {
+    font-size: 1.3rem;
+    margin-bottom: 0.5rem;
+    color: #333;
+}
+
+.experience-content p {
+    color: #666;
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+.experience-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 1rem;
+    border-top: 1px solid #eee;
+}
+
+.experience-meta span {
+    font-size: 0.9rem;
+    color: #555;
+}
+
+.experience-meta span i {
+    color: #FFC107;
+    margin-right: 5px;
+}
+
+/* Travel Tips Section */
+.travel-tips {
+    padding: 4rem 0;
+}
+
+.travel-tips .container {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 3rem;
+}
+
+.tips-content {
+    flex: 1;
+    min-width: 300px;
+}
+
+.tips-content .title {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    color: #333;
+}
+
+.tips-content p {
+    color: #666;
+    margin-bottom: 2rem;
+    font-size: 1.1rem;
+}
+
+.tips-list {
+    margin-bottom: 2rem;
+}
+
+.tip-item {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 1.5rem;
+}
+
+.tip-item i {
+    font-size: 1.5rem;
+    color: #3dbb91;
+    margin-right: 1rem;
+    margin-top: 0.2rem;
+}
+
+.tip-item h4 {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+    color: #333;
+}
+
+.tip-item p {
+    color: #666;
+    margin-bottom: 0;
+    font-size: 1rem;
+}
+
+.learn-btn {
+    display: inline-block;
+    padding: 12px 25px;
+    background-color: #3dbb91;
+    color: white;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: background-color 0.3s;
+}
+
+.learn-btn:hover {
+    background-color: #388E3C;
+}
+
+.tips-image {
+    flex: 1;
+    min-width: 300px;
+}
+
+.tips-image img {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive Styles */
+@media (max-width: 1200px) {
+    .things-to-do-hero {
+        height: 45vh;
+    }
+
+    .things-to-do-hero .title {
+        font-size: 3rem;
+    }
+}
+
+@media (max-width: 992px) {
+    .filter-selectors {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .selector-group {
+        width: 100%;
+    }
+
+    .search-button {
+        width: 100%;
+    }
+
+    .travel-tips .container {
+        flex-direction: column;
+    }
+
+    .tips-content, .tips-image {
+        width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .things-to-do-hero {
+        height: 40vh;
+    }
+
+    .things-to-do-hero .title {
+        font-size: 2.5rem;
+    }
+
+    .things-to-do-hero .subtitle {
+        font-size: 1.2rem;
+    }
+
+    .results-grid, .experiences-grid {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    }
+}
+
+@media (max-width: 576px) {
+    .things-to-do-hero {
+        height: 35vh;
+    }
+
+    .things-to-do-hero .title {
+        font-size: 2rem;
+    }
+
+    .results-grid, .experiences-grid {
+        grid-template-columns: 1fr;
+    }
+}
