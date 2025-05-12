@@ -2,7 +2,7 @@
 // Start the session
 session_start();
      ///////sddddddddddddddddddddfff
-// Set page title
+// Set page titless
 $pageTitle = "Home";
 ?>
 <!DOCTYPE html>
