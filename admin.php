@@ -76,7 +76,7 @@ if (!$isLoggedIn) {
 
                 <!-- Destinations Tab Content -->
                 <div class="tab-content" id="destinations-content">
-                    <?php include 'components/destinations-management.php'; ?>
+                    <?php require 'components/destinations-management.php'; ?>
                 </div>
 
                 <!-- Customers Tab Content -->
