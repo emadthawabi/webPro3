@@ -39,10 +39,10 @@ $pageTitle = "Home";
                         <option value="">Select a continent</option>
                         <option value="europe">Europe</option>
                         <option value="asia">Asia</option>
-                        <option value="africa">Africa</option>
+<!--                        <option value="africa">Africa</option>-->
                         <option value="north-america">North America</option>
                         <option value="south-america">South America</option>
-                        <option value="oceania">Oceania</option>
+<!--                        <option value="oceania">Oceania</option>-->
                     </select>
                 </div>
 

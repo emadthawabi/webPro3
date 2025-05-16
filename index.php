@@ -1,7 +1,7 @@
 <?php
 // Start the session
 session_start();
-     ///////tdel y ousef al thani
+
 // Set page titless
 $pageTitle = "Home";
 ?>

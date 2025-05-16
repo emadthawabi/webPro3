@@ -436,10 +436,188 @@ document.addEventListener('DOMContentLoaded', function() {
                                 {
                                     name: 'Royal Ontario Museum',
                                     description: 'Museum of art, world culture, and natural history.',
-                                    // image: 'https://images.pexels.com/photos/5273544/pexels-photo-5273544.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+                                    image: 'https://images.pexels.com/photos/5273544/pexels-photo-5273544.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
                                     category: 'Museum',
                                     rating: 4.7,
                                     price: 'CA$23'
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        'south-america': {
+            name: 'South America',
+            attractions: [
+                {
+                    name: 'Christ the Redeemer',
+                    description: 'Art Deco statue of Jesus Christ in Rio de Janeiro, Brazil',
+                    image: 'https://images.pexels.com/photos/2868242/pexels-photo-2868242.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+                    category: 'Landmark',
+                    rating: 4.8,
+                    price: 'R$46',
+                    country: 'brazil',
+                    city: 'rio-de-janeiro'
+                },
+                {
+                    name: 'Machu Picchu',
+                    description: 'Ancient Incan citadel in the Andes Mountains of Peru',
+                    image: 'https://images.pexels.com/photos/2929906/pexels-photo-2929906.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+                    category: 'Historic Site',
+                    rating: 4.9,
+                    price: 'S/152',
+                    country: 'peru',
+                    city: 'cusco'
+                },
+                {
+                    name: 'Iguazu Falls',
+                    description: 'System of waterfalls on the border of Argentina and Brazil',
+                    image: 'https://images.pexels.com/photos/1647962/pexels-photo-1647962.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+                    category: 'Natural Wonder',
+                    rating: 4.9,
+                    price: 'AR$4,000',
+                    country: 'argentina',
+                    city: 'puerto-iguazu'
+                }
+            ],
+            countries: {
+                'brazil': {
+                    name: 'Brazil',
+                    cities: {
+                        'rio-de-janeiro': {
+                            name: 'Rio de Janeiro',
+                            attractions: [
+                                {
+                                    name: 'Christ the Redeemer',
+                                    description: 'Art Deco statue of Jesus Christ at the summit of Mount Corcovado.',
+                                    image: 'https://images.pexels.com/photos/2868242/pexels-photo-2868242.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+                                    category: 'Landmark',
+                                    rating: 4.8,
+                                    price: 'R$46'
+                                },
+                                {
+                                    name: 'Copacabana Beach',
+                                    description: 'Famous beach known for its 4km balneario beach and vibrant atmosphere.',
+                                    image: 'https://images.pexels.com/photos/2413613/pexels-photo-2413613.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+                                    category: 'Beach',
+                                    rating: 4.7,
+                                    price: 'Free'
+                                },
+                                {
+                                    name: 'Sugarloaf Mountain',
+                                    description: 'Peak situated at the mouth of Guanabara Bay, rising 396 meters above sea level.',
+                                    image: 'https://images.pexels.com/photos/1879219/pexels-photo-1879219.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+                                    category: 'Natural Wonder',
+                                    rating: 4.8,
+                                    price: 'R$120'
+                                }
+                            ]
+                        },
+                        'sao-paulo': {
+                            name: 'São Paulo',
+                            attractions: [
+                                {
+                                    name: 'Ibirapuera Park',
+                                    description: 'Urban park spanning 158 hectares with museums, a music hall, and gardens.',
+                                    image: 'https://images.pexels.com/photos/4304776/pexels-photo-4304776.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+                                    category: 'Park',
+                                    rating: 4.7,
+                                    price: 'Free'
+                                },
+                                {
+                                    name: 'Pinacoteca do Estado',
+                                    description: 'One of the most important art museums in Brazil focusing on Brazilian art.',
+                                    image: 'https://images.pexels.com/photos/4593081/pexels-photo-4593081.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+                                    category: 'Museum',
+                                    rating: 4.8,
+                                    price: 'R$30'
+                                }
+                            ]
+                        }
+                    }
+                },
+                'argentina': {
+                    name: 'Argentina',
+                    cities: {
+                        'buenos-aires': {
+                            name: 'Buenos Aires',
+                            attractions: [
+                                {
+                                    name: 'Casa Rosada',
+                                    description: 'The executive mansion and office of the President of Argentina.',
+                                    image: 'https://images.pexels.com/photos/16794976/pexels-photo-16794976/free-photo-of-casa-rosada-in-buenos-aires-argentina.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+                                    category: 'Historic Site',
+                                    rating: 4.6,
+                                    price: 'Free'
+                                },
+                                {
+                                    name: 'La Boca',
+                                    description: 'Colorful neighborhood known for the football stadium La Bombonera and tango dancing.',
+                                    image: 'https://images.pexels.com/photos/16795030/pexels-photo-16795030/free-photo-of-la-boca-in-buenos-aires-argentina.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+                                    category: 'District',
+                                    rating: 4.5,
+                                    price: 'Free'
+                                }
+                            ]
+                        },
+                        'puerto-iguazu': {
+                            name: 'Puerto Iguazu',
+                            attractions: [
+                                {
+                                    name: 'Iguazu Falls',
+                                    description: 'One of the largest and most impressive waterfall systems in the world.',
+                                    image: 'https://images.pexels.com/photos/1647962/pexels-photo-1647962.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+                                    category: 'Natural Wonder',
+                                    rating: 4.9,
+                                    price: 'AR$4,000'
+                                }
+                            ]
+                        }
+                    }
+                },
+                'peru': {
+                    name: 'Peru',
+                    cities: {
+                        'lima': {
+                            name: 'Lima',
+                            attractions: [
+                                {
+                                    name: 'Plaza Mayor',
+                                    description: 'Historic center of Lima featuring colonial architecture and important buildings.',
+                                    image: 'https://images.pexels.com/photos/5695626/pexels-photo-5695626.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+                                    category: 'Historic Site',
+                                    rating: 4.6,
+                                    price: 'Free'
+                                },
+                                {
+                                    name: 'Huaca Pucllana',
+                                    description: 'Great adobe and clay pyramid built during the Lima culture period.',
+                                    image: 'https://images.pexels.com/photos/8120446/pexels-photo-8120446.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+                                    category: 'Historic Site',
+                                    rating: 4.7,
+                                    price: 'S/15'
+                                }
+                            ]
+                        },
+                        'cusco': {
+                            name: 'Cusco',
+                            attractions: [
+                                {
+                                    name: 'Machu Picchu',
+                                    description: '15th-century Inca citadel situated on a mountain ridge 2,430 meters above sea level.',
+                                    image: 'https://images.pexels.com/photos/2929906/pexels-photo-2929906.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+                                    category: 'Historic Site',
+                                    rating: 4.9,
+                                    price: 'S/152'
+                                },
+                                {
+                                    name: 'Sacred Valley',
+                                    description: 'Valley in the Andes of Peru close to Cusco and the ancient city of Machu Picchu.',
+                                    image: 'https://images.pexels.com/photos/18525816/pexels-photo-18525816/free-photo-of-sacred-valley-near-cusco-peru.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+                                    category: 'Natural Wonder',
+                                    rating: 4.8,
+                                    price: 'S/70'
                                 }
                             ]
                         }
