@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
         once: true
     });
 
+
     // Get DOM elements
     const continentSelect = document.getElementById('continent-select');
     const countrySelect = document.getElementById('country-select');
@@ -32,12 +33,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 {
                     name: 'Eiffel Tower',
                     description: 'Iconic iron tower in Paris, France',
-                    image: 'https://images.pexels.com/photos/699466/pexels-photo-699466.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+                    image: 'https://i.natgeofe.com/k/c41b4f59-181c-4747-ad20-ef69987c8d59/eiffel-tower-night.jpg?wp=1&w=1084.125&h=1627.5',
                     category: 'Landmark',
                     rating: 4.7,
                     price: '€25',
                     country: 'france',
-                    city: 'paris'
+                    city: 'paris',
+                    details: 'The Eiffel Tower is a wrought-iron lattice tower on the Champ de Mars in Paris, France. It is named after the engineer Gustave Eiffel, whose company designed and built the tower from 1887 to 1889. It was initially criticized by some of France\'s leading artists and intellectuals for its design, but it has become a global cultural icon of France and one of the most recognizable structures in the world. The Eiffel Tower is 330 meters (1,083 ft) tall and was the tallest man-made structure in the world for 41 years until the Chrysler Building in New York City was finished in 1930.'
                 },
                 {
                     name: 'Colosseum',
@@ -47,7 +49,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     rating: 4.8,
                     price: '€16',
                     country: 'italy',
-                    city: 'rome'
+                    city: 'rome',
+                    details: 'The Colosseum is an oval amphitheatre in the centre of the city of Rome, Italy. It is the largest ancient amphitheatre ever built, and is still the largest standing amphitheatre in the world today, despite its age. Construction began under the emperor Vespasian (r. 69–79 AD) in 72 and was completed in 80 AD under his successor and heir, Titus. The Colosseum could hold an estimated 50,000 to 80,000 spectators and was used for gladiatorial contests and public spectacles.'
                 },
                 {
                     name: 'Louvre Museum',
@@ -57,7 +60,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     rating: 4.8,
                     price: '€17',
                     country: 'france',
-                    city: 'paris'
+                    city: 'paris',
+                    details: 'The Louvre Museum is the world\'s largest art museum and a historic monument in Paris, France. A central landmark of the city, it is located on the Right Bank of the Seine. The museum is housed in the Louvre Palace, originally built as the Louvre castle in the late 12th to 13th century. The Louvre displays approximately 38,000 objects from prehistory to the 21st century. The Louvre is the world\'s most visited museum, receiving more than 10 million visitors in 2018.'
                 },
                 {
                     name: 'Trevi Fountain',
@@ -67,17 +71,19 @@ document.addEventListener('DOMContentLoaded', function() {
                     rating: 4.8,
                     price: 'Free',
                     country: 'italy',
-                    city: 'rome'
+                    city: 'rome',
+                    details: 'The Trevi Fountain is a fountain in the Trevi district in Rome, Italy, designed by Italian architect Nicola Salvi and completed by Giuseppe Pannini and several others. Standing 26.3 metres high and 49.15 metres wide, it is the largest Baroque fountain in the city and one of the most famous fountains in the world. The fountain has appeared in several notable films, including Federico Fellini\'s "La Dolce Vita".'
                 },
                 {
                     name: 'Promenade des Anglais',
                     description: 'Famous promenade in Nice, France',
-                    image: 'https://images.pexels.com/photos/16246264/pexels-photo-16246264/free-photo-of-view-of-mediterranean-sea-from-nice-france.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+                    image: 'https://www.hotel-la-perouse.com/wp-content/uploads/sites/558/2024/09/DSC04390.jpg',
                     category: 'Landmark',
                     rating: 4.6,
                     price: 'Free',
                     country: 'france',
-                    city: 'nice'
+                    city: 'nice',
+                    details: 'The Promenade des Anglais is a prominent road along the Mediterranean coast in Nice, France. It extends from the airport on the west to the Quai des États-Unis on the east, a distance of approximately 7 km. The promenade takes its name from the English visitors who paid for it in the first half of the 19th century. It has become one of the most famous seafront promenades in Europe.'
                 },
                 {
                     name: 'Grand Canal',
@@ -87,7 +93,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     rating: 4.9,
                     price: 'Free',
                     country: 'italy',
-                    city: 'venice'
+                    city: 'venice',
+                    details: 'The Grand Canal is a channel in Venice, Italy. It forms one of the major water-traffic corridors in the city. Public transport is provided by water buses and private water taxis, and many tourists explore the canal by gondola. One end of the canal leads into the lagoon near the Santa Lucia railway station and the other end leads into the basin at San Marco; in between, it makes a large reverse-S shape through the central districts of Venice.'
                 }
             ],
             countries: {
@@ -100,10 +107,11 @@ document.addEventListener('DOMContentLoaded', function() {
                                 {
                                     name: 'Eiffel Tower',
                                     description: 'Iconic iron tower on the Champ de Mars, named after engineer Gustave Eiffel.',
-                                    image: 'https://images.pexels.com/photos/699466/pexels-photo-699466.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+                                    image: 'https://i.natgeofe.com/k/c41b4f59-181c-4747-ad20-ef69987c8d59/eiffel-tower-night.jpg?wp=1&w=1084.125&h=1627.5',
                                     category: 'Landmark',
                                     rating: 4.7,
-                                    price: '€25'
+                                    price: '€25',
+                                    details: 'The Eiffel Tower is a wrought-iron lattice tower on the Champ de Mars in Paris, France. It is named after the engineer Gustave Eiffel, whose company designed and built the tower from 1887 to 1889. It was initially criticized by some of France\'s leading artists and intellectuals for its design, but it has become a global cultural icon of France and one of the most recognizable structures in the world. The Eiffel Tower is 330 meters (1,083 ft) tall and was the tallest man-made structure in the world for 41 years until the Chrysler Building in New York City was finished in 1930.'
                                 },
                                 {
                                     name: 'Louvre Museum',
@@ -111,7 +119,8 @@ document.addEventListener('DOMContentLoaded', function() {
                                     image: 'https://images.pexels.com/photos/2363/france-landmark-lights-night.jpg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
                                     category: 'Museum',
                                     rating: 4.8,
-                                    price: '€17'
+                                    price: '€17',
+                                    details: 'The Louvre Museum is the world\'s largest art museum and a historic monument in Paris, France. A central landmark of the city, it is located on the Right Bank of the Seine. The museum is housed in the Louvre Palace, originally built as the Louvre castle in the late 12th to 13th century. The Louvre displays approximately 38,000 objects from prehistory to the 21st century. The Louvre is the world\'s most visited museum, receiving more than 10 million visitors in 2018.'
                                 },
                                 {
                                     name: 'Notre-Dame Cathedral',
@@ -119,7 +128,8 @@ document.addEventListener('DOMContentLoaded', function() {
                                     image: 'https://images.pexels.com/photos/15760151/pexels-photo-15760151/free-photo-of-notre-dame-cathedral-in-paris-france.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
                                     category: 'Religious Site',
                                     rating: 4.7,
-                                    price: 'Free'
+                                    price: 'Free',
+                                    details: 'Notre-Dame de Paris, referred to simply as Notre-Dame, is a medieval Catholic cathedral on the Île de la Cité in the 4th arrondissement of Paris. The cathedral was consecrated to the Virgin Mary and considered to be one of the finest examples of French Gothic architecture. Following a major fire in April 2019 that destroyed the spire and most of the roof, the cathedral is currently undergoing a massive reconstruction project with plans to reopen in 2024.'
                                 },
                                 {
                                     name: 'Montmartre',
@@ -127,7 +137,8 @@ document.addEventListener('DOMContentLoaded', function() {
                                     image: 'https://images.pexels.com/photos/705764/pexels-photo-705764.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
                                     category: 'District',
                                     rating: 4.6,
-                                    price: 'Free'
+                                    price: 'Free',
+                                    details: 'Montmartre is a large hill in Paris\'s 18th arrondissement. It is 130 m (430 ft) high and gives its name to the surrounding district, part of the Right Bank in the northern section of the city. The historic district established by the City of Paris in 1995 is bordered by rue Caulaincourt and rue Custine on the north, rue de Clignancourt on the east, and boulevard de Clichy and boulevard de Rochechouart to the south, containing 60 ha. Montmartre is primarily known for its artistic history, the white-domed Basilica of the Sacré-Cœur on its summit, and as a nightclub district.'
                                 }
                             ]
                         },
@@ -137,18 +148,20 @@ document.addEventListener('DOMContentLoaded', function() {
                                 {
                                     name: 'Promenade des Anglais',
                                     description: 'Famous promenade along the Mediterranean coastline.',
-                                    image: 'https://images.pexels.com/photos/16246264/pexels-photo-16246264/free-photo-of-view-of-mediterranean-sea-from-nice-france.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+                                    image: 'https://www.hotel-la-perouse.com/wp-content/uploads/sites/558/2024/09/DSC04390.jpg',
                                     category: 'Landmark',
                                     rating: 4.6,
-                                    price: 'Free'
+                                    price: 'Free',
+                                    details: 'The Promenade des Anglais is a prominent road along the Mediterranean coast in Nice, France. It extends from the airport on the west to the Quai des États-Unis on the east, a distance of approximately 7 km. The promenade takes its name from the English visitors who paid for it in the first half of the 19th century. It has become one of the most famous seafront promenades in Europe.'
                                 },
                                 {
                                     name: 'Old Town (Vieux Nice)',
                                     description: 'Charming old district with narrow streets, colorful buildings, and local markets.',
-                                    image: 'https://images.pexels.com/photos/15708650/pexels-photo-15708650/free-photo-of-old-town-in-nice-france.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+                                    image: 'https://www.hotelfollower.com/wp-content/uploads/old-town-vieux-nice.jpg',
                                     category: 'District',
                                     rating: 4.7,
-                                    price: 'Free'
+                                    price: 'Free',
+                                    details: 'The Old Town of Nice (Vieux Nice) is a charming maze of narrow streets and colorful buildings filled with shops, restaurants, and small squares. The area has retained much of its historic character with its Italian-influenced architecture, as Nice was not part of France until 1860. The famous Cours Saleya market is located here, where locals and tourists alike can purchase fresh flowers, produce, and local specialties. The Old Town is best explored on foot, allowing visitors to discover its hidden treasures and experience the authentic atmosphere of this Mediterranean city.'
                                 }
                             ]
                         }
@@ -166,7 +179,8 @@ document.addEventListener('DOMContentLoaded', function() {
                                     image: 'https://images.pexels.com/photos/532263/pexels-photo-532263.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
                                     category: 'Historic Site',
                                     rating: 4.8,
-                                    price: '€16'
+                                    price: '€16',
+                                    details: 'The Colosseum is an oval amphitheatre in the centre of the city of Rome, Italy. It is the largest ancient amphitheatre ever built, and is still the largest standing amphitheatre in the world today, despite its age. Construction began under the emperor Vespasian (r. 69–79 AD) in 72 and was completed in 80 AD under his successor and heir, Titus. The Colosseum could hold an estimated 50,000 to 80,000 spectators and was used for gladiatorial contests and public spectacles.'
                                 },
                                 {
                                     name: 'Vatican Museums',
@@ -174,7 +188,8 @@ document.addEventListener('DOMContentLoaded', function() {
                                     image: 'https://images.pexels.com/photos/142931/pexels-photo-142931.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
                                     category: 'Museum',
                                     rating: 4.7,
-                                    price: '€17'
+                                    price: '€17',
+                                    details: 'The Vatican Museums (Italian: Musei Vaticani) are the public art and sculpture museums in the Vatican City. They display works from the immense collection amassed by the Catholic Church and the papacy throughout the centuries, including several of the most renowned Roman sculptures and most important masterpieces of Renaissance art in the world. The museums contain roughly 70,000 works, of which 20,000 are on display, and currently employ 640 people who work in 40 different administrative, scholarly, and restoration departments.'
                                 },
                                 {
                                     name: 'Trevi Fountain',
@@ -182,7 +197,8 @@ document.addEventListener('DOMContentLoaded', function() {
                                     image: 'https://images.pexels.com/photos/2972998/pexels-photo-2972998.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
                                     category: 'Landmark',
                                     rating: 4.8,
-                                    price: 'Free'
+                                    price: 'Free',
+                                    details: 'The Trevi Fountain is a fountain in the Trevi district in Rome, Italy, designed by Italian architect Nicola Salvi and completed by Giuseppe Pannini and several others. Standing 26.3 metres high and 49.15 metres wide, it is the largest Baroque fountain in the city and one of the most famous fountains in the world. The fountain has appeared in several notable films, including Federico Fellini\'s "La Dolce Vita".'
                                 }
                             ]
                         },
@@ -195,7 +211,8 @@ document.addEventListener('DOMContentLoaded', function() {
                                     image: 'https://images.pexels.com/photos/5009912/pexels-photo-5009912.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
                                     category: 'Landmark',
                                     rating: 4.9,
-                                    price: 'Free'
+                                    price: 'Free',
+                                    details: 'The Grand Canal is a channel in Venice, Italy. It forms one of the major water-traffic corridors in the city. Public transport is provided by water buses and private water taxis, and many tourists explore the canal by gondola. One end of the canal leads into the lagoon near the Santa Lucia railway station and the other end leads into the basin at San Marco; in between, it makes a large reverse-S shape through the central districts of Venice.'
                                 },
                                 {
                                     name: 'St. Mark\'s Basilica',
@@ -203,7 +220,8 @@ document.addEventListener('DOMContentLoaded', function() {
                                     image: 'https://images.pexels.com/photos/3566187/pexels-photo-3566187.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
                                     category: 'Religious Site',
                                     rating: 4.8,
-                                    price: '€3'
+                                    price: '€3',
+                                    details: 'St Mark\'s Basilica is the cathedral church of the Roman Catholic Archdiocese of Venice. It is the most famous of the city\'s churches and one of the best-known examples of Italo-Byzantine architecture. It lies at the eastern end of the Piazza San Marco, adjacent and connected to the Doge\'s Palace. Originally it was the chapel of the Doge, and has been the city\'s cathedral only since 1807. The basilica is known for its opulent design, gold mosaics, and its status as a symbol of Venetian wealth and power.'
                                 }
                             ]
                         }
@@ -211,209 +229,49 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
         },
-        'asia': {
-            name: 'Asia',
-            attractions: [
-                {
-                    name: 'Tokyo Skytree',
-                    description: 'Tallest tower in Japan and second tallest structure in the world.',
-                    image: 'https://images.pexels.com/photos/2506923/pexels-photo-2506923.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-                    category: 'Landmark',
-                    rating: 4.5,
-                    price: '¥2,100',
-                    country: 'japan',
-                    city: 'tokyo'
-                },
-                {
-                    name: 'Grand Palace',
-                    description: 'Former residence of the Kings of Siam in Bangkok, Thailand',
-                    image: 'https://images.pexels.com/photos/1010657/pexels-photo-1010657.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-                    category: 'Historic Site',
-                    rating: 4.7,
-                    price: '฿500',
-                    country: 'thailand',
-                    city: 'bangkok'
-                },
-                {
-                    name: 'Fushimi Inari Shrine',
-                    description: 'Famous shrine with thousands of vermilion torii gates in Kyoto, Japan',
-                    image: 'https://images.pexels.com/photos/5961917/pexels-photo-5961917.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-                    category: 'Religious Site',
-                    rating: 4.9,
-                    price: 'Free',
-                    country: 'japan',
-                    city: 'kyoto'
-                }
-            ],
-            countries: {
-                'japan': {
-                    name: 'Japan',
-                    cities: {
-                        'tokyo': {
-                            name: 'Tokyo',
-                            attractions: [
-                                {
-                                    name: 'Tokyo Skytree',
-                                    description: 'Tallest tower in Japan and second tallest structure in the world.',
-                                    image: 'https://images.pexels.com/photos/2506923/pexels-photo-2506923.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-                                    category: 'Landmark',
-                                    rating: 4.5,
-                                    price: '¥2,100'
-                                },
-                                {
-                                    name: 'Senso-ji Temple',
-                                    description: 'Ancient Buddhist temple located in Asakusa.',
-                                    image: 'https://images.pexels.com/photos/3400900/pexels-photo-3400900.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-                                    category: 'Religious Site',
-                                    rating: 4.7,
-                                    price: 'Free'
-                                },
-                                {
-                                    name: 'Shibuya Crossing',
-                                    description: 'Famous pedestrian scramble said to be the busiest in the world.',
-                                    image: 'https://images.pexels.com/photos/2614818/pexels-photo-2614818.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-                                    category: 'Landmark',
-                                    rating: 4.6,
-                                    price: 'Free'
-                                }
-                            ]
-                        },
-                        'kyoto': {
-                            name: 'Kyoto',
-                            attractions: [
-                                {
-                                    name: 'Fushimi Inari Shrine',
-                                    description: 'Famous shrine with thousands of vermilion torii gates.',
-                                    image: 'https://images.pexels.com/photos/5961917/pexels-photo-5961917.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-                                    category: 'Religious Site',
-                                    rating: 4.9,
-                                    price: 'Free'
-                                },
-                                {
-                                    name: 'Kinkaku-ji (Golden Pavilion)',
-                                    description: 'Zen Buddhist temple covered in gold leaf.',
-                                    image: 'https://images.pexels.com/photos/3400975/pexels-photo-3400975.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-                                    category: 'Religious Site',
-                                    rating: 4.8,
-                                    price: '¥400'
-                                }
-                            ]
-                        }
-                    }
-                },
-                'thailand': {
-                    name: 'Thailand',
-                    cities: {
-                        'bangkok': {
-                            name: 'Bangkok',
-                            attractions: [
-                                {
-                                    name: 'Grand Palace',
-                                    description: 'Complex of buildings that served as the official residence of the Kings of Siam.',
-                                    image: 'https://images.pexels.com/photos/1010657/pexels-photo-1010657.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-                                    category: 'Historic Site',
-                                    rating: 4.7,
-                                    price: '฿500'
-                                },
-                                {
-                                    name: 'Wat Arun',
-                                    description: 'Buddhist temple on the west bank of the Chao Phraya River.',
-                                    image: 'https://images.pexels.com/photos/18525909/pexels-photo-18525909/free-photo-of-wat-arun-in-bangkok-thailand.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-                                    category: 'Religious Site',
-                                    rating: 4.6,
-                                    price: '฿50'
-                                }
-                            ]
-                        }
-                    }
-                }
-            }
-        },
-        'north-america': {
+        // Rest of the continents remain the same
+        // Add these continents to the locationData object
+        'north_america': {
             name: 'North America',
-            attractions: [
-                {
-                    name: 'Statue of Liberty',
-                    description: 'Colossal neoclassical sculpture in New York, USA',
-                    image: 'https://images.pexels.com/photos/64271/statue-of-liberty-landmark-america-immigration-64271.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-                    category: 'Landmark',
-                    rating: 4.7,
-                    price: '$25',
-                    country: 'usa',
-                    city: 'new-york'
-                },
-                {
-                    name: 'CN Tower',
-                    description: 'Communication and observation tower in Toronto, Canada',
-                    image: 'https://images.pexels.com/photos/325185/pexels-photo-325185.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-                    category: 'Landmark',
-                    rating: 4.6,
-                    price: 'CA$38',
-                    country: 'canada',
-                    city: 'toronto'
-                },
-                {
-                    name: 'Golden Gate Bridge',
-                    description: 'Suspension bridge in San Francisco, USA',
-                    image: 'https://images.pexels.com/photos/208745/pexels-photo-208745.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-                    category: 'Landmark',
-                    rating: 4.8,
-                    price: 'Free',
-                    country: 'usa',
-                    city: 'san-francisco'
-                }
-            ],
+            attractions: [], // Will be populated from countries
             countries: {
                 'usa': {
                     name: 'United States',
                     cities: {
-                        'new-york': {
+                        'new_york': {
                             name: 'New York',
                             attractions: [
                                 {
                                     name: 'Statue of Liberty',
-                                    description: 'Colossal neoclassical sculpture on Liberty Island in New York Harbor.',
-                                    image: 'https://images.pexels.com/photos/64271/statue-of-liberty-landmark-america-immigration-64271.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+                                    description: 'Famous neoclassical sculpture on Liberty Island, a symbol of freedom.',
+                                    image: 'https://images.pexels.com/photos/290386/pexels-photo-290386.jpeg',
                                     category: 'Landmark',
                                     rating: 4.7,
-                                    price: '$25'
+                                    price: '$24',
+                                    details: 'The Statue of Liberty is a colossal neoclassical sculpture on Liberty Island in New York Harbor. The copper statue was a gift from the people of France to the people of the United States. The statue was dedicated on October 28, 1886, and has since become an iconic symbol of freedom and the United States.'
                                 },
                                 {
                                     name: 'Central Park',
-                                    description: 'Urban park in Manhattan spanning 843 acres.',
-                                    image: 'https://images.pexels.com/photos/1563256/pexels-photo-1563256.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+                                    description: 'Urban park in Manhattan covering 843 acres between the Upper West and East Sides.',
+                                    image: 'https://images.pexels.com/photos/1070945/pexels-photo-1070945.jpeg',
                                     category: 'Park',
                                     rating: 4.8,
-                                    price: 'Free'
-                                },
-                                {
-                                    name: 'Empire State Building',
-                                    description: 'Art Deco skyscraper in Midtown Manhattan, a symbol of New York City.',
-                                    image: 'https://images.pexels.com/photos/2193300/pexels-photo-2193300.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-                                    category: 'Landmark',
-                                    rating: 4.7,
-                                    price: '$38'
+                                    price: 'Free',
+                                    details: 'Central Park is an urban park in New York City located between the Upper West and Upper East Sides of Manhattan. It is the most visited urban park in the United States with an estimated 42 million visitors annually, and is the most filmed location in the world.'
                                 }
                             ]
                         },
-                        'san-francisco': {
-                            name: 'San Francisco',
+                        'los_angeles': {
+                            name: 'Los Angeles',
                             attractions: [
                                 {
-                                    name: 'Golden Gate Bridge',
-                                    description: 'Suspension bridge spanning the Golden Gate strait.',
-                                    image: 'https://images.pexels.com/photos/208745/pexels-photo-208745.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+                                    name: 'Hollywood Sign',
+                                    description: 'Iconic landmark in the Hollywood Hills area of Los Angeles.',
+                                    image: 'https://images.pexels.com/photos/2404843/pexels-photo-2404843.jpeg',
                                     category: 'Landmark',
-                                    rating: 4.8,
-                                    price: 'Free'
-                                },
-                                {
-                                    name: 'Alcatraz Island',
-                                    description: 'Historic former federal prison on an island in San Francisco Bay.',
-                                    image: 'https://images.pexels.com/photos/1766215/pexels-photo-1766215.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-                                    category: 'Historic Site',
-                                    rating: 4.7,
-                                    price: '$40'
+                                    rating: 4.6,
+                                    price: 'Free',
+                                    details: 'The Hollywood Sign is an American landmark and cultural icon overlooking Hollywood, Los Angeles, California. Originally erected in 1923, the sign was built as an advertisement for a local real estate development, but has since become a world-famous symbol of Hollywood and the entertainment industry.'
                                 }
                             ]
                         }
@@ -427,19 +285,45 @@ document.addEventListener('DOMContentLoaded', function() {
                             attractions: [
                                 {
                                     name: 'CN Tower',
-                                    description: 'Communication and observation tower standing 553.3 m tall.',
-                                    image: 'https://images.pexels.com/photos/325185/pexels-photo-325185.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+                                    description: 'Concrete communications and observation tower in downtown Toronto.',
+                                    image: 'https://images.pexels.com/photos/2478248/pexels-photo-2478248.jpeg',
                                     category: 'Landmark',
                                     rating: 4.6,
-                                    price: 'CA$38'
-                                },
+                                    price: 'CA$40',
+                                    details: 'The CN Tower is a 553.3 m-high concrete communications and observation tower in downtown Toronto, Ontario, Canada. Built on the former Railway Lands, it was completed in 1976. Its name "CN" originally referred to Canadian National, the railway company that built the tower.'
+                                }
+                            ]
+                        },
+                        'vancouver': {
+                            name: 'Vancouver',
+                            attractions: [
                                 {
-                                    name: 'Royal Ontario Museum',
-                                    description: 'Museum of art, world culture, and natural history.',
-                                    image: 'https://images.pexels.com/photos/5273544/pexels-photo-5273544.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-                                    category: 'Museum',
-                                    rating: 4.7,
-                                    price: 'CA$23'
+                                    name: 'Stanley Park',
+                                    description: 'Urban park that borders the downtown of Vancouver, featuring dense forest and scenic views.',
+                                    image: 'https://images.pexels.com/photos/2611070/pexels-photo-2611070.jpeg',
+                                    category: 'Park',
+                                    rating: 4.8,
+                                    price: 'Free',
+                                    details: 'Stanley Park is a 405-hectare public park that borders the downtown of Vancouver and is almost entirely surrounded by waters of Vancouver Harbour and English Bay. The park has a long history and was one of the first areas to be explored in the city.'
+                                }
+                            ]
+                        }
+                    }
+                },
+                'mexico': {
+                    name: 'Mexico',
+                    cities: {
+                        'mexico_city': {
+                            name: 'Mexico City',
+                            attractions: [
+                                {
+                                    name: 'Palacio de Bellas Artes',
+                                    description: 'Cultural center and prominent cultural venue in Mexico City.',
+                                    image: 'https://images.pexels.com/photos/5117913/pexels-photo-5117913.jpeg',
+                                    category: 'Cultural Site',
+                                    rating: 4.8,
+                                    price: '80 MXN',
+                                    details: 'The Palacio de Bellas Artes (Palace of Fine Arts) is a prominent cultural center in Mexico City. It has hosted important exhibitions of painting, sculpture, and photography, as well as notable events in music, dance, theater, opera, and literature.'
                                 }
                             ]
                         }
@@ -447,91 +331,167 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
         },
-        'south-america': {
-            name: 'South America',
-            attractions: [
-                {
-                    name: 'Christ the Redeemer',
-                    description: 'Art Deco statue of Jesus Christ in Rio de Janeiro, Brazil',
-                    image: 'https://images.pexels.com/photos/2868242/pexels-photo-2868242.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-                    category: 'Landmark',
-                    rating: 4.8,
-                    price: 'R$46',
-                    country: 'brazil',
-                    city: 'rio-de-janeiro'
+        'asia': {
+            name: 'Asia',
+            attractions: [], // Will be populated from countries
+            countries: {
+                'japan': {
+                    name: 'Japan',
+                    cities: {
+                        'tokyo': {
+                            name: 'Tokyo',
+                            attractions: [
+                                {
+                                    name: 'Tokyo Skytree',
+                                    description: 'Broadcasting and observation tower in Sumida, Tokyo.',
+                                    image: 'https://images.pexels.com/photos/2506923/pexels-photo-2506923.jpeg',
+                                    category: 'Landmark',
+                                    rating: 4.5,
+                                    price: '¥2,100',
+                                    details: 'Tokyo Skytree is a broadcasting and observation tower in Sumida, Tokyo. It became the tallest structure in Japan in 2010 and reached its full height of 634 meters in March 2011, making it the tallest tower in the world and the second tallest structure in the world after the Burj Khalifa.'
+                                },
+                                {
+                                    name: 'Meiji Shrine',
+                                    description: 'Shinto shrine dedicated to Emperor Meiji and Empress Shōken.',
+                                    image: 'https://images.pexels.com/photos/5961943/pexels-photo-5961943.jpeg',
+                                    category: 'Religious Site',
+                                    rating: 4.7,
+                                    price: 'Free',
+                                    details: 'Meiji Shrine is a Shinto shrine dedicated to the deified spirits of Emperor Meiji and his wife, Empress Shōken. It is located in Shibuya, Tokyo. The shrine was built in 1920 to commemorate Emperor Meiji, who died in 1912. The lush forest surrounding the shrine consists of 120,000 trees of 365 different species.'
+                                }
+                            ]
+                        },
+                        'kyoto': {
+                            name: 'Kyoto',
+                            attractions: [
+                                {
+                                    name: 'Fushimi Inari Shrine',
+                                    description: 'Shinto shrine famous for its thousands of vermilion torii gates.',
+                                    image: 'https://images.pexels.com/photos/1440476/pexels-photo-1440476.jpeg',
+                                    category: 'Religious Site',
+                                    rating: 4.9,
+                                    price: 'Free',
+                                    details: 'Fushimi Inari Shrine is an important Shinto shrine in southern Kyoto. It is famous for its thousands of vermilion torii gates, which straddle a network of trails behind its main buildings. The trails lead into the wooded forest of the sacred Mount Inari, which stands at 233 meters and belongs to the shrine grounds.'
+                                }
+                            ]
+                        }
+                    }
                 },
-                {
-                    name: 'Machu Picchu',
-                    description: 'Ancient Incan citadel in the Andes Mountains of Peru',
-                    image: 'https://images.pexels.com/photos/2929906/pexels-photo-2929906.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-                    category: 'Historic Site',
-                    rating: 4.9,
-                    price: 'S/152',
-                    country: 'peru',
-                    city: 'cusco'
+                'china': {
+                    name: 'China',
+                    cities: {
+                        'beijing': {
+                            name: 'Beijing',
+                            attractions: [
+                                {
+                                    name: 'Great Wall of China',
+                                    description: 'Ancient wall built across the historical northern borders of China.',
+                                    image: 'https://images.pexels.com/photos/1654748/pexels-photo-1654748.jpeg',
+                                    category: 'Historic Site',
+                                    rating: 4.9,
+                                    price: '¥40',
+                                    details: 'The Great Wall of China is a series of fortifications that were built across the historical northern borders of ancient Chinese states and Imperial China as protection against various nomadic groups. Several walls were built from as early as the 7th century BC, with selective stretches later joined together by Qin Shi Huang (220–206 BC), the first emperor of China.'
+                                }
+                            ]
+                        },
+                        'shanghai': {
+                            name: 'Shanghai',
+                            attractions: [
+                                {
+                                    name: 'The Bund',
+                                    description: 'Waterfront area in central Shanghai with iconic skyline views.',
+                                    image: 'https://images.pexels.com/photos/1366957/pexels-photo-1366957.jpeg',
+                                    category: 'District',
+                                    rating: 4.8,
+                                    price: 'Free',
+                                    details: 'The Bund is a waterfront area in central Shanghai, featuring buildings and wharves that line the western bank of the Huangpu River. The area has dozens of historical buildings that once housed banks and trading houses from the United Kingdom, France, the United States, and other countries.'
+                                }
+                            ]
+                        }
+                    }
                 },
-                {
-                    name: 'Iguazu Falls',
-                    description: 'System of waterfalls on the border of Argentina and Brazil',
-                    image: 'https://images.pexels.com/photos/1647962/pexels-photo-1647962.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-                    category: 'Natural Wonder',
-                    rating: 4.9,
-                    price: 'AR$4,000',
-                    country: 'argentina',
-                    city: 'puerto-iguazu'
+                'thailand': {
+                    name: 'Thailand',
+                    cities: {
+                        'bangkok': {
+                            name: 'Bangkok',
+                            attractions: [
+                                {
+                                    name: 'Grand Palace',
+                                    description: 'Complex of buildings serving as the official residence of the Kings of Thailand.',
+                                    image: 'https://images.pexels.com/photos/1134176/pexels-photo-1134176.jpeg',
+                                    category: 'Historic Site',
+                                    rating: 4.7,
+                                    price: '500 THB',
+                                    details: 'The Grand Palace is a complex of buildings at the heart of Bangkok, Thailand. It has been the official residence of the Kings of Thailand since 1782. The Grand Palace is divided into four main courts, separated by numerous walls and gates: the Outer Court, the Middle Court, the Inner Court and the Temple of the Emerald Buddha.'
+                                }
+                            ]
+                        }
+                    }
                 }
-            ],
+            }
+        },
+        'south_america': {
+            name: 'South America',
+            attractions: [], // Will be populated from countries
             countries: {
                 'brazil': {
                     name: 'Brazil',
                     cities: {
-                        'rio-de-janeiro': {
+                        'rio_de_janeiro': {
                             name: 'Rio de Janeiro',
                             attractions: [
                                 {
                                     name: 'Christ the Redeemer',
                                     description: 'Art Deco statue of Jesus Christ at the summit of Mount Corcovado.',
-                                    image: 'https://images.pexels.com/photos/2868242/pexels-photo-2868242.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+                                    image: 'https://images.pexels.com/photos/2818895/pexels-photo-2818895.jpeg',
                                     category: 'Landmark',
                                     rating: 4.8,
-                                    price: 'R$46'
+                                    price: 'R$87',
+                                    details: 'Christ the Redeemer is an Art Deco statue of Jesus Christ in Rio de Janeiro, Brazil, created by French sculptor Paul Landowski and built by the Brazilian engineer Heitor da Silva Costa, in collaboration with the French engineer Albert Caquot. The statue is 30 meters tall, excluding its 8-meter pedestal, and its arms stretch 28 meters wide.'
                                 },
                                 {
                                     name: 'Copacabana Beach',
-                                    description: 'Famous beach known for its 4km balneario beach and vibrant atmosphere.',
-                                    image: 'https://images.pexels.com/photos/2413613/pexels-photo-2413613.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+                                    description: 'Famous beach in the copacabana district of Rio de Janeiro.',
+                                    image: 'https://images.pexels.com/photos/2868242/pexels-photo-2868242.jpeg',
                                     category: 'Beach',
                                     rating: 4.7,
-                                    price: 'Free'
-                                },
-                                {
-                                    name: 'Sugarloaf Mountain',
-                                    description: 'Peak situated at the mouth of Guanabara Bay, rising 396 meters above sea level.',
-                                    image: 'https://images.pexels.com/photos/1879219/pexels-photo-1879219.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-                                    category: 'Natural Wonder',
-                                    rating: 4.8,
-                                    price: 'R$120'
+                                    price: 'Free',
+                                    details: 'Copacabana Beach is one of the most famous beaches in the world. It is located in the Copacabana neighborhood of Rio de Janeiro, Brazil. The beach is 4 km long and is known for its iconic black and white mosaic promenade designed by Brazilian landscape architect Roberto Burle Marx.'
                                 }
                             ]
                         },
-                        'sao-paulo': {
-                            name: 'São Paulo',
+
+                    }
+                },
+                'peru': {
+                    name: 'Peru',
+                    cities: {
+                        'cusco': {
+                            name: 'Cusco',
                             attractions: [
                                 {
-                                    name: 'Ibirapuera Park',
-                                    description: 'Urban park spanning 158 hectares with museums, a music hall, and gardens.',
-                                    image: 'https://images.pexels.com/photos/4304776/pexels-photo-4304776.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-                                    category: 'Park',
-                                    rating: 4.7,
-                                    price: 'Free'
-                                },
+                                    name: 'Machu Picchu',
+                                    description: '15th-century Inca citadel located on a mountain ridge above the Sacred Valley.',
+                                    image: 'https://images.pexels.com/photos/460931/pexels-photo-460931.jpeg',
+                                    category: 'Historic Site',
+                                    rating: 4.9,
+                                    price: '152 PEN',
+                                    details: 'Machu Picchu is a 15th-century Inca citadel situated on a mountain ridge 2,430 meters above sea level. It is located in the Cusco Region, Urubamba Province, Machupicchu District in Peru, above the Sacred Valley, which is 80 kilometers northwest of Cusco. Most archaeologists believe that Machu Picchu was constructed as an estate for the Inca emperor Pachacuti.'
+                                }
+                            ]
+                        },
+                        'lima': {
+                            name: 'Lima',
+                            attractions: [
                                 {
-                                    name: 'Pinacoteca do Estado',
-                                    description: 'One of the most important art museums in Brazil focusing on Brazilian art.',
-                                    image: 'https://images.pexels.com/photos/4593081/pexels-photo-4593081.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-                                    category: 'Museum',
-                                    rating: 4.8,
-                                    price: 'R$30'
+                                    name: 'Plaza Mayor',
+                                    description: 'Historic center of Lima and the birthplace of the city.',
+                                    image: 'https://images.pexels.com/photos/13109544/pexels-photo-13109544.jpeg',
+                                    category: 'Historic Site',
+                                    rating: 4.5,
+                                    price: 'Free',
+                                    details: 'Plaza Mayor, also known as Plaza de Armas, is the birthplace of the city of Lima, the capital of Peru. It is surrounded by palaces and important buildings such as the Government Palace, the Cathedral of Lima, the Archbishop\'s Palace of Lima, the Municipal Palace, and the Palace of the Union.'
                                 }
                             ]
                         }
@@ -540,84 +500,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 'argentina': {
                     name: 'Argentina',
                     cities: {
-                        'buenos-aires': {
+                        'buenos_aires': {
                             name: 'Buenos Aires',
                             attractions: [
                                 {
-                                    name: 'Casa Rosada',
-                                    description: 'The executive mansion and office of the President of Argentina.',
-                                    image: 'https://images.pexels.com/photos/16794976/pexels-photo-16794976/free-photo-of-casa-rosada-in-buenos-aires-argentina.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-                                    category: 'Historic Site',
-                                    rating: 4.6,
-                                    price: 'Free'
-                                },
-                                {
-                                    name: 'La Boca',
-                                    description: 'Colorful neighborhood known for the football stadium La Bombonera and tango dancing.',
-                                    image: 'https://images.pexels.com/photos/16795030/pexels-photo-16795030/free-photo-of-la-boca-in-buenos-aires-argentina.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-                                    category: 'District',
-                                    rating: 4.5,
-                                    price: 'Free'
-                                }
-                            ]
-                        },
-                        'puerto-iguazu': {
-                            name: 'Puerto Iguazu',
-                            attractions: [
-                                {
-                                    name: 'Iguazu Falls',
-                                    description: 'One of the largest and most impressive waterfall systems in the world.',
-                                    image: 'https://images.pexels.com/photos/1647962/pexels-photo-1647962.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-                                    category: 'Natural Wonder',
-                                    rating: 4.9,
-                                    price: 'AR$4,000'
-                                }
-                            ]
-                        }
-                    }
-                },
-                'peru': {
-                    name: 'Peru',
-                    cities: {
-                        'lima': {
-                            name: 'Lima',
-                            attractions: [
-                                {
-                                    name: 'Plaza Mayor',
-                                    description: 'Historic center of Lima featuring colonial architecture and important buildings.',
-                                    image: 'https://images.pexels.com/photos/5695626/pexels-photo-5695626.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-                                    category: 'Historic Site',
-                                    rating: 4.6,
-                                    price: 'Free'
-                                },
-                                {
-                                    name: 'Huaca Pucllana',
-                                    description: 'Great adobe and clay pyramid built during the Lima culture period.',
-                                    image: 'https://images.pexels.com/photos/8120446/pexels-photo-8120446.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+                                    name: 'Recoleta Cemetery',
+                                    description: 'Famous cemetery with ornate mausoleums and the grave of Eva Perón.',
+                                    image: 'https://images.pexels.com/photos/5158322/pexels-photo-5158322.jpeg',
                                     category: 'Historic Site',
                                     rating: 4.7,
-                                    price: 'S/15'
-                                }
-                            ]
-                        },
-                        'cusco': {
-                            name: 'Cusco',
-                            attractions: [
-                                {
-                                    name: 'Machu Picchu',
-                                    description: '15th-century Inca citadel situated on a mountain ridge 2,430 meters above sea level.',
-                                    image: 'https://images.pexels.com/photos/2929906/pexels-photo-2929906.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-                                    category: 'Historic Site',
-                                    rating: 4.9,
-                                    price: 'S/152'
-                                },
-                                {
-                                    name: 'Sacred Valley',
-                                    description: 'Valley in the Andes of Peru close to Cusco and the ancient city of Machu Picchu.',
-                                    image: 'https://images.pexels.com/photos/18525816/pexels-photo-18525816/free-photo-of-sacred-valley-near-cusco-peru.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-                                    category: 'Natural Wonder',
-                                    rating: 4.8,
-                                    price: 'S/70'
+                                    price: 'Free',
+                                    details: 'Recoleta Cemetery is a cemetery located in the Recoleta neighborhood of Buenos Aires, Argentina. It contains the graves of notable people, including Eva Perón, presidents of Argentina, Nobel Prize winners, and other important figures. The cemetery is known for its many elaborate marble mausoleums.'
                                 }
                             ]
                         }
@@ -626,6 +519,184 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     };
+
+    // Add the same details to all other attractions (simulate)
+    for (const continentKey in locationData) {
+        const continent = locationData[continentKey];
+
+        // Process countries
+        for (const countryKey in continent.countries) {
+            const country = continent.countries[countryKey];
+
+            // Process cities
+            for (const cityKey in country.cities) {
+                const city = country.cities[cityKey];
+
+                // Add details to attractions if not present
+                city.attractions.forEach(attraction => {
+                    if (!attraction.details) {
+                        attraction.details = `Detailed information about ${attraction.name} would appear here, including opening hours, ticket information, historical facts, and visitor tips. This is a famous ${attraction.category.toLowerCase()} located in ${city.name}, ${country.name}.`;
+                    }
+                });
+            }
+        }
+    }
+
+    // Create modal elements for the attraction details popup
+    const modal = document.createElement('div');
+    modal.className = 'attraction-modal';
+    modal.innerHTML = `
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <div class="modal-body">
+                <div class="modal-image-container">
+                    <img src="" alt="" id="modal-image">
+                </div>
+                <div class="modal-info">
+                    <h2 id="modal-title"></h2>
+                    <div class="modal-meta">
+                        <span id="modal-category"></span>
+                        <span id="modal-rating"><i class="fa-solid fa-star"></i> <span id="rating-value"></span></span>
+                        <span id="modal-price"></span>
+                    </div>
+                    <div class="modal-description">
+                        <p id="modal-description-text"></p>
+                    </div>
+                    <div class="modal-details">
+                        <h3>Details</h3>
+                        <p id="modal-details-text"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(modal);
+
+    // Add CSS for the modal
+    const modalStyle = document.createElement('style');
+    modalStyle.textContent = `
+        .attraction-modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.7);
+            animation: fadeIn 0.3s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .modal-content {
+            background-color: #fff;
+            margin: 5% auto;
+            width: 80%;
+            max-width: 900px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            position: relative;
+            animation: slideIn 0.4s;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        .close-modal {
+            position: absolute;
+            right: 20px;
+            top: 15px;
+            font-size: 28px;
+            font-weight: bold;
+            color: #555;
+            cursor: pointer;
+            z-index: 10;
+        }
+        
+        .close-modal:hover {
+            color: #000;
+        }
+        
+        .modal-body {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .modal-image-container {
+            width: 100%;
+            height: 300px;
+            overflow: hidden;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .modal-image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .modal-info h2 {
+            font-size: 26px;
+            margin-bottom: 12px;
+            color: #333;
+        }
+        
+        .modal-meta {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 15px;
+            font-size: 15px;
+            color: #555;
+        }
+        
+        .modal-meta span i {
+            color: #ffc107;
+        }
+        
+        .modal-description {
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        
+        .modal-details h3 {
+            font-size: 18px;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        
+        .modal-details p {
+            line-height: 1.6;
+            color: #555;
+        }
+        
+        @media (min-width: 768px) {
+            .modal-body {
+                flex-direction: row;
+                gap: 30px;
+            }
+            
+            .modal-image-container {
+                width: 40%;
+                height: auto;
+                max-height: 500px;
+                margin-bottom: 0;
+            }
+            
+            .modal-info {
+                width: 60%;
+            }
+        }
+    `;
+    document.head.appendChild(modalStyle);
 
     // Event Listeners
     continentSelect.addEventListener('change', handleContinentChange);
@@ -798,114 +869,302 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Add location info to description when needed
         let description = attraction.description;
-        if (attraction.city && citySelect.value === '') {
-            if (countrySelect.value === '' && attraction.country) {
-                // We're at continent level - show both country and city
-                const countryName = getCountryName(attraction.country, continentSelect.value);
-                const cityName = getCityName(attraction.city, continentSelect.value, attraction.country);
-                if (cityName && countryName && !description.includes(cityName)) {
-                    description += ` in ${cityName}, ${countryName}`;
-                }
-            } else {
-                // We're at country level - just show city
-                const cityName = getCityName(attraction.city, continentSelect.value, countrySelect.value);
-                if (cityName && !description.includes(cityName)) {
-                    description += ` in ${cityName}`;
-                }
-            }
-        }
-
+        // Create the card HTML structure
         card.innerHTML = `
-        <div class="attraction-image">
-            <img src="${attraction.image}" alt="${attraction.name}" onerror="this.src='images/placeholder.jpg'">
-            <div class="attraction-category">${attraction.category}</div>
-        </div>
-        <div class="attraction-content">
-            <h3>${attraction.name}</h3>
-            <p>${description}</p>
-            <div class="attraction-meta">
-                <span><i class="fa-solid fa-star"></i> ${attraction.rating}</span>
-                <span class="price">${attraction.price}</span>
+            <div class="card-image">
+                <img src="${attraction.image}" alt="${attraction.name}">
+                <div class="card-category">${attraction.category}</div>
             </div>
-            <div class="attraction-actions">
-                <a href="#" class="view-details">View Details</a>
+            <div class="card-content">
+                <h3>${attraction.name}</h3>
+                <p>${description}</p>
+                <div class="card-meta">
+                    <span class="rating"><i class="fa-solid fa-star"></i> ${attraction.rating}</span>
+                    <span class="price">${attraction.price}</span>
+                </div>
+                <button class="details-btn" data-attraction='${JSON.stringify(attraction).replace(/'/g, "&#39;")}'>View Details</button>
             </div>
-        </div>
-    `;
+        `;
+
+        // Add event listener to the details button
+        card.querySelector('.details-btn').addEventListener('click', function() {
+            showAttractionDetails(attraction);
+        });
 
         return card;
     }
 
-    // Helper function to get city name from city code
-    function getCityName(cityCode, continentCode, countryCode) {
-        try {
-            if (continentCode && countryCode) {
-                return locationData[continentCode].countries[countryCode].cities[cityCode].name;
-            } else if (cityCode.includes(',')) {
-                // City name might be directly included in format "City, Country"
-                return cityCode.split(',')[0];
+    // Show attraction details in modal
+    function showAttractionDetails(attraction) {
+        // Populate modal with attraction details
+        document.getElementById('modal-image').src = attraction.image;
+        document.getElementById('modal-image').alt = attraction.name;
+        document.getElementById('modal-title').textContent = attraction.name;
+        document.getElementById('modal-category').textContent = attraction.category;
+        document.getElementById('rating-value').textContent = attraction.rating;
+        document.getElementById('modal-price').textContent = attraction.price;
+        document.getElementById('modal-description-text').textContent = attraction.description;
+        document.getElementById('modal-details-text').textContent = attraction.details;
+
+        // Show the modal
+        const modal = document.querySelector('.attraction-modal');
+        modal.style.display = 'block';
+
+        // Prevent body scrolling when modal is open
+        document.body.style.overflow = 'hidden';
+
+        // Close modal when clicking the close button
+        document.querySelector('.close-modal').addEventListener('click', closeModal);
+
+        // Close modal when clicking outside of it
+        window.addEventListener('click', function(event) {
+            if (event.target === modal) {
+                closeModal();
             }
-        } catch (e) {
-            return null;
+        });
+
+        function closeModal() {
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
         }
-        return null;
-    }
-    function getCountryName(countryCode, continentCode) {
-        try {
-            if (continentCode) {
-                return locationData[continentCode].countries[countryCode].name;
-            }
-        } catch (e) {
-            return null;
-        }
-        return null;
     }
 
-    // Hide results and show initial state
+    // Helper function to hide results and show initial state
     function hideResults() {
         initialState.classList.remove('hidden');
         resultsWrapper.classList.add('hidden');
     }
 
-    // Sticky navigation
-    const mainHeader = document.getElementById('mainHeader');
-    let lastScrollTop = 0;
+    // Add CSS for attraction cards
+    const cardStyle = document.createElement('style');
+    cardStyle.textContent = `
+        .attraction-card {
+            background-color: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .attraction-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .card-image {
+            position: relative;
+            height: 200px;
+            overflow: hidden;
+        }
+        
+        .card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .attraction-card:hover .card-image img {
+            transform: scale(1.05);
+        }
+        
+        .card-category {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background-color: rgba(0, 0, 0, 0.6);
+            color: #fff;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .card-content {
+            padding: 20px;
+        }
+        
+        .card-content h3 {
+            margin-top: 0;
+            margin-bottom: 10px;
+            font-size: 18px;
+            color: #333;
+        }
+        
+        .card-content p {
+            color: #666;
+            margin-bottom: 15px;
+            font-size: 14px;
+            line-height: 1.4;
+            height: 60px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+        }
+        
+        .card-meta {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            font-size: 14px;
+            color: #555;
+        }
+        
+        .rating i {
+            color: #ffc107;
+            margin-right: 3px;
+        }
+        
+        .details-btn {
+            width: 100%;
+            padding: 10px;
+            background-color: #3dbb91;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background-color 0.3s ease;
+        }
+        
+        .details-btn:hover {
+            background-color: #3dbb91;
+        }
+    `;
+    document.head.appendChild(cardStyle);
 
-    window.addEventListener('scroll', function() {
-        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    // Initialize with all dropdowns disabled except continent
+    countrySelect.disabled = true;
+    citySelect.disabled = true;
 
-        if (scrollTop > 100) {
-            mainHeader.classList.add('sticky');
+    // Add default AOS animations to attraction cards
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('aos-animate');
+            }
+        });
+    });
 
-            if (scrollTop > lastScrollTop) {
-                // Scrolling down
-                mainHeader.classList.add('hide');
-            } else {
-                // Scrolling up
-                mainHeader.classList.remove('hide');
+    // Initialize filters with continent selection guide
+    const filtersGuide = document.createElement('div');
+    filtersGuide.className = 'filters-guide';
+    filtersGuide.innerHTML = '<p><i class="fa-solid fa-info-circle"></i> Start by selecting a continent to explore attractions</p>';
+    document.querySelector('.filters-container').appendChild(filtersGuide);
+
+    // Add responsive features for mobile
+    const mediaQuery = window.matchMedia('(max-width: 768px)');
+    function handleScreenChange(e) {
+        if (e.matches) {
+            // Adjust layout for mobile
+            document.querySelector('.filters-container').classList.add('mobile-filters');
+
+            if (document.querySelector('.mobile-toggle') === null) {
+                // Add filter toggle button for mobile
+                const filterToggle = document.createElement('button');
+                filterToggle.className = 'mobile-toggle';
+                filterToggle.innerHTML = '<i class="fa-solid fa-filter"></i> Filters';
+                document.querySelector('.search-section').prepend(filterToggle);
+
+                filterToggle.addEventListener('click', function() {
+                    document.querySelector('.filters-container').classList.toggle('show-filters');
+                });
             }
         } else {
-            mainHeader.classList.remove('sticky');
-            mainHeader.classList.remove('hide');
+            // Adjust layout for desktop
+            document.querySelector('.filters-container').classList.remove('mobile-filters', 'show-filters');
+            const toggle = document.querySelector('.mobile-toggle');
+            if (toggle) toggle.remove();
         }
+    }
 
-        lastScrollTop = scrollTop;
-    });
+    // Initial call and listener for screen size changes
+    handleScreenChange(mediaQuery);
+    mediaQuery.addListener(handleScreenChange);
 
-    // Mobile menu toggle
-    const hamburger = document.getElementById('hamburger');
-    const navLinks = document.getElementById('navLinks');
+    // Add error handling for image loading
+    function handleImageError(img) {
+        img.onerror = function() {
+            this.src = 'https://via.placeholder.com/400x300?text=Image+Not+Available';
+        };
+    }
 
-    hamburger.addEventListener('click', function() {
-        navLinks.classList.toggle('active');
-        hamburger.classList.toggle('active');
-    });
+    // Apply error handling to all images loaded in the results
+    function applyImageErrorHandling() {
+        const images = document.querySelectorAll('.card-image img, #modal-image');
+        images.forEach(img => handleImageError(img));
+    }
 
-    // Add click event to "View Details" buttons
-    document.addEventListener('click', function(e) {
-        if (e.target.classList.contains('view-details')) {
-            e.preventDefault();
-            alert('View details functionality would open a detailed page for this attraction.');
+    // Add observer to trigger animations
+    function setupAnimations() {
+        const cards = document.querySelectorAll('.attraction-card');
+        cards.forEach(card => {
+            card.classList.add('aos-init');
+            card.setAttribute('data-aos', 'fade-up');
+            observer.observe(card);
+        });
+    }
+
+    // Enhance the displayAttractions function to include animation setup and image error handling
+    const originalDisplayAttractions = displayAttractions;
+    displayAttractions = function(level, selectedValue, continentValue = null, countryValue = null) {
+        originalDisplayAttractions(level, selectedValue, continentValue, countryValue);
+        setupAnimations();
+        applyImageErrorHandling();
+    };
+
+    // Add "Back to Top" button
+    const backToTopBtn = document.createElement('button');
+    backToTopBtn.id = 'back-to-top';
+    backToTopBtn.innerHTML = '<i class="fa-solid fa-arrow-up"></i>';
+    document.body.appendChild(backToTopBtn);
+
+    // Style for "Back to Top" button
+    const backToTopStyle = document.createElement('style');
+    backToTopStyle.textContent = `
+        #back-to-top {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 20px;
+            cursor: pointer;
+            display: none;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.3s, transform 0.3s;
+            z-index: 99;
+        }
+        
+        #back-to-top:hover {
+            background-color: #2980b9;
+            transform: scale(1.1);
+        }
+    `;
+    document.head.appendChild(backToTopStyle);
+
+    // Show/hide "Back to Top" button based on scroll position
+    window.addEventListener('scroll', function() {
+        if (window.pageYOffset > 300) {
+            backToTopBtn.style.display = 'block';
+        } else {
+            backToTopBtn.style.display = 'none';
         }
     });
+
+    // Scroll to top when button is clicked
+    backToTopBtn.addEventListener('click', function() {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    });
+
+
 });
