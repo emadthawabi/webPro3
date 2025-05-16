@@ -6,6 +6,7 @@ session_start();
 $pageTitle = "Home";
 ?>
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
     <?php include 'head.php'; ?>
@@ -13,6 +14,7 @@ $pageTitle = "Home";
 <body>
 <?php include 'header.php'; ?>
 
+<link rel="stylesheet" type="text/css" href="css/CustomTour.css">
 <!-- Hero Section -->
 <section class="tours-hero custom-tour-hero">
   <div class="container">
