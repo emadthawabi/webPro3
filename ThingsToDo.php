@@ -77,10 +77,10 @@ $pageTitle = "Home";
                 <!-- Attractions will be populated here via JavaScript -->
             </div>
 
-            <div id="no-results" class="no-results hidden">
-                <i class="fa-solid fa-map-pin"></i>
-                <h3>No attractions found</h3>
-                <p>Please try a different selection</p>
+            <div id="no-results" >
+<!--                <i class="fa-solid fa-map-pin"></i>-->
+<!--                <h3>No attractions found</h3>-->
+<!--                <p>Please try a different selection</p>-->
             </div>
         </div>
 
