@@ -17,17 +17,17 @@ if (!defined('BASE_PATH')) {
 <div class="search-filter">
     <div class="search-box">
         <i class="fas fa-search"></i>
-        <input type="text" class="search-input" placeholder="Search destinations..." data-table-search="destinations-table">
+        <input type="text" class="search-input" id="destination-search" placeholder="Search destinations..." data-table-search="destinations-table">
     </div>
 
-    <select class="filter-select" data-table-filter="destinations-table">
+    <select class="filter-select" id="continent-filter" data-table-filter="destinations-table">
         <option value="">All Continents</option>
         <option value="europe">Europe</option>
         <option value="asia">Asia</option>
         <option value="africa">Africa</option>
-        <option value="north-america">North America</option>
-        <option value="south-america">South America</option>
-        <option value="australia">Australia & Oceania</option>
+        <option value="north america">North America</option>
+        <option value="south america">South America</option>
+        <option value="australia & oceania">Australia & Oceania</option>
     </select>
 </div>
 
@@ -55,7 +55,7 @@ if (!defined('BASE_PATH')) {
 
             if ($result && $result->num_rows > 0) {
                 while ($row = $result->fetch_assoc()) {
-                    echo '<tr data-category="' . htmlspecialchars($row['continent']) . '">';
+                    echo '<tr data-continent="' . strtolower(htmlspecialchars($row['continent'])) . '">';
                     echo '<td>' . htmlspecialchars($row['destid']) . '</td>';
                     echo '<td>' . htmlspecialchars($row['continent']) . '</td>';
                     echo '<td>' . htmlspecialchars($row['country']) . '</td>';
@@ -151,7 +151,10 @@ if (!defined('BASE_PATH')) {
         </div>
         <div class="modal-body">
             <form id="edit-destination-form" method="POST">
-                <input type="hidden" id="edit-dest-id" name="destid" value="">
+                <div class="form-group">
+                    <label for="edit-country">ID</label>
+                    <input type="number" id="destid" name="destid" class="form-control" required>
+                </div>
                 <div class="form-grid">
                     <div class="form-group">
                         <label for="edit-continent">Continent</label>
@@ -225,6 +228,51 @@ if (!defined('BASE_PATH')) {
         font-size: 18px;
     }
 
+    /* Search & Filter Styling */
+    .search-filter {
+        display: flex;
+        margin-bottom: 20px;
+        gap: 15px;
+    }
+
+    .search-box {
+        flex-grow: 1;
+        position: relative;
+    }
+
+    .search-box i {
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #666;
+    }
+
+    .search-input {
+        width: 100%;
+        padding: 10px 10px 10px 35px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 14px;
+    }
+
+    .filter-select {
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        min-width: 180px;
+        font-size: 14px;
+        cursor: pointer;
+    }
+
+    /* No Results Message */
+    .no-results {
+        text-align: center;
+        padding: 20px;
+        font-style: italic;
+        color: #666;
+    }
+
     /* Modal Animation */
     .modal-overlay {
         display: none;
@@ -259,7 +307,55 @@ if (!defined('BASE_PATH')) {
         to { transform: translateY(0); opacity: 1; }
     }
 </style>
+<!-- Notification Toast Component -->
+<div id="notification-toast" class="notification-toast">
+    <div class="toast-icon">
+        <i class="fas fa-check-circle"></i>
+    </div>
+    <div class="toast-message">
+        Operation completed successfully!
+    </div>
+</div>
 
+<style>
+    /* Toast Notification Styling */
+    .notification-toast {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        background-color: #4CAF50;
+        color: white;
+        padding: 15px 25px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        display: flex;
+        align-items: center;
+        transform: translateY(100px);
+        opacity: 0;
+        transition: all 0.3s ease;
+        z-index: 2000;
+    }
+
+    .notification-toast.show {
+        transform: translateY(0);
+        opacity: 1;
+    }
+
+    .toast-icon {
+        margin-right: 15px;
+        font-size: 24px;
+    }
+
+    .toast-message {
+        font-size: 16px;
+        font-weight: 500;
+    }
+
+    /* Hidden class for search/filter */
+    tr.hidden {
+        display: none;
+    }
+</style>
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         // Get all buttons that open modals
@@ -270,6 +366,76 @@ if (!defined('BASE_PATH')) {
             button.addEventListener('click', () => {
                 const modal = document.getElementById(button.dataset.modalTarget);
                 openModal(modal);
+
+                if (button.classList.contains('edit')) {
+                    const destId = button.getAttribute('data-dest-id');
+
+                    // Fix here: use the correct input ID from your form
+                    const destIdField = document.getElementById('destid');
+                    if (destIdField) {
+                        destIdField.value = destId;
+                    }
+
+                    // Get the row data
+                    const row = button.closest('tr');
+                    const continent = row.cells[1].textContent.trim();
+                    const country = row.cells[2].textContent.trim();
+                    const city = row.cells[3].textContent.trim();
+                    const description = row.cells[4].textContent.trim();
+
+                    // Set the form field values
+                    document.getElementById('edit-continent').value = continent;
+                    document.getElementById('edit-country').value = country;
+                    document.getElementById('edit-city').value = city;
+                    document.getElementById('edit-description').value = description;
+                }
+
+            });
+        });
+
+        // Delete button event listeners
+        const deleteButtons = document.querySelectorAll('.delete-btn');
+        deleteButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const destId = this.getAttribute('data-dest-id');
+
+                // Confirm before deletion
+                if (confirm('Are you sure you want to delete this destination?')) {
+                    // Create AJAX request for deletion
+                    const xhr = new XMLHttpRequest();
+                    xhr.open('POST', 'Actions/deleteDestination.php', true);
+                    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+
+                    xhr.onload = function() {
+                        if (this.status === 200) {
+                            // Show success notification
+                            const toast = document.getElementById('notification-toast');
+                            if (toast) {
+                                toast.classList.add('show');
+                                setTimeout(() => {
+                                    toast.classList.remove('show');
+                                }, 3000);
+                            }
+
+                            // Remove the row from the table or reload the page
+                            const row = button.closest('tr');
+                            if (row) {
+                                row.remove();
+                            } else {
+                                location.reload();
+                            }
+                        } else {
+                            alert('Error deleting destination: ' + this.responseText);
+                        }
+                    };
+
+                    xhr.onerror = function() {
+                        alert('Request error. Please try again.');
+                    };
+
+                    // Send the destination ID to the server
+                    xhr.send('destid=' + encodeURIComponent(destId));
+                }
             });
         });
 
@@ -349,38 +515,71 @@ if (!defined('BASE_PATH')) {
             });
         }
 
-        // Handle edit form submissions
         const editDestinationForm = document.getElementById('edit-destination-form');
         if (editDestinationForm) {
             editDestinationForm.addEventListener('submit', function(e) {
                 e.preventDefault();
 
-                // Get form data
+                // Get the destination ID from the hidden input
+                const destId = document.getElementById('destid');
+
+
+                // Verify that we have a destination ID before proceeding
+                if (!destId) {
+                    alert('Error: No destination ID found.');
+                    return;
+                }
+
+                // Create FormData object from the form
                 const formData = new FormData(this);
+
+                // Debug - log the form data being sent
+                console.log("Destination ID being sent:", formData.get('destid'));
+                console.log("Continent being sent:", formData.get('continent'));
+                console.log("Country being sent:", formData.get('country'));
 
                 // Create AJAX request
                 const xhr = new XMLHttpRequest();
                 xhr.open('POST', 'Actions/updateDestination.php', true);
 
                 xhr.onload = function() {
+                    console.log("Response received:", this.responseText);
+
                     if (this.status === 200) {
-                        // Show success notification
-                        const toast = document.getElementById('notification-toast');
-                        if (toast) {
-                            toast.classList.add('show');
-                            setTimeout(() => {
-                                toast.classList.remove('show');
-                            }, 3000);
+                        try {
+                            const response = JSON.parse(this.responseText);
+
+                            if (response.success) {
+                                // Show success notification
+                                const toast = document.getElementById('notification-toast');
+                                if (toast) {
+                                    // Update toast message
+                                    const toastMessage = toast.querySelector('.toast-message');
+                                    if (toastMessage) {
+                                        toastMessage.textContent = "Destination updated successfully!";
+                                    }
+
+                                    toast.classList.add('show');
+                                    setTimeout(() => {
+                                        toast.classList.remove('show');
+                                    }, 3000);
+                                }
+
+                                // Close modal
+                                const modal = document.getElementById('edit-destination-modal');
+                                closeModal(modal);
+
+                                // Reload the page to refresh the destinations list
+                                location.reload();
+                            } else {
+                                alert('Error updating destination: ' + response.message);
+                            }
+                        } catch (e) {
+                            console.error("Error parsing JSON:", e);
+                            alert('Invalid response from server. Please try again.');
                         }
-
-                        // Close modal
-                        const modal = document.getElementById('edit-destination-modal');
-                        closeModal(modal);
-
-                        // Reload the page to refresh the destinations list
-                        location.reload();
                     } else {
-                        alert('Error updating destination: ' + this.responseText);
+                        alert('Error updating destination. Status: ' + this.status);
                     }
                 };
 
@@ -391,6 +590,76 @@ if (!defined('BASE_PATH')) {
                 // Send form data
                 xhr.send(formData);
             });
+        }
+
+        // Search and Filter functionality
+        const searchInput = document.getElementById('destination-search');
+        const continentFilter = document.getElementById('continent-filter');
+        const table = document.getElementById('destinations-table');
+        const rows = table.querySelectorAll('tbody tr');
+
+        // Search function
+        function searchTable() {
+            const searchTerm = searchInput.value.toLowerCase();
+            const filterValue = continentFilter.value.toLowerCase();
+
+            // Check if we have any rows in the table
+            if(rows.length === 0) return;
+
+            let noResultsFound = true;
+
+            rows.forEach(row => {
+                const continent = row.getAttribute('data-continent') || '';
+                const destId = row.cells[0].textContent.toLowerCase();
+                const country = row.cells[2].textContent.toLowerCase();
+                const city = row.cells[3].textContent.toLowerCase();
+                const description = row.cells[4].textContent.toLowerCase();
+
+                // Check search term
+                const matchesSearch = destId.includes(searchTerm) ||
+                    continent.includes(searchTerm) ||
+                    country.includes(searchTerm) ||
+                    city.includes(searchTerm) ||
+                    description.includes(searchTerm);
+
+                // Check filter
+                const matchesFilter = !filterValue || continent === filterValue;
+
+                // Show or hide the row
+                if (matchesSearch && matchesFilter) {
+                    row.classList.remove('hidden');
+                    noResultsFound = false;
+                } else {
+                    row.classList.add('hidden');
+                }
+            });
+
+            // Check if we need to show "No results found" message
+            let noResultsRow = table.querySelector('.no-results-row');
+
+            if (noResultsFound) {
+                if (!noResultsRow) {
+                    noResultsRow = document.createElement('tr');
+                    noResultsRow.className = 'no-results-row';
+                    const cell = document.createElement('td');
+                    cell.colSpan = 6;
+                    cell.className = 'text-center';
+                    cell.textContent = 'No destinations match your search criteria';
+                    noResultsRow.appendChild(cell);
+                    table.querySelector('tbody').appendChild(noResultsRow);
+                }
+            } else if (noResultsRow) {
+                noResultsRow.remove();
+            }
+        }
+
+        // Add event listeners for search and filter
+        if (searchInput) {
+            searchInput.addEventListener('input', searchTable);
+        }
+
+        if (continentFilter) {
+            continentFilter.addEventListener('change', searchTable);
         }
     });
 </script>

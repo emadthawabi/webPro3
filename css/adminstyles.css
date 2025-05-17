@@ -388,36 +388,39 @@
 
 /* Modal */
 .modal-overlay {
+    display: none; /* Hidden by default */
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
     background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
     align-items: center;
     justify-content: center;
     z-index: 1000;
-    opacity: 0;
-    visibility: hidden;
-    transition: all 0.3s ease;
+    overflow-y: auto; /* Allow scrolling the overlay */
+    padding: 30px 15px; /* Add padding around the modal */
 }
 
 .modal-overlay.active {
     opacity: 1;
     visibility: visible;
-}
+    overflow-y: auto; /* Allow scrolling the overlay */
 
+
+}
 .modal {
     width: 90%;
     max-width: 700px;
     background-color: var(--white);
     border-radius: var(--radius);
-    overflow: hidden;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-    transform: scale(0.9);
     transition: transform 0.3s ease;
-    max-height: 90vh;
+
+    margin: auto; /* Center horizontally */
+    margin-top: auto; /* Push to middle vertically */
+    margin-bottom: auto; /* Push to middle vertically */
+    max-height: none; /* Remove max-height restriction */
     display: flex;
     flex-direction: column;
 }
@@ -453,7 +456,8 @@
 
 .modal-body {
     padding: 20px;
-    overflow-y: auto;
+    overflow-y: auto; /* Allow scrolling of modal body */
+    max-height: calc(80vh - 130px); /* Subtract header and footer height */
 }
 
 .modal-footer {
@@ -833,6 +837,16 @@ select.form-control {
 .btn-primary {
     background-color: #3dbb91;
     color: white;
+    border: none;
+    border-radius: 15px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex
+;
+    align-items: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
 .btn-primary:hover {
