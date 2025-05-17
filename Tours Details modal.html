@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<!-- Tour Details Modal -->
+<div id="tourDetailsModal" class="modal-overlay">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2 id="modal-tour-name">Tour Details</h2>
+      <button class="modal-close" id="closeModal">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="details-loading">
+        <div class="spinner"></div>
+        <p>Loading tour details...</p>
+      </div>
+
+      <div class="details-content" style="display: none;">
+        <div class="details-overview">
+          <div class="details-image">
+            <img id="modal-tour-image" src="uploadImages/placeholder.jpg" alt="Tour image">
+          </div>
+          <div class="details-summary">
+            <div class="details-rating">
+              <span class="stars" id="modal-tour-stars"></span>
+              <span class="rating-count" id="modal-tour-rating">4.5</span>
+            </div>
+            <div class="details-price">
+              <span class="price" id="modal-tour-price">$0.00</span>
+              <span class="per-person">per person</span>
+            </div>
+            <div class="details-duration">
+              <i class="fas fa-clock"></i>
+              <span id="modal-tour-duration">0 days, 0 nights</span>
+            </div>
+            <a href="#" class="btn btn-primary book-tour-btn" id="bookTourBtn">Book This Tour</a>
+          </div>
+        </div>
+
+        <div class="details-tabs">
+          <button class="tab-btn active" data-tab="destination">Destination</button>
+          <button class="tab-btn" data-tab="flights">Flight Details</button>
+          <button class="tab-btn" data-tab="hotels">Hotel Details</button>
+        </div>
+
+        <div class="tab-content">
+          <!-- Destination Tab -->
+          <div class="tab-pane active" id="destination-tab">
+            <div class="destination-details">
+              <h3>Destination Information</h3>
+              <div class="detail-item">
+                <span class="detail-label">Continent:</span>
+                <span class="detail-value" id="modal-continent"></span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Country:</span>
+                <span class="detail-value" id="modal-country"></span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">City:</span>
+                <span class="detail-value" id="modal-city"></span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Description:</span>
+                <span class="detail-value" id="modal-description"></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Flights Tab -->
+          <div class="tab-pane" id="flights-tab">
+            <div class="flight-details">
+              <h3>Flight Information</h3>
+              <div class="detail-item">
+                <span class="detail-label">Airline/Airport:</span>
+                <span class="detail-value" id="modal-airport"></span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Departure:</span>
+                <span class="detail-value" id="modal-flight-time"></span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Origin:</span>
+                <span class="detail-value" id="modal-flight-begin"></span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Flight Type:</span>
+                <span class="detail-value" id="modal-flight-type"></span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Flight Date:</span>
+                <span class="detail-value" id="modal-flight-date"></span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Flight Price:</span>
+                <span class="detail-value price-highlight" id="modal-flight-price"></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Hotels Tab -->
+          <div class="tab-pane" id="hotels-tab">
+            <div class="hotel-details">
+              <h3>Hotel Information</h3>
+              <div class="detail-item">
+                <span class="detail-label">Hotel Name:</span>
+                <span class="detail-value" id="modal-hotel-name"></span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Rating:</span>
+                <span class="detail-value" id="modal-hotel-stars"></span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Check-in Time:</span>
+                <span class="detail-value" id="modal-hotel-time"></span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Accommodates:</span>
+                <span class="detail-value" id="modal-hotel-people"></span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Location:</span>
+                <span class="detail-value" id="modal-hotel-location"></span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Price per night:</span>
+                <span class="detail-value price-highlight" id="modal-hotel-price"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

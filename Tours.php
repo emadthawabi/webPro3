@@ -66,6 +66,8 @@ $pageTitle = "Tours";
 <html lang="en">
 <head>
     <?php include 'head.php'; ?>
+    <!-- Add custom CSS for tour details modal -->
+    <link rel="stylesheet" href="css/tour_details_modal.css">
 </head>
 <body>
 <?php include 'header.php'; ?>
@@ -97,7 +99,7 @@ $pageTitle = "Tours";
                         <option value="africa">Africa</option>
                         <option value="north-america">North America</option>
                         <option value="south-america">South America</option>
-<!--                        <option value="australia">Australia & Oceania</option>-->
+                        <!--                        <option value="australia">Australia & Oceania</option>-->
                     </select>
                 </div>
 
@@ -142,16 +144,16 @@ $pageTitle = "Tours";
     <div class="container">
         <div class="tour-results-header">
             <h2>Available Tours <span id="tourCount" class="tour-count">(<?php echo count($tours); ?>)</span></h2>
-<!--            <div class="sort-options">-->
-<!--                <label>Sort by:</label>-->
-<!--                <select id="sortOptions">-->
-<!--                    <option value="popular">Most Popular</option>-->
-<!--                    <option value="price-asc">Price: Low to High</option>-->
-<!--                    <option value="price-desc">Price: High to Low</option>-->
-<!--                    <option value="duration">Duration</option>-->
-<!--                    <option value="rating">Rating</option>-->
-<!--                </select>-->
-<!--            </div>-->
+            <!--            <div class="sort-options">-->
+            <!--                <label>Sort by:</label>-->
+            <!--                <select id="sortOptions">-->
+            <!--                    <option value="popular">Most Popular</option>-->
+            <!--                    <option value="price-asc">Price: Low to High</option>-->
+            <!--                    <option value="price-desc">Price: High to Low</option>-->
+            <!--                    <option value="duration">Duration</option>-->
+            <!--                    <option value="rating">Rating</option>-->
+            <!--                </select>-->
+            <!--            </div>-->
         </div>
 
         <div class="tour-grid" id="tourGrid">
@@ -197,16 +199,17 @@ $pageTitle = "Tours";
                             <h3><?php echo htmlspecialchars($tour['tourname']); ?></h3>
                             <p class="tour-location"><i class="fas fa-map-marker-alt"></i> <?php echo htmlspecialchars($tour['city']); ?>, <?php echo htmlspecialchars($tour['country']); ?></p>
                             <ul class="tour-features">
-                                <li><i class="fas fa-calendar-alt"></i> <?php echo $tour['duration']; ?> days, <?php echo $tour['duration'] - 1; ?> nights</li>
-                                <li><i class="fas fa-plane"></i> Round-trip flight included</li>
-                                <li><i class="fas fa-hiking"></i> <?php echo htmlspecialchars($tour['description']); ?></li>
+<!--                                <li><i class="fas fa-calendar-alt"></i> --><?php //echo $tour['duration']; ?><!-- days, --><?php //echo $tour['duration'] - 1; ?><!-- nights</li>-->
+<!--                                <li><i class="fas fa-plane"></i> Round-trip flight included</li>-->
+<!--                                <li><i class="fas fa-hiking"></i> --><?php //echo htmlspecialchars($tour['description']); ?><!--</li>-->
                             </ul>
                             <div class="tour-footer">
                                 <div class="tour-price">
                                     <span class="price">$<?php echo number_format($tour['price'], 2); ?></span>
                                     <span class="per-person">per person</span>
                                 </div>
-                                <a href="tour_details.php?id=<?php echo $tour['tourid']; ?>" class="view-details">View Details</a>
+                                <!-- Modified to use data attribute instead of href for tour ID -->
+                                <a href="#" class="view-details" data-tour-id="<?php echo $tour['tourid']; ?>">View Details</a>
                             </div>
                         </div>
                     </div>
@@ -240,6 +243,138 @@ $pageTitle = "Tours";
     </div>
 </section>
 
+<!-- Tour Details Modal -->
+<div id="tourDetailsModal" class="modal-overlay">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="modal-tour-name">Tour Details</h2>
+            <button class="modal-close" id="closeModal">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="details-loading">
+                <div class="spinner"></div>
+                <p>Loading tour details...</p>
+            </div>
+
+            <div class="details-content" style="display: none;">
+                <div class="details-overview">
+                    <div class="details-image">
+                        <img id="modal-tour-image" src="uploadImages/placeholder.jpg" alt="Tour image">
+                    </div>
+                    <div class="details-summary">
+                        <div class="details-rating">
+                            <span class="stars" id="modal-tour-stars"></span>
+                            <span class="rating-count" id="modal-tour-rating">4.5</span>
+                        </div>
+                        <div class="details-price">
+                            <span class="price" id="modal-tour-price">$0.00</span>
+                            <span class="per-person">per person</span>
+                        </div>
+                        <div class="details-duration">
+                            <i class="fas fa-clock"></i>
+                            <span id="modal-tour-duration">0 days, 0 nights</span>
+                        </div>
+                        <a href="#" class="btn btn-primary book-tour-btn" id="bookTourBtn">Book This Tour</a>
+                    </div>
+                </div>
+
+                <div class="details-tabs">
+                    <button class="tab-btn active" data-tab="destination">Destination</button>
+                    <button class="tab-btn" data-tab="flights">Flight Details</button>
+                    <button class="tab-btn" data-tab="hotels">Hotel Details</button>
+                </div>
+
+                <div class="tab-content">
+                    <!-- Destination Tab -->
+                    <div class="tab-pane active" id="destination-tab">
+                        <div class="destination-details">
+                            <h3>Destination Information</h3>
+                            <div class="detail-item">
+                                <span class="detail-label">Continent:</span>
+                                <span class="detail-value" id="modal-continent"></span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Country:</span>
+                                <span class="detail-value" id="modal-country"></span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">City:</span>
+                                <span class="detail-value" id="modal-city"></span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Description:</span>
+                                <span class="detail-value" id="modal-description"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Flights Tab -->
+                    <div class="tab-pane" id="flights-tab">
+                        <div class="flight-details">
+                            <h3>Flight Information</h3>
+                            <div class="detail-item">
+                                <span class="detail-label">Airline/Airport:</span>
+                                <span class="detail-value" id="modal-airport"></span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Departure:</span>
+                                <span class="detail-value" id="modal-flight-time"></span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Origin:</span>
+                                <span class="detail-value" id="modal-flight-begin"></span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Flight Type:</span>
+                                <span class="detail-value" id="modal-flight-type"></span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Flight Date:</span>
+                                <span class="detail-value" id="modal-flight-date"></span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Flight Price:</span>
+                                <span class="detail-value price-highlight" id="modal-flight-price"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Hotels Tab -->
+                    <div class="tab-pane" id="hotels-tab">
+                        <div class="hotel-details">
+                            <h3>Hotel Information</h3>
+                            <div class="detail-item">
+                                <span class="detail-label">Hotel Name:</span>
+                                <span class="detail-value" id="modal-hotel-name"></span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Rating:</span>
+                                <span class="detail-value" id="modal-hotel-stars"></span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Check-in Time:</span>
+                                <span class="detail-value" id="modal-hotel-time"></span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Accommodates:</span>
+                                <span class="detail-value" id="modal-hotel-people"></span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Location:</span>
+                                <span class="detail-value" id="modal-hotel-location"></span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Price per night:</span>
+                                <span class="detail-value price-highlight" id="modal-hotel-price"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <?php include 'footer.php'; ?>
 
 <!-- Scripts -->
@@ -248,6 +383,8 @@ $pageTitle = "Tours";
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous"></script>
 <script src="js/custom.js"></script>
 <script src="js/tours.js"></script>
+<!-- Add custom JS for tour details modal -->
+<script src="js/tour_details_modal.js"></script>
 
 <?php
 // Close the database connection
