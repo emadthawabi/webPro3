@@ -3,7 +3,7 @@
 session_start();
 
 // Set page title
-$pageTitle = "Home";
+$pageTitle = "CustomTour";
 ?>
 <!DOCTYPE html>
 

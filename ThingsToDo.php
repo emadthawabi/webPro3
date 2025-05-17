@@ -3,7 +3,7 @@
 session_start();
 
 // Set page title
-$pageTitle = "Home";
+$pageTitle = "ThingsToDo";
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -39,7 +39,7 @@ $pageTitle = "Home";
                         <option value="">Select a continent</option>
                         <option value="europe">Europe</option>
                         <option value="asia">Asia</option>
-<!--                        <option value="africa">Africa</option>-->
+                        <option value="africa">Africa</option>
                         <option value="north_america">North America</option>
                         <option value="south_america">South America</option>
 <!--                        <option value="oceania">Oceania</option>-->
@@ -77,10 +77,10 @@ $pageTitle = "Home";
                 <!-- Attractions will be populated here via JavaScript -->
             </div>
 
-            <div id="no-results" class="no-results hidden">
-                <i class="fa-solid fa-map-pin"></i>
-                <h3>No attractions found</h3>
-                <p>Please try a different selection</p>
+            <div id="no-results" >
+<!--                <i class="fa-solid fa-map-pin"></i>-->
+<!--                <h3>No attractions found</h3>-->
+<!--                <p>Please try a different selection</p>-->
             </div>
         </div>
 
