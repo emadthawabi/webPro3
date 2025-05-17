@@ -517,6 +517,228 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 }
             }
+        },
+
+
+        'africa': {
+            name: 'Africa',
+            attractions: [], // Will be populated from countries
+            countries: {
+                'egypt': {
+                    name: 'Egypt',
+                    cities: {
+                        'cairo': {
+                            name: 'Cairo',
+                            attractions: [
+                                {
+                                    name: 'Great Pyramids of Giza',
+                                    description: 'Ancient Egyptian pyramids and the Great Sphinx on the Giza Plateau.',
+                                    image: 'https://images.pexels.com/photos/71241/pexels-photo-71241.jpeg',
+                                    category: 'Historic Site',
+                                    rating: 4.8,
+                                    price: '240 EGP',
+                                    details: 'The Great Pyramids of Giza are the last remaining wonder of the ancient world. Built over 4,500 years ago, the complex includes the Great Pyramid of Khufu, the Pyramid of Khafre, the Pyramid of Menkaure, and the Great Sphinx. These massive structures were built as tombs for pharaohs and their consorts during Egypt\'s Old and Middle Kingdom periods.'
+                                },
+
+                            ]
+                        },
+                        'luxor': {
+                            name: 'Luxor',
+                            attractions: [
+
+                                {
+                                    name: 'Karnak Temple',
+                                    description: 'Massive temple complex dedicated to the gods Amun, Mut, and Khonsu.',
+                                    image: 'https://images.pexels.com/photos/11356076/pexels-photo-11356076.jpeg',
+                                    category: 'Historic Site',
+                                    rating: 4.8,
+                                    price: '180 EGP',
+                                    details: 'The Karnak Temple Complex, commonly known as Karnak, comprises a vast mix of decayed temples, chapels, pylons, and other buildings. The area was a sacred site for ancient Egyptians for over 2,000 years. The complex is a testament to the skill and scale of ancient Egyptian construction and religious practices.'
+                                }
+                            ]
+                        }
+                    }
+                },
+                'south_africa': {
+                    name: 'South Africa',
+                    cities: {
+                        'cape_town': {
+                            name: 'Cape Town',
+                            attractions: [
+
+                                {
+                                    name: 'Robben Island',
+                                    description: 'Island prison where Nelson Mandela was incarcerated for 18 years.',
+                                    image: 'https://images.pexels.com/photos/1000653/pexels-photo-1000653.jpeg',
+                                    category: 'Historic Site',
+                                    rating: 4.6,
+                                    price: 'R550',
+                                    details: 'Robben Island is an island in Table Bay, 6.9 kilometers west of the coast of Cape Town. The island was used as a prison, leper colony, and mental hospital from the 17th to the 20th centuries. It is famous for being where Nelson Mandela was imprisoned for 18 of the 27 years he served behind bars before becoming South Africa\'s first black president.'
+                                }
+                            ]
+                        },
+                        'johannesburg': {
+                            name: 'Johannesburg',
+                            attractions: [
+                                {
+                                    name: 'Apartheid Museum',
+                                    description: 'Museum illustrating the rise and fall of apartheid in South Africa.',
+                                    image: 'https://www.andbeyond.com/wp-content/uploads/sites/5/Apartheid-Museum.jpg',
+                                    category: 'Museum',
+                                    rating: 4.7,
+                                    price: 'R150',
+                                    details: 'The Apartheid Museum is a museum in Johannesburg documenting the rise and fall of apartheid in South Africa. The museum illustrates the rise and fall of apartheid through film footage, photographs, text panels, and artifacts. The exhibits are designed to portray the racial segregation, political struggles, and the triumph of democracy over oppression.'
+                                },
+                                {
+                                    name: 'Constitution Hill',
+                                    description: 'Former prison complex that now houses South Africa\'s Constitutional Court.',
+                                    image: 'https://images.pexels.com/photos/6782360/pexels-photo-6782360.jpeg',
+                                    category: 'Historic Site',
+                                    rating: 4.5,
+                                    price: 'R120',
+                                    details: 'Constitution Hill is a living museum that tells the story of South Africa\'s journey to democracy. The site is a former prison and military fort that bears testament to South Africa\'s turbulent past and, today, is home to the country\'s Constitutional Court, which endorses the rights of all citizens. Nelson Mandela, Mahatma Gandhi, and other political activists were detained here.'
+                                }
+                            ]
+                        }
+                    }
+                },
+                'morocco': {
+                    name: 'Morocco',
+                    cities: {
+                        'marrakech': {
+                            name: 'Marrakech',
+                            attractions: [
+                                {
+                                    name: 'Jemaa el-Fnaa',
+                                    description: 'Famous square and market place in the medina quarter (old city).',
+                                    image: 'https://images.pexels.com/photos/4388164/pexels-photo-4388164.jpeg',
+                                    category: 'Market',
+                                    rating: 4.7,
+                                    price: 'Free',
+                                    details: 'Jemaa el-Fnaa is a square and market place in Marrakech\'s medina quarter. It remains the main square of Marrakech, used by locals and tourists alike. During the day it is predominantly occupied by orange juice stalls, water sellers, snake charmers, and henna artists. As the day progresses, the entertainment shifts to storytellers, magicians, and musicians, followed by food stalls that convert the square into a huge open-air restaurant.'
+                                }
+
+                            ]
+                        },
+                        'fez': {
+                            name: 'Fez',
+                            attractions: [
+                                {
+                                    name: 'Fes el Bali',
+                                    description: 'UNESCO World Heritage Site and oldest walled part of Fez, featuring the famous tanneries.',
+                                    image: 'https://upload.wikimedia.org/wikipedia/commons/5/5d/Fes_Bab_Bou_Jeloud_2011.jpg',
+                                    category: 'Historic District',
+                                    rating: 4.8,
+                                    price: 'Free',
+                                    details: 'Fes el Bali is the oldest walled part of Fez, Morocco. It was founded as the capital of the Idrisid dynasty between 789 and 808 AD. It is a UNESCO World Heritage site and is believed to be one of the world\'s largest urban pedestrian zones. The medina contains the University of Al Quaraouiyine, founded in 859, which is considered by some to be the oldest continuously functioning university in the world.'
+                                }
+                            ]
+                        }
+                    }
+                },
+                'kenya': {
+                    name: 'Kenya',
+                    cities: {
+                        'nairobi': {
+                            name: 'Nairobi',
+                            attractions: [
+                                {
+                                    name: 'Nairobi National Park',
+                                    description: 'Wildlife park located just 7 km from the city center of Nairobi.',
+                                    image: 'https://www.campoeasafaris.com/wp-content/uploads/2021/05/nairobi-national-park-main-gate.jpeg',
+                                    category: 'National Park',
+                                    rating: 4.6,
+                                    price: '$43',
+                                    details: 'Nairobi National Park is a national park in Kenya that was established in 1946. It is located approximately 7 kilometers south of the center of Nairobi, Kenya\'s capital city, and is the only protected area in the world that neighbors a capital city. Despite its proximity to civilization and its relatively small size, the park is home to a large and diverse wildlife population.'
+                                },
+
+                            ]
+                        },
+                        'mombasa': {
+                            name: 'Mombasa',
+                            attractions: [
+
+                                {
+                                    name: 'Diani Beach',
+                                    description: 'White sand beach with turquoise waters on the Indian Ocean coast.',
+                                    image: 'https://www.tsavonationalparkkenya.com/wp-content/uploads/2023/04/istockphoto-1226321192-612x612-1.jpg',
+                                    category: 'Beach',
+                                    rating: 4.9,
+                                    price: 'Free',
+                                    details: 'Diani Beach is a major beach resort on the Indian Ocean coast of Kenya. It has been voted Africa\'s leading beach destination for several years running. The beach is about 17 kilometers long, and is known for its coral reefs, black-and-white colobus monkeys, and for the closely located Shimba Hills National Reserve.'
+                                }
+                            ]
+                        }
+                    }
+                },
+                'tanzania': {
+                    name: 'Tanzania',
+                    cities: {
+                        'dar_es_salaam': {
+                            name: 'Dar es Salaam',
+                            attractions: [
+                                {
+                                    name: 'National Museum of Tanzania',
+                                    description: 'Consortium of museums displaying Tanzania\'s history and cultural heritage.',
+                                    image: 'https://images.pexels.com/photos/210204/pexels-photo-210204.jpeg',
+                                    category: 'Museum',
+                                    rating: 4.3,
+                                    price: '$10',
+                                    details: 'The National Museum of Tanzania is a consortium of five Tanzanian museums whose purpose is to preserve and display exhibits about the history and natural environment of Tanzania. The museum displays important fossils of some of the earliest human ancestors discovered in Tanzania at Olduvai Gorge by Louis Leakey, as well as traditional artifacts from various regions of Tanzania.'
+                                }
+                            ]
+                        },
+                        'zanzibar_city': {
+                            name: 'Zanzibar City',
+                            attractions: [
+                                {
+                                    name: 'Stone Town',
+                                    description: 'UNESCO World Heritage Site known for its narrow alleys, historic buildings, and cultural significance.',
+                                    image: 'https://www.africa.com/wp-content/uploads/2025/01/Stone-Town-Zanzibar-Iconic-Site-930x500.jpg',
+                                    category: 'Historic District',
+                                    rating: 4.7,
+                                    price: 'Free',
+                                    details: 'Stone Town is the old part of Zanzibar City and is a UNESCO World Heritage Site. It is a maze of narrow streets lined with buildings that reflect the diverse influences underlying Swahili culture. The buildings feature elements of Arab, Persian, Indian, European, and Swahili styles. Stone Town is particularly known for its ornate doors with brass studs, which were traditionally a sign of status and wealth.'
+                                }
+                            ]
+                        }
+                    }
+                },
+                'nigeria': {
+                    name: 'Nigeria',
+                    cities: {
+                        'lagos': {
+                            name: 'Lagos',
+                            attractions: [
+                                {
+                                    name: 'Nike Art Gallery',
+                                    description: 'Five-story gallery showcasing contemporary Nigerian art.',
+                                    image: 'https://images.pexels.com/photos/139764/pexels-photo-139764.jpeg',
+                                    category: 'Art Gallery',
+                                    rating: 4.6,
+                                    price: 'Free',
+                                    details: 'The Nike Art Gallery is a five-story art gallery in Lagos, Nigeria. It is owned by Nike Davies-Okundaye, an internationally acclaimed Nigerian artist. The gallery features over 8,000 diverse artworks from various Nigerian artists, including paintings, sculptures, and traditional crafts. It is one of the largest art galleries in West Africa.'
+                                }
+
+                            ]
+                        },
+                        'abuja': {
+                            name: 'Abuja',
+                            attractions: [
+                                {
+                                    name: 'Aso Rock',
+                                    description: 'Large monolith that serves as the backdrop for Nigeria\'s Presidential Complex.',
+                                    image: 'https://images.pexels.com/photos/11042589/pexels-photo-11042589.jpeg',
+                                    category: 'Natural Landmark',
+                                    rating: 4.4,
+                                    price: 'Free',
+                                    details: 'Aso Rock is a large monolith in the heart of Abuja, Nigeria\'s capital city. It serves as the backdrop for Nigeria\'s Presidential Complex, which houses the residences and offices of the President of Nigeria and the Vice President. The rock is approximately 400 meters tall and has become one of the most recognizable symbols of Nigeria\'s political authority.'
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
         }
     };
 
