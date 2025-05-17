@@ -2,13 +2,72 @@
 // Start the session
 session_start();
 
+// Database connection
+$servername = "localhost";
+$username = "root";  // Default XAMPP username
+$password = "";      // Default XAMPP password
+$dbname = "pathfinder";
+
+// Create connection
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+// Function to get all tours with details
+function getTours($conn) {
+    $sql = "SELECT t.tourid, t.tourname, t.price, t.rating, t.duration, t.image, 
+                  d.continent, d.country, d.city, d.description
+           FROM tours t
+           JOIN destination d ON t.destid = d.destid";
+
+    $result = $conn->query($sql);
+    $tours = [];
+
+    if ($result->num_rows > 0) {
+        while($row = $result->fetch_assoc()) {
+            // Define the budget category based on price
+            if ($row['price'] < 1000) {
+                $budget = 'budget';
+            } elseif ($row['price'] >= 1000 && $row['price'] <= 3000) {
+                $budget = 'standard';
+            } else {
+                $budget = 'luxury';
+            }
+
+            // Define the duration category based on days
+            if ($row['duration'] <= 3) {
+                $duration = 'short';
+            } elseif ($row['duration'] > 3 && $row['duration'] <= 7) {
+                $duration = 'medium';
+            } else {
+                $duration = 'long';
+            }
+
+            // Add processed data to the tours array
+            $row['budget_category'] = $budget;
+            $row['duration_category'] = $duration;
+            $tours[] = $row;
+        }
+    }
+
+    return $tours;
+}
+
+// Get all tours
+$tours = getTours($conn);
+
 // Set page title
-$pageTitle = "Home";
+$pageTitle = "Tours";
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <?php include 'head.php'; ?>
+    <!-- Add custom CSS for tour details modal -->
+    <link rel="stylesheet" href="css/tour_details_modal.css">
 </head>
 <body>
 <?php include 'header.php'; ?>
@@ -40,7 +99,7 @@ $pageTitle = "Home";
                         <option value="africa">Africa</option>
                         <option value="north-america">North America</option>
                         <option value="south-america">South America</option>
-                        <option value="australia">Australia & Oceania</option>
+                        <!--                        <option value="australia">Australia & Oceania</option>-->
                     </select>
                 </div>
 
@@ -84,380 +143,82 @@ $pageTitle = "Home";
 <section class="tours-display">
     <div class="container">
         <div class="tour-results-header">
-            <h2>Available Tours <span id="tourCount" class="tour-count">(12)</span></h2>
-            <div class="sort-options">
-                <label>Sort by:</label>
-                <select id="sortOptions">
-                    <option value="popular">Most Popular</option>
-                    <option value="price-asc">Price: Low to High</option>
-                    <option value="price-desc">Price: High to Low</option>
-                    <option value="duration">Duration</option>
-                    <option value="rating">Rating</option>
-                </select>
-            </div>
+            <h2>Available Tours <span id="tourCount" class="tour-count">(<?php echo count($tours); ?>)</span></h2>
+            <!--            <div class="sort-options">-->
+            <!--                <label>Sort by:</label>-->
+            <!--                <select id="sortOptions">-->
+            <!--                    <option value="popular">Most Popular</option>-->
+            <!--                    <option value="price-asc">Price: Low to High</option>-->
+            <!--                    <option value="price-desc">Price: High to Low</option>-->
+            <!--                    <option value="duration">Duration</option>-->
+            <!--                    <option value="rating">Rating</option>-->
+            <!--                </select>-->
+            <!--            </div>-->
         </div>
 
         <div class="tour-grid" id="tourGrid">
-            <!-- Europe Tours -->
-            <div class="tour-card" data-continent="europe" data-country="france" data-duration="medium" data-budget="standard" data-aos="fade-up">
-                <div class="tour-image">
-                    <img src="images/paris.webp" alt="Paris City Tour">
-                    <div class="tour-badge">POPULAR</div>
-                </div>
-                <div class="tour-info">
-                    <div class="tour-rating">
-            <span class="stars">
-              <i class="fas fa-star"></i>
-              <i class="fas fa-star"></i>
-              <i class="fas fa-star"></i>
-              <i class="fas fa-star"></i>
-              <i class="fas fa-star-half-alt"></i>
-            </span>
-                        <span class="rating-count">4.5 (128 reviews)</span>
-                    </div>
-                    <h3>Paris Explorer</h3>
-                    <p class="tour-location"><i class="fas fa-map-marker-alt"></i> Paris, France</p>
-                    <ul class="tour-features">
-                        <li><i class="fas fa-calendar-alt"></i> 5 days, 4 nights</li>
-                        <li><i class="fas fa-plane"></i> Round-trip flight included</li>
-                        <li><i class="fas fa-hiking"></i> Eiffel Tower, Louvre Museum, Seine River Cruise</li>
-                    </ul>
-                    <div class="tour-footer">
-                        <div class="tour-price">
-                            <span class="price">$1,899</span>
-                            <span class="per-person">per person</span>
-                        </div>
-                        <a href="#" class="view-details">View Details</a>
-                    </div>
-                </div>
-            </div>
+            <?php if (count($tours) > 0): ?>
+                <?php foreach ($tours as $tour): ?>
+                    <div class="tour-card"
+                         data-continent="<?php echo strtolower($tour['continent']); ?>"
+                         data-country="<?php echo strtolower($tour['country']); ?>"
+                         data-duration="<?php echo $tour['duration_category']; ?>"
+                         data-budget="<?php echo $tour['budget_category']; ?>"
+                         data-aos="fade-up">
+                        <div class="tour-image">
+                            <?php if (!empty($tour['image'])): ?>
+                                <img src="uploadImages/<?php echo htmlspecialchars($tour['image']); ?>" alt="<?php echo htmlspecialchars($tour['tourname']); ?>">
+                            <?php else: ?>
+                                <img src="uploadImages/placeholder.jpg" alt="Tour Image Placeholder">
+                            <?php endif; ?>
 
-            <div class="tour-card" data-continent="europe" data-country="italy" data-duration="medium" data-budget="standard" data-aos="fade-up">
-                <div class="tour-image">
-                    <img src="images/rome.jpg" alt="Rome Cultural Tour">
-                </div>
-                <div class="tour-info">
-                    <div class="tour-rating">
-            <span class="stars">
-              <i class="fas fa-star"></i>
-              <i class="fas fa-star"></i>
-              <i class="fas fa-star"></i>
-              <i class="fas fa-star"></i>
-              <i class="far fa-star"></i>
-            </span>
-                        <span class="rating-count">4.0 (95 reviews)</span>
-                    </div>
-                    <h3>Roman Holiday</h3>
-                    <p class="tour-location"><i class="fas fa-map-marker-alt"></i> Rome, Italy</p>
-                    <ul class="tour-features">
-                        <li><i class="fas fa-calendar-alt"></i> 6 days, 5 nights</li>
-                        <li><i class="fas fa-plane"></i> Round-trip flight included</li>
-                        <li><i class="fas fa-hiking"></i> Colosseum, Vatican, Roman Forum</li>
-                    </ul>
-                    <div class="tour-footer">
-                        <div class="tour-price">
-                            <span class="price">$2,199</span>
-                            <span class="per-person">per person</span>
+                            <?php if ($tour['rating'] >= 4.5): ?>
+                                <div class="tour-badge">POPULAR</div>
+                            <?php endif; ?>
                         </div>
-                        <a href="#" class="view-details">View Details</a>
-                    </div>
-                </div>
-            </div>
+                        <div class="tour-info">
+                            <div class="tour-rating">
+                                <span class="stars">
+                                    <?php
+                                    $full_stars = floor($tour['rating']);
+                                    $half_star = ($tour['rating'] - $full_stars) >= 0.5;
 
-            <div class="tour-card" data-continent="europe" data-country="greece" data-duration="long" data-budget="standard" data-aos="fade-up">
-                <div class="tour-image">
-                    <img src="images/Greek.jpg" alt="Greek Island Hopping">
-                </div>
-                <div class="tour-info">
-                    <div class="tour-rating">
-            <span class="stars">
-              <i class="fas fa-star"></i>
-              <i class="fas fa-star"></i>
-              <i class="fas fa-star"></i>
-              <i class="fas fa-star"></i>
-              <i class="fas fa-star"></i>
-            </span>
-                        <span class="rating-count">4.9 (210 reviews)</span>
-                    </div>
-                    <h3>Greek Island Hopping</h3>
-                    <p class="tour-location"><i class="fas fa-map-marker-alt"></i> Athens, Mykonos, Santorini</p>
-                    <ul class="tour-features">
-                        <li><i class="fas fa-calendar-alt"></i> 10 days, 9 nights</li>
-                        <li><i class="fas fa-plane"></i> Round-trip flight included</li>
-                        <li><i class="fas fa-hiking"></i> Acropolis, Blue Domes, Volcanic Beaches</li>
-                    </ul>
-                    <div class="tour-footer">
-                        <div class="tour-price">
-                            <span class="price">$2,899</span>
-                            <span class="per-person">per person</span>
+                                    for ($i = 1; $i <= 5; $i++) {
+                                        if ($i <= $full_stars) {
+                                            echo '<i class="fas fa-star"></i>';
+                                        } elseif ($i == $full_stars + 1 && $half_star) {
+                                            echo '<i class="fas fa-star-half-alt"></i>';
+                                        } else {
+                                            echo '<i class="far fa-star"></i>';
+                                        }
+                                    }
+                                    ?>
+                                </span>
+                                <span class="rating-count"><?php echo number_format($tour['rating'], 1); ?> </span>
+                            </div>
+                            <h3><?php echo htmlspecialchars($tour['tourname']); ?></h3>
+                            <p class="tour-location"><i class="fas fa-map-marker-alt"></i> <?php echo htmlspecialchars($tour['city']); ?>, <?php echo htmlspecialchars($tour['country']); ?></p>
+                            <ul class="tour-features">
+<!--                                <li><i class="fas fa-calendar-alt"></i> --><?php //echo $tour['duration']; ?><!-- days, --><?php //echo $tour['duration'] - 1; ?><!-- nights</li>-->
+<!--                                <li><i class="fas fa-plane"></i> Round-trip flight included</li>-->
+<!--                                <li><i class="fas fa-hiking"></i> --><?php //echo htmlspecialchars($tour['description']); ?><!--</li>-->
+                            </ul>
+                            <div class="tour-footer">
+                                <div class="tour-price">
+                                    <span class="price">$<?php echo number_format($tour['price'], 2); ?></span>
+                                    <span class="per-person">per person</span>
+                                </div>
+                                <!-- Modified to use data attribute instead of href for tour ID -->
+                                <a href="#" class="view-details" data-tour-id="<?php echo $tour['tourid']; ?>">View Details</a>
+                            </div>
                         </div>
-                        <a href="#" class="view-details">View Details</a>
                     </div>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <div class="no-tours-message">
+                    <p>No tours are currently available. Please check back later.</p>
                 </div>
-            </div>
-
-            <!-- Asia Tours -->
-            <div class="tour-card" data-continent="asia" data-country="japan" data-duration="long" data-budget="luxury" data-aos="fade-up">
-                <div class="tour-image">
-                    <img src="images/japan.webp" alt="Japan Explorer">
-                    <div class="tour-badge">TRENDING</div>
-                </div>
-                <div class="tour-info">
-                    <div class="tour-rating">
-            <span class="stars">
-              <i class="fas fa-star"></i>
-              <i class="fas fa-star"></i>
-              <i class="fas fa-star"></i>
-              <i class="fas fa-star"></i>
-              <i class="fas fa-star-half-alt"></i>
-            </span>
-                        <span class="rating-count">4.7 (156 reviews)</span>
-                    </div>
-                    <h3>Japan Heritage Tour</h3>
-                    <p class="tour-location"><i class="fas fa-map-marker-alt"></i> Tokyo, Kyoto, Osaka</p>
-                    <ul class="tour-features">
-                        <li><i class="fas fa-calendar-alt"></i> 12 days, 11 nights</li>
-                        <li><i class="fas fa-plane"></i> Round-trip flight included</li>
-                        <li><i class="fas fa-hiking"></i> Mt. Fuji, Cherry Blossoms, Temple Tours</li>
-                    </ul>
-                    <div class="tour-footer">
-                        <div class="tour-price">
-                            <span class="price">$3,599</span>
-                            <span class="per-person">per person</span>
-                        </div>
-                        <a href="#" class="view-details">View Details</a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="tour-card" data-continent="asia" data-country="thailand" data-duration="medium" data-budget="budget" data-aos="fade-up">
-                <div class="tour-image">
-                    <img src="images/Thailand.webp" alt="Thailand Adventure">
-                </div>
-                <div class="tour-info">
-                    <div class="tour-rating">
-            <span class="stars">
-              <i class="fas fa-star"></i>
-              <i class="fas fa-star"></i>
-              <i class="fas fa-star"></i>
-              <i class="fas fa-star"></i>
-              <i class="far fa-star"></i>
-            </span>
-                        <span class="rating-count">4.2 (118 reviews)</span>
-                    </div>
-                    <h3>Thailand Beach & Culture</h3>
-                    <p class="tour-location"><i class="fas fa-map-marker-alt"></i> Bangkok, Phuket, Krabi</p>
-                    <ul class="tour-features">
-                        <li><i class="fas fa-calendar-alt"></i> 7 days, 6 nights</li>
-                        <li><i class="fas fa-plane"></i> Round-trip flight included</li>
-                        <li><i class="fas fa-hiking"></i> Temple Tours, Island Hopping, Cooking Class</li>
-                    </ul>
-                    <div class="tour-footer">
-                        <div class="tour-price">
-                            <span class="price">$999</span>
-                            <span class="per-person">per person</span>
-                        </div>
-                        <a href="#" class="view-details">View Details</a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Africa Tours -->
-            <div class="tour-card" data-continent="africa" data-country="south-africa" data-duration="long" data-budget="luxury" data-aos="fade-up">
-                <div class="tour-image">
-                    <img src="images/cape.jpg" alt="South African Safari">
-                </div>
-                <div class="tour-info">
-                    <div class="tour-rating">
-            <span class="stars">
-              <i class="fas fa-star"></i>
-              <i class="fas fa-star"></i>
-              <i class="fas fa-star"></i>
-              <i class="fas fa-star"></i>
-              <i class="fas fa-star"></i>
-            </span>
-                        <span class="rating-count">4.9 (87 reviews)</span>
-                    </div>
-                    <h3>Ultimate Safari Experience</h3>
-                    <p class="tour-location"><i class="fas fa-map-marker-alt"></i> Cape Town, Kruger National Park</p>
-                    <ul class="tour-features">
-                        <li><i class="fas fa-calendar-alt"></i> 9 days, 8 nights</li>
-                        <li><i class="fas fa-plane"></i> Round-trip flight included</li>
-                        <li><i class="fas fa-hiking"></i> Big Five Safari, Table Mountain, Wine Tasting</li>
-                    </ul>
-                    <div class="tour-footer">
-                        <div class="tour-price">
-                            <span class="price">$4,299</span>
-                            <span class="per-person">per person</span>
-                        </div>
-                        <a href="#" class="view-details">View Details</a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="tour-card" data-continent="africa" data-country="egypt" data-duration="medium" data-budget="standard" data-aos="fade-up">
-                <div class="tour-image">
-                    <img src="images/egypt.jpg" alt="Egypt Pyramids Tour">
-                </div>
-                <div class="tour-info">
-                    <div class="tour-rating">
-            <span class="stars">
-              <i class="fas fa-star"></i>
-              <i class="fas fa-star"></i>
-              <i class="fas fa-star"></i>
-              <i class="fas fa-star"></i>
-              <i class="far fa-star"></i>
-            </span>
-                        <span class="rating-count">4.3 (145 reviews)</span>
-                    </div>
-                    <h3>Ancient Egypt Explorer</h3>
-                    <p class="tour-location"><i class="fas fa-map-marker-alt"></i> Cairo, Luxor, Aswan</p>
-                    <ul class="tour-features">
-                        <li><i class="fas fa-calendar-alt"></i> 7 days, 6 nights</li>
-                        <li><i class="fas fa-plane"></i> Round-trip flight included</li>
-                        <li><i class="fas fa-hiking"></i> Pyramids, Nile Cruise, Valley of Kings</li>
-                    </ul>
-                    <div class="tour-footer">
-                        <div class="tour-price">
-                            <span class="price">$1,799</span>
-                            <span class="per-person">per person</span>
-                        </div>
-                        <a href="#" class="view-details">View Details</a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- North America Tours -->
-            <div class="tour-card" data-continent="north-america" data-country="usa" data-duration="medium" data-budget="standard" data-aos="fade-up">
-                <div class="tour-image">
-                    <img src="images/newYork.webp" alt="New York City Tour">
-                </div>
-                <div class="tour-info">
-                    <div class="tour-rating">
-            <span class="stars">
-              <i class="fas fa-star"></i>
-              <i class="fas fa-star"></i>
-              <i class="fas fa-star"></i>
-              <i class="fas fa-star"></i>
-              <i class="far fa-star"></i>
-            </span>
-                        <span class="rating-count">4.1 (203 reviews)</span>
-                    </div>
-                    <h3>New York City Explorer</h3>
-                    <p class="tour-location"><i class="fas fa-map-marker-alt"></i> New York, USA</p>
-                    <ul class="tour-features">
-                        <li><i class="fas fa-calendar-alt"></i> 5 days, 4 nights</li>
-                        <li><i class="fas fa-plane"></i> Round-trip flight included</li>
-                        <li><i class="fas fa-hiking"></i> Statue of Liberty, Times Square, Broadway Show</li>
-                    </ul>
-                    <div class="tour-footer">
-                        <div class="tour-price">
-                            <span class="price">$1,699</span>
-                            <span class="per-person">per person</span>
-                        </div>
-                        <a href="#" class="view-details">View Details</a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="tour-card" data-continent="north-america" data-country="canada" data-duration="long" data-budget="standard" data-aos="fade-up">
-                <div class="tour-image">
-                    <img src="images/canada.jpg" alt="Canadian Rockies">
-                </div>
-                <div class="tour-info">
-                    <div class="tour-rating">
-            <span class="stars">
-              <i class="fas fa-star"></i>
-              <i class="fas fa-star"></i>
-              <i class="fas fa-star"></i>
-              <i class="fas fa-star"></i>
-              <i class="fas fa-star-half-alt"></i>
-            </span>
-                        <span class="rating-count">4.6 (112 reviews)</span>
-                    </div>
-                    <h3>Canadian Rockies Adventure</h3>
-                    <p class="tour-location"><i class="fas fa-map-marker-alt"></i> Vancouver, Banff, Jasper</p>
-                    <ul class="tour-features">
-                        <li><i class="fas fa-calendar-alt"></i> 8 days, 7 nights</li>
-                        <li><i class="fas fa-plane"></i> Round-trip flight included</li>
-                        <li><i class="fas fa-hiking"></i> Lake Louise, Moraine Lake, Hiking Trails</li>
-                    </ul>
-                    <div class="tour-footer">
-                        <div class="tour-price">
-                            <span class="price">$2,499</span>
-                            <span class="per-person">per person</span>
-                        </div>
-                        <a href="#" class="view-details">View Details</a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- South America Tours -->
-            <div class="tour-card" data-continent="south-america" data-country="peru" data-duration="long" data-budget="standard" data-aos="fade-up">
-                <div class="tour-image">
-                    <img src="images/lima.jpg" alt="Machu Picchu Tour">
-                    <div class="tour-badge">POPULAR</div>
-                </div>
-                <div class="tour-info">
-                    <div class="tour-rating">
-            <span class="stars">
-              <i class="fas fa-star"></i>
-              <i class="fas fa-star"></i>
-              <i class="fas fa-star"></i>
-              <i class="fas fa-star"></i>
-              <i class="fas fa-star"></i>
-            </span>
-                        <span class="rating-count">4.8 (176 reviews)</span>
-                    </div>
-                    <h3>Inca Trail to Machu Picchu</h3>
-                    <p class="tour-location"><i class="fas fa-map-marker-alt"></i> Lima, Cusco, Machu Picchu</p>
-                    <ul class="tour-features">
-                        <li><i class="fas fa-calendar-alt"></i> 9 days, 8 nights</li>
-                        <li><i class="fas fa-plane"></i> Round-trip flight included</li>
-                        <li><i class="fas fa-hiking"></i> Inca Trail, Sacred Valley, Cusco Exploration</li>
-                    </ul>
-                    <div class="tour-footer">
-                        <div class="tour-price">
-                            <span class="price">$2,299</span>
-                            <span class="per-person">per person</span>
-                        </div>
-                        <a href="#" class="view-details">View Details</a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Australia Tours -->
-            <div class="tour-card" data-continent="australia" data-country="australia" data-duration="long" data-budget="luxury" data-aos="fade-up">
-                <div class="tour-image">
-                    <img src="images/australia.jpeg" alt="Australia Coastal Tour">
-                </div>
-                <div class="tour-info">
-                    <div class="tour-rating">
-            <span class="stars">
-              <i class="fas fa-star"></i>
-              <i class="fas fa-star"></i>
-              <i class="fas fa-star"></i>
-              <i class="fas fa-star"></i>
-              <i class="fas fa-star-half-alt"></i>
-            </span>
-                        <span class="rating-count">4.7 (98 reviews)</span>
-                    </div>
-                    <h3>Australian Coastal Explorer</h3>
-                    <p class="tour-location"><i class="fas fa-map-marker-alt"></i> Sydney, Melbourne, Great Barrier Reef</p>
-                    <ul class="tour-features">
-                        <li><i class="fas fa-calendar-alt"></i> 14 days, 13 nights</li>
-                        <li><i class="fas fa-plane"></i> Round-trip flight included</li>
-                        <li><i class="fas fa-hiking"></i> Sydney Opera House, Great Barrier Reef, Wildlife Tours</li>
-                    </ul>
-                    <div class="tour-footer">
-                        <div class="tour-price">
-                            <span class="price">$4,899</span>
-                            <span class="per-person">per person</span>
-                        </div>
-                        <a href="#" class="view-details">View Details</a>
-                    </div>
-                </div>
-            </div>
+            <?php endif; ?>
         </div>
 
         <!-- No Results Message -->
@@ -468,145 +229,153 @@ $pageTitle = "Home";
             <button id="resetFilters" class="reset-btn">Reset Filters</button>
         </div>
 
-        <!-- Pagination -->
-        <div class="pagination">
-            <button class="page-btn active">1</button>
-            <button class="page-btn">2</button>
-            <button class="page-btn">3</button>
-            <span class="page-dots">...</span>
-            <button class="page-btn">10</button>
-            <button class="page-next">Next <i class="fas fa-chevron-right"></i></button>
-        </div>
+        <!-- Pagination - Only show if there are enough tours -->
+        <?php if (count($tours) > 10): ?>
+            <div class="pagination">
+                <button class="page-btn active">1</button>
+                <button class="page-btn">2</button>
+                <button class="page-btn">3</button>
+                <span class="page-dots">...</span>
+                <button class="page-btn"><?php echo ceil(count($tours) / 10); ?></button>
+                <button class="page-next">Next <i class="fas fa-chevron-right"></i></button>
+            </div>
+        <?php endif; ?>
     </div>
 </section>
 
+<!-- Tour Details Modal -->
+<div id="tourDetailsModal" class="modal-overlay">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="modal-tour-name">Tour Details</h2>
+            <button class="modal-close" id="closeModal">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="details-loading">
+                <div class="spinner"></div>
+                <p>Loading tour details...</p>
+            </div>
 
+            <div class="details-content" style="display: none;">
+                <div class="details-overview">
+                    <div class="details-image">
+                        <img id="modal-tour-image" src="uploadImages/placeholder.jpg" alt="Tour image">
+                    </div>
+                    <div class="details-summary">
+                        <div class="details-rating">
+                            <span class="stars" id="modal-tour-stars"></span>
+                            <span class="rating-count" id="modal-tour-rating">4.5</span>
+                        </div>
+                        <div class="details-price">
+                            <span class="price" id="modal-tour-price">$0.00</span>
+                            <span class="per-person">per person</span>
+                        </div>
+                        <div class="details-duration">
+                            <i class="fas fa-clock"></i>
+                            <span id="modal-tour-duration">0 days, 0 nights</span>
+                        </div>
+                        <a href="#" class="btn btn-primary book-tour-btn" id="bookTourBtn">Book This Tour</a>
+                    </div>
+                </div>
 
+                <div class="details-tabs">
+                    <button class="tab-btn active" data-tab="destination">Destination</button>
+                    <button class="tab-btn" data-tab="flights">Flight Details</button>
+                    <button class="tab-btn" data-tab="hotels">Hotel Details</button>
+                </div>
 
+                <div class="tab-content">
+                    <!-- Destination Tab -->
+                    <div class="tab-pane active" id="destination-tab">
+                        <div class="destination-details">
+                            <h3>Destination Information</h3>
+                            <div class="detail-item">
+                                <span class="detail-label">Continent:</span>
+                                <span class="detail-value" id="modal-continent"></span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Country:</span>
+                                <span class="detail-value" id="modal-country"></span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">City:</span>
+                                <span class="detail-value" id="modal-city"></span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Description:</span>
+                                <span class="detail-value" id="modal-description"></span>
+                            </div>
+                        </div>
+                    </div>
 
+                    <!-- Flights Tab -->
+                    <div class="tab-pane" id="flights-tab">
+                        <div class="flight-details">
+                            <h3>Flight Information</h3>
+                            <div class="detail-item">
+                                <span class="detail-label">Airline/Airport:</span>
+                                <span class="detail-value" id="modal-airport"></span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Departure:</span>
+                                <span class="detail-value" id="modal-flight-time"></span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Origin:</span>
+                                <span class="detail-value" id="modal-flight-begin"></span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Flight Type:</span>
+                                <span class="detail-value" id="modal-flight-type"></span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Flight Date:</span>
+                                <span class="detail-value" id="modal-flight-date"></span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Flight Price:</span>
+                                <span class="detail-value price-highlight" id="modal-flight-price"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Hotels Tab -->
+                    <div class="tab-pane" id="hotels-tab">
+                        <div class="hotel-details">
+                            <h3>Hotel Information</h3>
+                            <div class="detail-item">
+                                <span class="detail-label">Hotel Name:</span>
+                                <span class="detail-value" id="modal-hotel-name"></span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Rating:</span>
+                                <span class="detail-value" id="modal-hotel-stars"></span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Check-in Time:</span>
+                                <span class="detail-value" id="modal-hotel-time"></span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Accommodates:</span>
+                                <span class="detail-value" id="modal-hotel-people"></span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Location:</span>
+                                <span class="detail-value" id="modal-hotel-location"></span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Price per night:</span>
+                                <span class="detail-value price-highlight" id="modal-hotel-price"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 <?php include 'footer.php'; ?>
-
-
-
-
-<script>
-    // Initialize AOS Animation
-    document.addEventListener('DOMContentLoaded', function() {
-        AOS.init({duration:1000, once:true});
-
-        // Toggle menu
-        document.getElementById("hamburger").addEventListener("click", () => {
-            document.getElementById("navLinks").classList.toggle("show");
-        });
-
-        // Fixed header on scroll
-        const mainHeader = document.getElementById("mainHeader");
-        const headerHeight = mainHeader.offsetHeight;
-
-        window.addEventListener("scroll", () => {
-            if (window.scrollY > 100) {
-                mainHeader.classList.add("fixed");
-                document.body.style.paddingTop = headerHeight + "px";
-            } else {
-                mainHeader.classList.remove("fixed");
-                document.body.style.paddingTop = 0;
-            }
-        });
-
-        // Back to Top Button functionality
-        const backToTopBtn = document.createElement('button');
-        backToTopBtn.id = 'backToTop';
-        backToTopBtn.innerHTML = '<i class="fa-solid fa-arrow-up"></i>';
-        document.body.appendChild(backToTopBtn);
-
-        window.addEventListener("scroll", () => {
-            backToTopBtn.style.display = window.scrollY > 300 ? "block" : "none";
-        });
-
-        backToTopBtn.addEventListener("click", () => {
-            window.scrollTo({
-                top: 0,
-                behavior: "smooth"
-            });
-        });
-
-        // Modal functionality
-        const modal = document.getElementById('authModal');
-        const loginBtn = document.getElementById('loginBtn');
-        const closeBtn = document.getElementsByClassName('close')[0];
-
-        // Only attach if elements exist
-        if (loginBtn) {
-            loginBtn.addEventListener('click', function(e) {
-                e.preventDefault();
-                modal.style.display = 'block';
-                document.body.style.overflow = 'hidden'; // Prevent scrolling
-            });
-        }
-
-        if (closeBtn) {
-            closeBtn.addEventListener('click', function() {
-                closeModal();
-            });
-        }
-
-        // Close modal when clicking outside
-        window.addEventListener('click', function(event) {
-            if (event.target == modal) {
-                closeModal();
-            }
-        });
-
-        // Close modal function
-        function closeModal() {
-            if (modal) {
-                modal.style.display = 'none';
-                document.body.style.overflow = ''; // Re-enable scrolling
-            }
-        }
-
-        // Initialize auto-hiding alerts
-        const alerts = document.querySelectorAll('.auth-alert');
-        alerts.forEach(alert => {
-            setTimeout(() => {
-                alert.classList.add('fade-out');
-                setTimeout(() => {
-                    alert.remove();
-                }, 300);
-            }, 5000);
-        });
-    });
-
-    // Tab functionality
-    function openTab(evt, tabName) {
-        // Declare variables
-        let i, tabcontent, tablinks;
-
-        // Get all elements with class="tabcontent" and hide them
-        tabcontent = document.getElementsByClassName("tabcontent");
-        for (i = 0; i < tabcontent.length; i++) {
-            tabcontent[i].classList.remove("active");
-        }
-
-        // Get all elements with class="tablinks" and remove the class "active"
-        tablinks = document.getElementsByClassName("tablinks");
-        for (i = 0; i < tablinks.length; i++) {
-            tablinks[i].classList.remove("active");
-        }
-
-        // Show the current tab, and add an "active" class to the button that opened the tab
-        document.getElementById(tabName).classList.add("active");
-        evt.currentTarget.classList.add("active");
-    }
-</script>
-
-
-
-
-
-
-<!-- Back to Top Button (added via JavaScript) -->
 
 <!-- Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
@@ -614,6 +383,12 @@ $pageTitle = "Home";
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous"></script>
 <script src="js/custom.js"></script>
 <script src="js/tours.js"></script>
+<!-- Add custom JS for tour details modal -->
+<script src="js/tour_details_modal.js"></script>
 
+<?php
+// Close the database connection
+$conn->close();
+?>
 </body>
 </html>
