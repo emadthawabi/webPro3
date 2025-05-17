@@ -1,11 +1,10 @@
 <?php
 if ($_SERVER['REQUEST_METHOD'] === 'POST' &&
-    isset($_POST['tourname'], $_POST['destid'], $_POST['flightid'], $_POST['hotelid'], $_POST['price'], $_POST['rating'], $_POST['duration']) &&
-    !empty($_POST['tourname']) && !empty($_POST['destid']) &&
-    !empty($_POST['flightid']) && !empty($_POST['hotelid']) &&
-    !empty($_POST['price']) && !empty($_POST['rating']) &&
-    !empty($_POST['duration'])) {
+    isset($_POST['tourid'], $_POST['tourname'], $_POST['destid'], $_POST['flightid'],
+        $_POST['hotelid'], $_POST['price'], $_POST['rating'], $_POST['duration']) &&
+    !empty($_POST['tourid'])) {
 
+    $tourid = $_POST['tourid'];
     $tourname = $_POST['tourname'];
     $destid = $_POST['destid'];
     $flightid = $_POST['flightid'];
@@ -24,20 +23,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' &&
         }
 
         // Use prepared statement to prevent SQL injection
-        $stmt = $db->prepare("INSERT INTO tours (tourname, destid, flightid, hotelid, price, rating, duration) VALUES (?, ?, ?, ?, ?, ?, ?)");
-        $stmt->bind_param("siiiidi", $tourname, $destid, $flightid, $hotelid, $price, $rating, $duration);
+        $stmt = $db->prepare("UPDATE tours SET tourname = ?, destid = ?, flightid = ?, hotelid = ?, price = ?, rating = ?, duration = ? WHERE tourid = ?");
+        $stmt->bind_param("siiiidii", $tourname, $destid, $flightid, $hotelid, $price, $rating, $duration, $tourid);
 
         if ($stmt->execute()) {
-            // Get the newly inserted tour ID
-            $newTourId = $db->insert_id;
-
             // Return success message as JSON
             http_response_code(200);
             echo json_encode([
                 'success' => true,
-                'message' => 'Tour added successfully',
-                'newTour' => [
-                    'tourid' => $newTourId,
+                'message' => 'Tour updated successfully',
+                'updatedTour' => [
+                    'tourid' => $tourid,
                     'tourname' => $tourname,
                     'destid' => $destid,
                     'flightid' => $flightid,
@@ -48,13 +44,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' &&
                 ]
             ]);
         } else {
-            throw new Exception("Error adding tour: " . $stmt->error);
+            throw new Exception("Error updating tour: " . $stmt->error);
         }
 
         // Close statement and connection
         $stmt->close();
         $db->close();
-        header("Location:../admin.php ");
 
     } catch (Exception $e) {
         // Return error status and message as JSON

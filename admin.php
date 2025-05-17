@@ -61,17 +61,17 @@ if (!$isLoggedIn) {
             <div class="admin-content">
                 <!-- Tours Tab Content -->
                 <div class="tab-content active" id="tours-content">
-                    <?php include 'components/tours-management.php'; ?>
+                    <?php require 'components/tours-management.php'; ?>
                 </div>
 
                 <!-- Flights Tab Content -->
                 <div class="tab-content" id="flights-content">
-                    <?php include 'components/flights-management.php'; ?>
+                    <?php require 'components/flights-management.php'; ?>
                 </div>
 
                 <!-- Hotels Tab Content -->
                 <div class="tab-content" id="hotels-content">
-                    <?php include 'components/hotels-management.php'; ?>
+                    <?php require 'components/hotels-management.php'; ?>
                 </div>
 
                 <!-- Destinations Tab Content -->
@@ -81,7 +81,7 @@ if (!$isLoggedIn) {
 
                 <!-- Customers Tab Content -->
                 <div class="tab-content" id="customers-content">
-                    <?php include 'components/customers-management.php'; ?>
+                    <?php require 'components/customers-management.php'; ?>
                 </div>
             </div>
         </div>
