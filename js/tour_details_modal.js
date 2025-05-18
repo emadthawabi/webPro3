@@ -116,7 +116,9 @@ document.addEventListener('DOMContentLoaded', function() {
             });
     }
 
-    // Function to populate tour details into the modal
+    // Update this function in your tour_details_modal.js file
+
+// Function to populate tour details into the modal
     function populateTourDetails(data) {
         // Tour data
         document.getElementById('modal-tour-name').textContent = data.tour.name;
@@ -156,6 +158,10 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('modal-hotel-people').textContent = data.hotel.numofpeople + ' people';
         document.getElementById('modal-hotel-location').textContent = data.hotel.location;
         document.getElementById('modal-hotel-price').textContent = '$' + data.hotel.price;
+
+        // Set tour ID on the booking button
+        const bookTourBtn = document.getElementById('bookTourBtn');
+        bookTourBtn.setAttribute('data-tour-id', data.tour.id);
     }
 
     // Helper function to generate star rating HTML
@@ -188,4 +194,143 @@ document.addEventListener('DOMContentLoaded', function() {
         const date = new Date(dateString);
         return date.toLocaleDateString(undefined, options);
     }
+});
+
+
+
+
+// Add this to your existing tour_details_modal.js file
+
+// Function to handle booking a tour
+function bookTour(tourId) {
+    // Create form data with tour ID
+    const formData = new FormData();
+    formData.append('tour_id', tourId);
+
+    // Show loading state on button
+    const bookBtn = document.getElementById('bookTourBtn');
+    const originalBtnText = bookBtn.textContent;
+    bookBtn.textContent = 'Processing...';
+    bookBtn.disabled = true;
+
+    // Send AJAX request to book tour
+    fetch('book_tour.php', {
+        method: 'POST',
+        body: formData
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Show success message
+                showBookingMessage('success', 'Your tour has been booked successfully!');
+
+                // You could add a link to view bookings or other actions here
+                setTimeout(() => {
+                    window.location.href = 'my_bookings.php';
+                }, 2000);
+            } else {
+                // Handle specific error cases
+                if (data.message === 'not_logged_in') {
+                    showLoginModal(tourId);
+                } else {
+                    // Show error message for other errors
+                    showBookingMessage('error', 'There was a problem booking your tour: ' + data.message);
+                }
+            }
+        })
+        .catch(error => {
+            showBookingMessage('error', 'There was a server error. Please try again later.');
+            console.error('Error:', error);
+        })
+        .finally(() => {
+            // Reset button state
+            bookBtn.textContent = originalBtnText;
+            bookBtn.disabled = false;
+        });
+}
+
+// Display booking messages in the modal
+function showBookingMessage(type, message) {
+    // Create message element
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `booking-message ${type}`;
+    messageDiv.innerHTML = `
+        <div class="message-icon">
+            ${type === 'success'
+        ? '<i class="fas fa-check-circle"></i>'
+        : '<i class="fas fa-exclamation-circle"></i>'}
+        </div>
+        <div class="message-text">${message}</div>
+    `;
+
+    // Add to the modal body
+    const modalBody = document.querySelector('.details-summary');
+    modalBody.appendChild(messageDiv);
+
+    // Auto-remove after 5 seconds
+    setTimeout(() => {
+        messageDiv.classList.add('fadeOut');
+        setTimeout(() => {
+            messageDiv.remove();
+        }, 500);
+    }, 5000);
+}
+
+// Show login modal when user is not logged in
+function showLoginModal(tourId) {
+    // Hide the tour details modal
+    document.getElementById('tourDetailsModal').style.display = 'none';
+
+    // Store the tour ID in session storage to retrieve after login
+    sessionStorage.setItem('pendingBookTourId', tourId);
+
+    // Show the existing auth modal with login tab active
+    const authModal = document.getElementById('authModal');
+    authModal.style.display = 'block';
+    document.body.style.overflow = 'hidden';
+
+    // Make sure login tab is active
+    const loginTab = document.querySelector('.tablinks[onclick*="login"]');
+    if (loginTab) {
+        // Trigger the click event on the login tab
+        const event = new Event('click');
+        loginTab.dispatchEvent(event);
+
+        // Add custom message to login form
+        const loginForm = document.getElementById('login');
+        if (loginForm) {
+            // Check if we already added a message
+            let messageElement = document.getElementById('login-booking-message');
+            if (!messageElement) {
+                messageElement = document.createElement('div');
+                messageElement.id = 'login-booking-message';
+                messageElement.className = 'auth-alert info';
+                messageElement.innerHTML = 'Please log in to book your tour';
+
+                // Insert after the heading
+                const heading = loginForm.querySelector('h2');
+                if (heading && heading.nextSibling) {
+                    loginForm.insertBefore(messageElement, heading.nextSibling);
+                } else {
+                    loginForm.prepend(messageElement);
+                }
+            }
+        }
+    }
+}
+
+// Update the document ready function to include the booking functionality
+document.addEventListener('DOMContentLoaded', function() {
+    // ... existing code ...
+
+    // Modify the book tour button event listener
+    document.getElementById('bookTourBtn').addEventListener('click', function(e) {
+        e.preventDefault();
+
+        // Get the current tour ID from the modal
+        const tourId = this.getAttribute('data-tour-id');
+
+        // Call booking function
+        bookTour(tourId);
+    });
 });
