@@ -182,15 +182,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                     price: '€16',
                                     details: 'The Colosseum is an oval amphitheatre in the centre of the city of Rome, Italy. It is the largest ancient amphitheatre ever built, and is still the largest standing amphitheatre in the world today, despite its age. Construction began under the emperor Vespasian (r. 69–79 AD) in 72 and was completed in 80 AD under his successor and heir, Titus. The Colosseum could hold an estimated 50,000 to 80,000 spectators and was used for gladiatorial contests and public spectacles.'
                                 },
-                                {
-                                    name: 'Vatican Museums',
-                                    description: 'Museums displaying works from the extensive collection of the Catholic Church.',
-                                    image: 'https://images.pexels.com/photos/142931/pexels-photo-142931.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-                                    category: 'Museum',
-                                    rating: 4.7,
-                                    price: '€17',
-                                    details: 'The Vatican Museums (Italian: Musei Vaticani) are the public art and sculpture museums in the Vatican City. They display works from the immense collection amassed by the Catholic Church and the papacy throughout the centuries, including several of the most renowned Roman sculptures and most important masterpieces of Renaissance art in the world. The museums contain roughly 70,000 works, of which 20,000 are on display, and currently employ 640 people who work in 40 different administrative, scholarly, and restoration departments.'
-                                },
+
                                 {
                                     name: 'Trevi Fountain',
                                     description: 'Baroque fountain designed by Italian architect Nicola Salvi.',
