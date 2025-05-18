@@ -237,3 +237,103 @@
         margin-bottom: 5px;
     }
 }
+
+
+
+/* Booking Messages */
+.booking-message {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    border-radius: 8px;
+    margin-top: 20px;
+    animation: fadeIn 0.3s ease;
+    transition: opacity 0.5s ease;
+}
+
+.booking-message.success {
+    background-color: rgba(70, 201, 58, 0.1);
+    border: 1px solid #46c93a;
+    color: #2a7b23;
+}
+
+.booking-message.error {
+    background-color: rgba(255, 76, 76, 0.1);
+    border: 1px solid #ff4c4c;
+    color: #c72c2c;
+}
+
+.message-icon {
+    font-size: 1.5rem;
+    margin-right: 15px;
+}
+
+.message-text {
+    font-size: 0.95rem;
+    line-height: 1.4;
+}
+
+.booking-message.fadeOut {
+    opacity: 0;
+}
+
+/* Login Modal */
+.login-modal {
+    max-width: 500px;
+}
+
+.login-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-top: 25px;
+}
+
+.login-actions .btn {
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-weight: 500;
+    text-decoration: none;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s;
+    flex: 1;
+    min-width: 120px;
+}
+
+.btn-primary {
+    background-color: var(--primary);
+    color: white;
+    border: none;
+}
+
+.btn-primary:hover {
+    background-color: #35a882;
+}
+
+.btn-secondary {
+    background-color: #f9f9f9;
+    color: var(--dark);
+    border: 1px solid #ddd;
+}
+
+.btn-secondary:hover {
+    background-color: #f0f0f0;
+}
+
+.btn-tertiary {
+    background: none;
+    border: none;
+    color: var(--text);
+    text-decoration: underline;
+}
+
+.btn-tertiary:hover {
+    color: var(--primary);
+}
+
+@media (max-width: 480px) {
+    .login-actions {
+        flex-direction: column;
+    }
+}

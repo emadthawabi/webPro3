@@ -37,48 +37,36 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = $_POST['loginEmail'];
     $password = $_POST['loginPassword'];
 
-    // Prepare SQL statement to prevent SQL injection
-    $stmt = $conn->prepare("SELECT customerid, username, email, password FROM customer WHERE email = ?");
-    $stmt->bind_param("s", $email);
+    // Modified query: Get all records with this email and password
+    $stmt = $conn->prepare("SELECT customerid, username, email, password FROM customer WHERE email = ? AND password = ?");
+    $stmt->bind_param("ss", $email, $password);
     $stmt->execute();
     $result = $stmt->get_result();
 
-    if ($result->num_rows == 1) {
+    if ($result->num_rows > 0) {
+        // Get the first matching record (they all have the same user info)
         $row = $result->fetch_assoc();
 
-        // Verify password (assuming plain text for now, should use password_hash/verify in production)
-        if ($password == $row['password']) {
-            // Password is correct, set session variables
-            $_SESSION['loggedin'] = true;
-            $_SESSION['customerid'] = $row['customerid'];
-            $_SESSION['username'] = $row['username'];
-            $_SESSION['email'] = $row['email'];
+        // Password is correct, set session variables
+        $_SESSION['loggedin'] = true;
+        $_SESSION['customerid'] = $row['customerid'];
+        $_SESSION['username'] = $row['username'];
+        $_SESSION['email'] = $row['email'];
 
-            // Check if this is an admin user
-            if ($email == "emad@gmail.com" && $password == "1234" ||
-                $email == "yousef@gmail.com" && $password == "1212") {
-                $_SESSION['is_admin'] = true;
-            } else {
-                $_SESSION['is_admin'] = false;
-            }
-
-            // Redirect to the page they were on
-            $redirect_page = isset($_SESSION['referer_page']) ? $_SESSION['referer_page'] : 'index.php';
-            header("Location: " . $redirect_page);
-            exit();
+        // Check if this is an admin user
+        if ($email == "emad@gmail.com" && $password == "1234" ||
+            $email == "yousef@gmail.com" && $password == "1212") {
+            $_SESSION['is_admin'] = true;
         } else {
-            // Invalid password
-            $_SESSION['login_error'] = "Invalid email or password!!";
-            $_SESSION['show_auth_modal'] = true; // Show modal with error message
-            $_SESSION['active_tab'] = 'login'; // Make sure login tab is active
-
-            // Redirect back to the page they were on
-            $redirect_page = isset($_SESSION['referer_page']) ? $_SESSION['referer_page'] : 'index.php';
-            header("Location: " . $redirect_page);
-            exit();
+            $_SESSION['is_admin'] = false;
         }
+
+        // Redirect to the page they were on
+        $redirect_page = isset($_SESSION['referer_page']) ? $_SESSION['referer_page'] : 'index.php';
+        header("Location: " . $redirect_page);
+        exit();
     } else {
-        // Email not found
+        // No matches found
         $_SESSION['login_error'] = "Invalid email or password!!";
         $_SESSION['show_auth_modal'] = true; // Show modal with error message
         $_SESSION['active_tab'] = 'login'; // Make sure login tab is active

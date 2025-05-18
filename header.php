@@ -44,7 +44,7 @@ if (session_status() === PHP_SESSION_NONE) {
                     </div>
                     <div class="user-menu-content">
                         <a href="profile.php">My Profile</a>
-<!--                        <a href="my-bookings.php">My Bookings</a>-->
+                        <a href="my_bookings.php">My Bookings</a>
                         <a href="logout.php">Logout</a>
                     </div>
                 </li>

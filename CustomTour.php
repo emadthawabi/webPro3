@@ -36,10 +36,10 @@ $pageTitle = "CustomTour";
           <div class="step-icon"><i class="fas fa-map-marker-alt"></i></div>
           <div class="step-text">Destination</div>
         </div>
-        <div class="step" data-step="dates">
-          <div class="step-icon"><i class="fas fa-calendar-alt"></i></div>
-          <div class="step-text">Dates</div>
-        </div>
+<!--        <div class="step" data-step="dates">-->
+<!--          <div class="step-icon"><i class="fas fa-calendar-alt"></i></div>-->
+<!--          <div class="step-text">Dates</div>-->
+<!--        </div>-->
         <div class="step" data-step="flights">
           <div class="step-icon"><i class="fas fa-plane"></i></div>
           <div class="step-text">Flights</div>
@@ -48,10 +48,10 @@ $pageTitle = "CustomTour";
           <div class="step-icon"><i class="fas fa-hotel"></i></div>
           <div class="step-text">Hotels</div>
         </div>
-        <div class="step" data-step="activities">
-          <div class="step-icon"><i class="fas fa-hiking"></i></div>
-          <div class="step-text">Activities</div>
-        </div>
+<!--        <div class="step" data-step="activities">-->
+<!--          <div class="step-icon"><i class="fas fa-hiking"></i></div>-->
+<!--          <div class="step-text">Activities</div>-->
+<!--        </div>-->
         <div class="step" data-step="review">
           <div class="step-icon"><i class="fas fa-check-circle"></i></div>
           <div class="step-text">Review</div>
@@ -91,8 +91,8 @@ $pageTitle = "CustomTour";
             </div>
 
             <div class="filter-group search-group">
-              <label>Search Destinations</label>
-              <input type="text" id="destinationSearch" placeholder="Search cities or places...">
+              <label>Search city</label>
+              <input type="text" id="destinationSearch" placeholder="Search cities...">
             </div>
           </div>
         </div>
@@ -349,7 +349,7 @@ $pageTitle = "CustomTour";
             </div>
           </div>
 
-          <!-- Return Flights -->
+           Return Flights
           <div class="flight-section">
             <h3>Return Flights</h3>
             <div class="flight-filters">

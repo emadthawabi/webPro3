@@ -390,5 +390,48 @@ $pageTitle = "Tours";
 // Close the database connection
 $conn->close();
 ?>
+
+
+// Add this script to your tours.php page, right before the closing </body> tag
+<script>
+    // Check if user just logged in and there's a pending tour booking
+    document.addEventListener('DOMContentLoaded', function() {
+        // Check if user is logged in and there's a pending booking
+        <?php if(isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true): ?>
+        const pendingTourId = sessionStorage.getItem('pendingBookTourId');
+        if (pendingTourId) {
+            // Clear the pending tour ID
+            sessionStorage.removeItem('pendingBookTourId');
+
+            // Show confirmation to user
+            if (confirm('Would you like to book the tour you were viewing?')) {
+                // Create form data with tour ID
+                const formData = new FormData();
+                formData.append('tour_id', pendingTourId);
+
+                // Send AJAX request to book tour
+                fetch('book_tour.php', {
+                    method: 'POST',
+                    body: formData
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert('Your tour has been booked successfully!');
+                            // Redirect to bookings page
+                            window.location.href = 'my_bookings.php';
+                        } else {
+                            alert('There was a problem booking your tour: ' + data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('There was a server error. Please try again later.');
+                    });
+            }
+        }
+        <?php endif; ?>
+    });
+</script>
 </body>
 </html>
