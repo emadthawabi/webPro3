@@ -1,3 +1,4 @@
+// custom-tour-modified.js
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize AOS animation library
     AOS.init({
@@ -11,9 +12,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Initialize tour builder
     initTourBuilder();
-
-    // Set minimum date for date inputs to today
-    setMinDateToday();
 });
 
 function addBackToTopButton() {
@@ -44,52 +42,26 @@ function addBackToTopButton() {
     });
 }
 
-function setMinDateToday() {
-    // Set minimum date for departure and return date inputs
-    const today = new Date().toISOString().split('T')[0];
-    document.getElementById('departureDate').min = today;
-    document.getElementById('returnDate').min = today;
-}
+// Global variable to store tour selections
+const tourSelections = {
+    destination: null,
+    flights: null,
+    hotel: null
+};
 
 function initTourBuilder() {
-    // Variables to track the current step and validation status
+    // Variables to track the current step
     let currentStep = 'destination';
-    const tourSelections = {
-        destination: null,
-        dates: {
-            departure: null,
-            return: null,
-            travelers: {
-                adults: 2,
-                children: 0,
-                infants: 0
-            }
-        },
-        flights: {
-            outbound: null,
-            return: null
-        },
-        hotel: null,
-        activities: []
-    };
-
-    // Initialize country select options based on continent selection
-    initDestinationFilters();
 
     // Initialize destination selection
+    initDestinationFilters();
     initDestinationSelection();
-
-    // Initialize dates step
-    initDatesStep();
 
     // Initialize flights step
     initFlightsStep();
 
     // Initialize hotels step
     initHotelsStep();
-
-    // Initialize activities step
-    initActivitiesStep();
 
     // Initialize review step
     initReviewStep();
@@ -102,15 +74,24 @@ function initTourBuilder() {
         const countrySelect = document.getElementById('countrySelect');
         const searchInput = document.getElementById('destinationSearch');
 
-        // Country options by continent
-        const countryOptions = {
-            'europe': ['France', 'Italy', 'Spain', 'Greece', 'Germany', 'UK'],
-            'asia': ['Japan', 'Thailand', 'Indonesia', 'Vietnam', 'India', 'China'],
-            'africa': ['South Africa', 'Morocco', 'Egypt', 'Kenya', 'Tanzania'],
-            'north-america': ['USA', 'Canada', 'Mexico', 'Costa Rica'],
-            'south-america': ['Brazil', 'Peru', 'Argentina', 'Colombia', 'Chile'],
-            'australia': ['Australia', 'New Zealand', 'Fiji', 'Samoa']
-        };
+        // Get all destination cards
+        const destinationCards = document.querySelectorAll('.destination-card');
+
+        // Extract unique countries by continent
+        const countriesByContinent = {};
+
+        destinationCards.forEach(card => {
+            const continent = card.dataset.continent;
+            const country = card.dataset.country;
+
+            if (!countriesByContinent[continent]) {
+                countriesByContinent[continent] = [];
+            }
+
+            if (!countriesByContinent[continent].includes(country)) {
+                countriesByContinent[continent].push(country);
+            }
+        });
 
         // Update country options when continent changes
         continentSelect.addEventListener('change', function() {
@@ -119,15 +100,18 @@ function initTourBuilder() {
             // Reset country select
             countrySelect.innerHTML = '<option value="">Select Country</option>';
 
-            if (selectedContinent) {
+            if (selectedContinent && countriesByContinent[selectedContinent]) {
                 // Enable country select
                 countrySelect.disabled = false;
 
+                // Sort countries alphabetically
+                const countries = countriesByContinent[selectedContinent].sort();
+
                 // Add country options for selected continent
-                countryOptions[selectedContinent].forEach(country => {
+                countries.forEach(country => {
                     const option = document.createElement('option');
-                    option.value = country.toLowerCase().replace(' ', '-');
-                    option.textContent = country;
+                    option.value = country;
+                    option.textContent = country.charAt(0).toUpperCase() + country.slice(1);
                     countrySelect.appendChild(option);
                 });
 
@@ -195,194 +179,128 @@ function initTourBuilder() {
 
                 // Store selected destination
                 const destinationName = this.querySelector('h3').textContent;
-                const destinationCountry = this.querySelector('p').textContent.split(',')[0].trim().replace('France', 'France'); // Extract country name
+                const destinationCountry = this.querySelector('p').textContent.split(',')[0].trim();
+                const destinationContinent = this.querySelector('p').textContent.split(',')[1].trim();
+                const destinationId = this.dataset.destid;
 
                 tourSelections.destination = {
                     name: destinationName,
                     country: destinationCountry,
-                    continent: this.dataset.continent
+                    continent: destinationContinent,
+                    id: destinationId
                 };
 
                 // Enable next button
                 nextBtn.disabled = false;
+
+                // Filter flights and hotels to match the selected destination
+                filterFlightsByDestination(destinationId);
+                filterHotelsByDestination(destinationId);
             });
         });
     }
 
-    function initDatesStep() {
-        const departureDate = document.getElementById('departureDate');
-        const returnDate = document.getElementById('returnDate');
-        const adultCount = document.getElementById('adultCount');
-        const childCount = document.getElementById('childCount');
-        const infantCount = document.getElementById('infantCount');
-        const nextBtn = document.getElementById('datesNextBtn');
+    function filterFlightsByDestination(destId) {
+        const flightCards = document.querySelectorAll('.flight-card');
+        let visibleCount = 0;
 
-        // Function to validate dates step
-        function validateDatesStep() {
-            const departureDateValue = departureDate.value;
-            const returnDateValue = returnDate.value;
-
-            if (departureDateValue && returnDateValue) {
-                const departureTimestamp = new Date(departureDateValue).getTime();
-                const returnTimestamp = new Date(returnDateValue).getTime();
-
-                // Check if return date is after departure date
-                if (returnTimestamp > departureTimestamp) {
-                    nextBtn.disabled = false;
-                    return true;
-                } else {
-                    nextBtn.disabled = true;
-                    return false;
-                }
+        flightCards.forEach(card => {
+            if (card.dataset.destid === destId) {
+                card.style.display = 'flex';
+                visibleCount++;
             } else {
-                nextBtn.disabled = true;
-                return false;
+                card.style.display = 'none';
             }
+        });
+
+        // Show no flights message if needed
+        const noFlightsMessage = document.querySelector('.flight-cards .no-flights-message') ||
+            document.createElement('div');
+
+        if (visibleCount === 0) {
+            if (!document.querySelector('.flight-cards .no-flights-message')) {
+                noFlightsMessage.className = 'no-flights-message';
+                noFlightsMessage.innerHTML = '<p>No flights are currently available for this destination. Please try a different destination.</p>';
+                document.getElementById('flights').appendChild(noFlightsMessage);
+            }
+        } else if (document.querySelector('.flight-cards .no-flights-message')) {
+            document.querySelector('.flight-cards .no-flights-message').remove();
         }
+    }
 
-        // Update tour selections when dates change
-        departureDate.addEventListener('change', function() {
-            if (this.value) {
-                tourSelections.dates.departure = this.value;
+    function filterHotelsByDestination(destId) {
+        const hotelCards = document.querySelectorAll('.hotel-card');
+        let visibleCount = 0;
 
-                // Update return date minimum to be the departure date
-                returnDate.min = this.value;
-
-                // If return date is before departure date, clear it
-                if (returnDate.value && new Date(returnDate.value) < new Date(this.value)) {
-                    returnDate.value = '';
-                    tourSelections.dates.return = null;
-                }
+        hotelCards.forEach(card => {
+            if (card.dataset.destid === destId) {
+                card.style.display = 'block';
+                visibleCount++;
             } else {
-                tourSelections.dates.departure = null;
+                card.style.display = 'none';
             }
-
-            validateDatesStep();
         });
 
-        returnDate.addEventListener('change', function() {
-            tourSelections.dates.return = this.value || null;
-            validateDatesStep();
-        });
+        // Show no hotels message if needed
+        const noHotelsMessage = document.querySelector('.hotel-cards .no-hotels-message') ||
+            document.createElement('div');
 
-        // Handle traveler count adjustments
-        const decreaseBtns = document.querySelectorAll('.decrease-btn');
-        const increaseBtns = document.querySelectorAll('.increase-btn');
-
-        decreaseBtns.forEach(btn => {
-            btn.addEventListener('click', function() {
-                const input = this.parentElement.querySelector('input');
-                const currentValue = parseInt(input.value);
-
-                if (currentValue > parseInt(input.min)) {
-                    input.value = currentValue - 1;
-
-                    // Update tour selections
-                    if (input.id === 'adultCount') {
-                        tourSelections.dates.travelers.adults = parseInt(input.value);
-                    } else if (input.id === 'childCount') {
-                        tourSelections.dates.travelers.children = parseInt(input.value);
-                    } else if (input.id === 'infantCount') {
-                        tourSelections.dates.travelers.infants = parseInt(input.value);
-                    }
-                }
-            });
-        });
-
-        increaseBtns.forEach(btn => {
-            btn.addEventListener('click', function() {
-                const input = this.parentElement.querySelector('input');
-                const currentValue = parseInt(input.value);
-
-                if (currentValue < parseInt(input.max)) {
-                    input.value = currentValue + 1;
-
-                    // Update tour selections
-                    if (input.id === 'adultCount') {
-                        tourSelections.dates.travelers.adults = parseInt(input.value);
-                    } else if (input.id === 'childCount') {
-                        tourSelections.dates.travelers.children = parseInt(input.value);
-                    } else if (input.id === 'infantCount') {
-                        tourSelections.dates.travelers.infants = parseInt(input.value);
-                    }
-                }
-            });
-        });
-
-        // Handle direct input of traveler counts
-        [adultCount, childCount, infantCount].forEach(input => {
-            input.addEventListener('change', function() {
-                // Ensure value is within min/max range
-                const value = parseInt(this.value);
-                const min = parseInt(this.min);
-                const max = parseInt(this.max);
-
-                if (value < min) {
-                    this.value = min;
-                } else if (value > max) {
-                    this.value = max;
-                }
-
-                // Update tour selections
-                if (this.id === 'adultCount') {
-                    tourSelections.dates.travelers.adults = parseInt(this.value);
-                } else if (this.id === 'childCount') {
-                    tourSelections.dates.travelers.children = parseInt(this.value);
-                } else if (this.id === 'infantCount') {
-                    tourSelections.dates.travelers.infants = parseInt(this.value);
-                }
-            });
-        });
+        if (visibleCount === 0) {
+            if (!document.querySelector('.hotel-cards .no-hotels-message')) {
+                noHotelsMessage.className = 'no-hotels-message';
+                noHotelsMessage.innerHTML = '<p>No hotels are currently available for this destination. Please try a different destination.</p>';
+                document.getElementById('hotelList').appendChild(noHotelsMessage);
+            }
+        } else if (document.querySelector('.hotel-cards .no-hotels-message')) {
+            document.querySelector('.hotel-cards .no-hotels-message').remove();
+        }
     }
 
     function initFlightsStep() {
-        const outboundFlights = document.querySelectorAll('#outboundFlights .flight-card');
-        const returnFlights = document.querySelectorAll('#returnFlights .flight-card');
+        const flightCards = document.querySelectorAll('.flight-card');
         const nextBtn = document.getElementById('flightsNextBtn');
 
         // Disable next button initially
         nextBtn.disabled = true;
 
-        // Handle flight selection for outbound flights
-        outboundFlights.forEach(flight => {
+        // Handle flight selection
+        flightCards.forEach(flight => {
             const selectBtn = flight.querySelector('.select-btn');
 
             selectBtn.addEventListener('click', function() {
-                // Remove selected class from all outbound flights
-                outboundFlights.forEach(f => f.classList.remove('selected'));
+                // Remove selected class from all flights
+                flightCards.forEach(f => f.classList.remove('selected'));
 
                 // Add selected class to clicked flight
                 flight.classList.add('selected');
 
-                // Store selected outbound flight
+                // Store selected flight
                 const airline = flight.querySelector('.flight-airline span').textContent;
                 const departureTime = flight.querySelector('.departure .time').textContent;
                 const departureAirport = flight.querySelector('.departure .airport').textContent;
                 const arrivalTime = flight.querySelector('.arrival .time').textContent;
                 const arrivalAirport = flight.querySelector('.arrival .airport').textContent;
-                const duration = flight.querySelector('.duration').textContent;
+                const flightId = flight.dataset.flightid;
                 const price = flight.querySelector('.price').textContent;
 
-                tourSelections.flights.outbound = {
+                tourSelections.flights = {
                     airline,
                     departureTime,
                     departureAirport,
                     arrivalTime,
                     arrivalAirport,
-                    duration,
-                    price
+                    price,
+                    id: flightId
                 };
 
-                // Enable next button if both flights are selected
-                if (tourSelections.flights.outbound && tourSelections.flights.return) {
-                    nextBtn.disabled = false;
-                }
+                // Enable next button
+                nextBtn.disabled = false;
 
                 // Change button text
                 this.textContent = 'Selected';
 
                 // Reset text for other buttons
-                outboundFlights.forEach(f => {
+                flightCards.forEach(f => {
                     if (f !== flight) {
                         f.querySelector('.select-btn').textContent = 'Select';
                     }
@@ -390,82 +308,70 @@ function initTourBuilder() {
             });
         });
 
-        // Handle flight selection for return flights
-        returnFlights.forEach(flight => {
-            const selectBtn = flight.querySelector('.select-btn');
-
-            selectBtn.addEventListener('click', function() {
-
-                // Remove selected class from all return flights
-                returnFlights.forEach(f => f.classList.remove('selected'));
-
-                // Add selected class to clicked flight
-                flight.classList.add('selected');
-
-                // Store selected return flight
-                const airline = flight.querySelector('.flight-airline span').textContent;
-                const departureTime = flight.querySelector('.departure .time').textContent;
-                const departureAirport = flight.querySelector('.departure .airport').textContent;
-                const arrivalTime = flight.querySelector('.arrival .time').textContent;
-                const arrivalAirport = flight.querySelector('.arrival .airport').textContent;
-                const duration = flight.querySelector('.duration').textContent;
-                const price = flight.querySelector('.price').textContent;
-
-                tourSelections.flights.return = {
-                    airline,
-                    departureTime,
-                    departureAirport,
-                    arrivalTime,
-                    arrivalAirport,
-                    duration,
-                    price
-                };
-
-                // Enable next button if both flights are selected
-                if (tourSelections.flights.outbound && tourSelections.flights.return) {
-                    nextBtn.disabled = false;
-                }
-
-                // Change button text
-                this.textContent = 'Selected';
-
-                // Reset text for other buttons
-                returnFlights.forEach(f => {
-                    if (f !== flight) {
-                        f.querySelector('.select-btn').textContent = 'Select';
-                    }
-                });
-            });
-        });
-
-        // Handle flight filtering and sorting
+        // Handle flight filtering (direct flights only)
         const directFlightsOnly = document.getElementById('directFlightsOnly');
-        const directFlightsOnlyReturn = document.getElementById('directFlightsOnlyReturn');
-        const flightSortOutbound = document.getElementById('flightSortOutbound');
-        const flightSortReturn = document.getElementById('flightSortReturn');
+        if (directFlightsOnly) {
+            directFlightsOnly.addEventListener('change', function() {
+                // In this implementation, all flights are already direct, so this is a placeholder
+                console.log('Filter flights: direct only =', this.checked);
+            });
+        }
 
-        // Filter flights based on direct/non-direct
-        directFlightsOnly.addEventListener('change', function() {
-            // For demo purposes - in a real implementation, we would filter the flights
-            // based on the 'stops' information
-            console.log('Filter outbound flights: direct only =', this.checked);
+        // Handle flight sorting
+        const flightSort = document.getElementById('flightSort');
+        if (flightSort) {
+            flightSort.addEventListener('change', function() {
+                // For demo purposes
+                console.log('Sort flights by:', this.value);
+
+                // Get all visible flight cards
+                const visibleFlights = Array.from(document.querySelectorAll('.flight-card'))
+                    .filter(card => card.style.display !== 'none');
+
+                // Sort flights based on selected criteria
+                if (this.value === 'price') {
+                    sortFlightsByPrice(visibleFlights);
+                } else if (this.value === 'time') {
+                    sortFlightsByTime(visibleFlights);
+                }
+            });
+        }
+    }
+
+    function sortFlightsByPrice(flightCards) {
+        const flightsContainer = document.getElementById('flights');
+
+        // Sort flight cards by price
+        flightCards.sort((a, b) => {
+            const priceA = parseFloat(a.querySelector('.price').textContent.replace(/[^0-9.]/g, ''));
+            const priceB = parseFloat(b.querySelector('.price').textContent.replace(/[^0-9.]/g, ''));
+            return priceA - priceB;
         });
 
-        directFlightsOnlyReturn.addEventListener('change', function() {
-            // For demo purposes
-            console.log('Filter return flights: direct only =', this.checked);
+        // Remove all cards
+        flightCards.forEach(card => card.remove());
+
+        // Re-append in sorted order
+        flightCards.forEach(card => flightsContainer.appendChild(card));
+    }
+
+    function sortFlightsByTime(flightCards) {
+        const flightsContainer = document.getElementById('flights');
+
+        // Sort flight cards by departure time
+        flightCards.sort((a, b) => {
+            // For simplicity, just use the text comparison - in a real application,
+            // you'd want to parse the time properly
+            const timeA = a.querySelector('.departure .time').textContent;
+            const timeB = b.querySelector('.departure .time').textContent;
+            return timeA.localeCompare(timeB);
         });
 
-        // Sort flights based on selected criteria
-        flightSortOutbound.addEventListener('change', function() {
-            // For demo purposes
-            console.log('Sort outbound flights by:', this.value);
-        });
+        // Remove all cards
+        flightCards.forEach(card => card.remove());
 
-        flightSortReturn.addEventListener('change', function() {
-            // For demo purposes
-            console.log('Sort return flights by:', this.value);
-        });
+        // Re-append in sorted order
+        flightCards.forEach(card => flightsContainer.appendChild(card));
     }
 
     function initHotelsStep() {
@@ -489,6 +395,7 @@ function initTourBuilder() {
                 // Store selected hotel
                 const hotelName = hotel.querySelector('h3').textContent;
                 const location = hotel.querySelector('.hotel-location').textContent;
+                const hotelId = hotel.dataset.hotelid;
 
                 // Get hotel rating (count stars)
                 let rating = 0;
@@ -508,7 +415,8 @@ function initTourBuilder() {
                     location,
                     rating,
                     price,
-                    amenities
+                    amenities,
+                    id: hotelId
                 };
 
                 // Enable next button
@@ -526,138 +434,49 @@ function initTourBuilder() {
             });
         });
 
-        // Hotel filtering (for demo purposes)
+        // Hotel filtering
         const hotelPriceFilter = document.getElementById('hotelPriceFilter');
         const hotelStarFilter = document.getElementById('hotelStarFilter');
-        const amenityCheckboxes = document.querySelectorAll('.amenity-checkbox input');
 
-        hotelPriceFilter.addEventListener('change', function() {
-            // For demo purposes
-            console.log('Filter hotels by price:', this.value);
-        });
+        // Add event listeners for hotel filters
+        if (hotelPriceFilter) {
+            hotelPriceFilter.addEventListener('change', filterHotels);
+        }
 
-        hotelStarFilter.addEventListener('change', function() {
-            // For demo purposes
-            console.log('Filter hotels by stars:', this.value);
-        });
+        if (hotelStarFilter) {
+            hotelStarFilter.addEventListener('change', filterHotels);
+        }
 
-        amenityCheckboxes.forEach(checkbox => {
-            checkbox.addEventListener('change', function() {
-                // For demo purposes - collect all checked amenities
-                const selectedAmenities = [];
-                amenityCheckboxes.forEach(cb => {
-                    if (cb.checked) {
-                        selectedAmenities.push(cb.value);
-                    }
-                });
+        function filterHotels() {
+            const priceFilter = hotelPriceFilter.value;
+            const starFilter = parseInt(hotelStarFilter.value) || 0;
 
-                console.log('Filter hotels by amenities:', selectedAmenities);
-            });
-        });
-    }
+            // Apply filters to visible hotels only (those matching the destination)
+            const visibleHotels = Array.from(document.querySelectorAll('.hotel-card'))
+                .filter(card => card.style.display !== 'none');
 
-    function initActivitiesStep() {
-        const activityCards = document.querySelectorAll('.activity-card');
-        const selectedActivitiesList = document.getElementById('selectedActivitiesList');
-        const noActivitiesMessage = document.querySelector('.no-activities-message');
+            visibleHotels.forEach(hotel => {
+                const price = parseFloat(hotel.querySelector('.price').textContent.replace(/[^0-9.]/g, ''));
+                const stars = hotel.querySelectorAll('.hotel-rating .fas.fa-star').length;
 
-        // Handle activity selection
-        activityCards.forEach(activity => {
-            const addBtn = activity.querySelector('.select-activity');
+                let matchesPrice = true;
+                if (priceFilter === 'budget') {
+                    matchesPrice = price < 100;
+                } else if (priceFilter === 'moderate') {
+                    matchesPrice = price >= 100 && price <= 200;
+                } else if (priceFilter === 'luxury') {
+                    matchesPrice = price > 200;
+                }
 
-            addBtn.addEventListener('click', function() {
-                const activityName = activity.querySelector('h3').textContent;
-                const activityPrice = activity.querySelector('.activity-price-select .price').textContent;
-                const activityDuration = activity.querySelector('.activity-meta span:first-child').textContent;
+                const matchesStars = stars >= starFilter;
 
-                // Check if activity is already selected
-                const isAlreadySelected = tourSelections.activities.some(act => act.name === activityName);
-
-                if (isAlreadySelected) {
-                    // Remove activity from selections
-                    tourSelections.activities = tourSelections.activities.filter(act => act.name !== activityName);
-
-                    // Remove activity from selected activities list
-                    const activityItemToRemove = document.querySelector(`.selected-activity-item[data-activity="${activityName}"]`);
-                    if (activityItemToRemove) {
-                        selectedActivitiesList.removeChild(activityItemToRemove);
-                    }
-
-                    // Update button text and class
-                    this.textContent = 'Add';
-                    this.classList.remove('added');
-                    this.innerHTML = '<i class="fas fa-plus"></i> Add';
-
-                    // Show "No activities" message if no activities are selected
-                    if (tourSelections.activities.length === 0) {
-                        noActivitiesMessage.style.display = 'block';
-                    }
+                if (matchesPrice && matchesStars) {
+                    hotel.style.display = 'block';
                 } else {
-                    // Add activity to selections
-                    tourSelections.activities.push({
-                        name: activityName,
-                        price: activityPrice,
-                        duration: activityDuration
-                    });
-
-                    // Create and add activity item to selected activities list
-                    const activityItem = document.createElement('div');
-                    activityItem.className = 'selected-activity-item';
-                    activityItem.setAttribute('data-activity', activityName);
-
-                    activityItem.innerHTML = `
-                        <div class="activity-name-price">
-                            <div class="activity-name">${activityName}</div>
-                            <div class="activity-price">${activityPrice}</div>
-                        </div>
-                        <button class="remove-activity"><i class="fas fa-times"></i></button>
-                    `;
-
-                    // Add click event to remove button
-                    activityItem.querySelector('.remove-activity').addEventListener('click', function() {
-                        // Remove activity from selections
-                        tourSelections.activities = tourSelections.activities.filter(act => act.name !== activityName);
-
-                        // Remove activity item from list
-                        selectedActivitiesList.removeChild(activityItem);
-
-                        // Update button text and class for the activity card
-                        addBtn.textContent = 'Add';
-                        addBtn.classList.remove('added');
-                        addBtn.innerHTML = '<i class="fas fa-plus"></i> Add';
-
-                        // Show "No activities" message if no activities are selected
-                        if (tourSelections.activities.length === 0) {
-                            noActivitiesMessage.style.display = 'block';
-                        }
-                    });
-
-                    // Hide "No activities" message
-                    noActivitiesMessage.style.display = 'none';
-
-                    // Add activity item to list
-                    selectedActivitiesList.appendChild(activityItem);
-
-                    // Update button text and class
-                    this.textContent = 'Added';
-                    this.classList.add('added');
-                    this.innerHTML = '<i class="fas fa-check"></i> Added';
+                    hotel.style.display = 'none';
                 }
             });
-        });
-
-        // Activity filtering
-        const activityCategoryFilter = document.getElementById('activityCategoryFilter');
-        const activityPriceFilter = document.getElementById('activityPriceFilter');
-        const activityDurationFilter = document.getElementById('activityDurationFilter');
-
-        // For demo purposes - add event listeners for filters
-        [activityCategoryFilter, activityPriceFilter, activityDurationFilter].forEach(filter => {
-            filter.addEventListener('change', function() {
-                console.log(`Filter activities by ${this.id}:`, this.value);
-                // In a real implementation, we would filter the activities based on the selected criteria
-            });
-        });
+        }
     }
 
     function initReviewStep() {
@@ -672,18 +491,6 @@ function initTourBuilder() {
                 navigateToStep(stepToEdit);
             });
         });
-
-        // Add click events to booking buttons
-        const bookBtn = document.querySelector('.book-btn');
-        const saveBtn = document.querySelector('.save-btn');
-
-        bookBtn.addEventListener('click', function() {
-            alert('Your custom tour has been booked! A confirmation email will be sent shortly.');
-        });
-
-        saveBtn.addEventListener('click', function() {
-            alert('Your custom tour itinerary has been saved. You can access it from your account.');
-        });
     }
 
     function updateReviewStep() {
@@ -691,138 +498,56 @@ function initTourBuilder() {
         document.getElementById('reviewDestination').textContent =
             `${tourSelections.destination.name}, ${tourSelections.destination.country}`;
 
-        // Update dates
-        const departureDate = new Date(tourSelections.dates.departure);
-        const returnDate = new Date(tourSelections.dates.return);
-        const dateOptions = { year: 'numeric', month: 'long', day: 'numeric' };
-
-        document.getElementById('reviewDates').textContent =
-            `${departureDate.toLocaleDateString('en-US', dateOptions)} - ${returnDate.toLocaleDateString('en-US', dateOptions)}`;
-
-        // Update travelers
-        const { adults, children, infants } = tourSelections.dates.travelers;
-        document.getElementById('reviewTravelers').textContent =
-            `${adults} Adult${adults !== 1 ? 's' : ''}, ${children} Child${children !== 1 ? 'ren' : ''}, ${infants} Infant${infants !== 1 ? 's' : ''}`;
-
         // Update flights
         const flightsElement = document.getElementById('reviewFlights');
-        flightsElement.innerHTML = '';
-
-        // Outbound flight
-        const outboundFlightElement = document.createElement('div');
-        outboundFlightElement.className = 'flight-summary';
-        outboundFlightElement.innerHTML = `
-            <p class="flight-type">Outbound:</p>
-            <p>${tourSelections.flights.outbound.airline} - ${tourSelections.flights.outbound.departureAirport} to ${tourSelections.flights.outbound.arrivalAirport}</p>
-            <p>${departureDate.toLocaleDateString('en-US', dateOptions)} - ${tourSelections.flights.outbound.departureTime} to ${tourSelections.flights.outbound.arrivalTime}</p>
+        flightsElement.innerHTML = `
+            <p>${tourSelections.flights.airline}</p>
+            <p>From ${tourSelections.flights.departureAirport} to ${tourSelections.flights.arrivalAirport}</p>
+            <p>Departure: ${tourSelections.flights.departureTime}</p>
+            <p>Price: ${tourSelections.flights.price}</p>
         `;
-        flightsElement.appendChild(outboundFlightElement);
-
-        // Return flight
-        const returnFlightElement = document.createElement('div');
-        returnFlightElement.className = 'flight-summary';
-        returnFlightElement.innerHTML = `
-            <p class="flight-type">Return:</p>
-            <p>${tourSelections.flights.return.airline} - ${tourSelections.flights.return.departureAirport} to ${tourSelections.flights.return.arrivalAirport}</p>
-            <p>${returnDate.toLocaleDateString('en-US', dateOptions)} - ${tourSelections.flights.return.departureTime} to ${tourSelections.flights.return.arrivalTime}</p>
-        `;
-        flightsElement.appendChild(returnFlightElement);
 
         // Update hotel
         const hotelElement = document.getElementById('reviewHotel');
         hotelElement.innerHTML = `
             <p>${tourSelections.hotel.name} (${tourSelections.hotel.rating}★)</p>
             <p>${tourSelections.hotel.location}</p>
-            <p>${calculateNights(departureDate, returnDate)} nights at ${tourSelections.hotel.price} per night</p>
+            <p>${tourSelections.hotel.price} per night</p>
         `;
-
-        // Update activities
-        const activitiesElement = document.getElementById('reviewActivities');
-
-        if (tourSelections.activities.length > 0) {
-            const activitiesList = document.createElement('ul');
-
-            tourSelections.activities.forEach(activity => {
-                const listItem = document.createElement('li');
-                listItem.textContent = `${activity.name} - ${activity.price}`;
-                activitiesList.appendChild(listItem);
-            });
-
-            activitiesElement.innerHTML = '';
-            activitiesElement.appendChild(activitiesList);
-        } else {
-            activitiesElement.innerHTML = '<p>No activities selected</p>';
-        }
 
         // Calculate and update price breakdown
         updatePriceBreakdown();
     }
 
-    function calculateNights(startDate, endDate) {
-        const timeDiff = endDate.getTime() - startDate.getTime();
-        const nights = Math.ceil(timeDiff / (1000 * 3600 * 24));
-        return nights;
-    }
-
     function updatePriceBreakdown() {
         // Parse prices and remove currency symbols
-        const outboundFlightPrice = parseFloat(tourSelections.flights.outbound.price.replace(/[^0-9.]/g, ''));
-        const returnFlightPrice = parseFloat(tourSelections.flights.return.price.replace(/[^0-9.]/g, ''));
-        const hotelPricePerNight = parseFloat(tourSelections.hotel.price.replace(/[^0-9.]/g, ''));
-
-        // Calculate number of nights
-        const departureDate = new Date(tourSelections.dates.departure);
-        const returnDate = new Date(tourSelections.dates.return);
-        const nights = calculateNights(departureDate, returnDate);
-
-        // Calculate flight costs (per person)
-        const totalTravelers = tourSelections.dates.travelers.adults + tourSelections.dates.travelers.children;
-        const flightsCost = (outboundFlightPrice + returnFlightPrice) * totalTravelers;
-
-        // Calculate hotel cost
-        const hotelCost = hotelPricePerNight * nights;
-
-        // Calculate activities cost
-        let activitiesCost = 0;
-        tourSelections.activities.forEach(activity => {
-            const activityPrice = parseFloat(activity.price.replace(/[^0-9.]/g, ''));
-            activitiesCost += activityPrice * totalTravelers;
-        });
+        const flightPrice = parseFloat(tourSelections.flights.price.replace(/[^0-9.]/g, ''));
+        const hotelPrice = parseFloat(tourSelections.hotel.price.replace(/[^0-9.]/g, ''));
 
         // Calculate taxes (for demonstration - 5% of subtotal)
-        const subtotal = flightsCost + hotelCost + activitiesCost;
+        const subtotal = flightPrice + hotelPrice;
         const taxesCost = subtotal * 0.05;
 
         // Calculate total cost
         const totalCost = subtotal + taxesCost;
 
         // Update price breakdown in the UI
-        document.getElementById('flightsCost').textContent = `$${flightsCost.toFixed(0)}`;
-        document.getElementById('hotelCost').textContent = `$${hotelCost.toFixed(0)}`;
-        document.getElementById('activitiesCost').textContent = `$${activitiesCost.toFixed(0)}`;
-        document.getElementById('taxesCost').textContent = `$${taxesCost.toFixed(0)}`;
-        document.getElementById('sidebarTotalPrice').textContent = `$${totalCost.toFixed(0)}`;
-        document.getElementById('totalPrice').textContent = `$${totalCost.toFixed(0)}`;
+        document.getElementById('flightsCost').textContent = `$${flightPrice.toFixed(2)}`;
+        document.getElementById('hotelCost').textContent = `$${hotelPrice.toFixed(2)}`;
+        document.getElementById('taxesCost').textContent = `$${taxesCost.toFixed(2)}`;
+        document.getElementById('sidebarTotalPrice').textContent = `$${totalCost.toFixed(2)}`;
+        document.getElementById('totalPrice').textContent = `$${totalCost.toFixed(2)}`;
     }
 
     function setupNavigation() {
         // Navigation for Destination step
         document.getElementById('destinationNextBtn').addEventListener('click', function() {
-            navigateToStep('dates');
-        });
-
-        // Navigation for Dates step
-        document.getElementById('datesBackBtn').addEventListener('click', function() {
-            navigateToStep('destination');
-        });
-
-        document.getElementById('datesNextBtn').addEventListener('click', function() {
             navigateToStep('flights');
         });
 
         // Navigation for Flights step
         document.getElementById('flightsBackBtn').addEventListener('click', function() {
-            navigateToStep('dates');
+            navigateToStep('destination');
         });
 
         document.getElementById('flightsNextBtn').addEventListener('click', function() {
@@ -835,21 +560,12 @@ function initTourBuilder() {
         });
 
         document.getElementById('hotelsNextBtn').addEventListener('click', function() {
-            navigateToStep('activities');
-        });
-
-        // Navigation for Activities step
-        document.getElementById('activitiesBackBtn').addEventListener('click', function() {
-            navigateToStep('hotels');
-        });
-
-        document.getElementById('activitiesNextBtn').addEventListener('click', function() {
             navigateToStep('review');
         });
 
         // Navigation for Review step
         document.getElementById('reviewBackBtn').addEventListener('click', function() {
-            navigateToStep('activities');
+            navigateToStep('hotels');
         });
     }
 
@@ -882,7 +598,7 @@ function initTourBuilder() {
 
     function updateProgressTracker(step) {
         // Define steps order
-        const steps = ['destination', 'dates', 'flights', 'hotels', 'activities', 'review'];
+        const steps = ['destination', 'flights', 'hotels', 'review'];
         const currentStepIndex = steps.indexOf(step);
 
         // Update progress bar fill width
