@@ -561,7 +561,7 @@ function initTourBuilder() {
                             // Now proceed with the actual booking
                             proceedWithBooking(bookButton);
                         } else {
-                            alert('Could not prepare booking. Please try again.');
+                            alert('login first.');
                             bookButton.textContent = 'Book Your Tour';
                             bookButton.disabled = false;
                         }
