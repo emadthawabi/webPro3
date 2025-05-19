@@ -66,7 +66,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 {
                     name: 'Trevi Fountain',
                     description: 'Baroque fountain in Rome, Italy',
-                    image: 'https://images.pexels.com/photos/2972998/pexels-photo-2972998.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+                    image: 'https://www.museumsrome.com/images/Fontana-di-Trevi-a-Roma.jpg',
                     category: 'Landmark',
                     rating: 4.8,
                     price: 'Free',
@@ -88,7 +88,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 {
                     name: 'Grand Canal',
                     description: 'Main waterway in Venice, Italy',
-                    image: 'https://images.pexels.com/photos/5009912/pexels-photo-5009912.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+                    image: 'https://cdn.britannica.com/63/153463-050-06B6270D/Grand-Canal-Venice.jpg',
                     category: 'Landmark',
                     rating: 4.9,
                     price: 'Free',
@@ -182,19 +182,11 @@ document.addEventListener('DOMContentLoaded', function() {
                                     price: '€16',
                                     details: 'The Colosseum is an oval amphitheatre in the centre of the city of Rome, Italy. It is the largest ancient amphitheatre ever built, and is still the largest standing amphitheatre in the world today, despite its age. Construction began under the emperor Vespasian (r. 69–79 AD) in 72 and was completed in 80 AD under his successor and heir, Titus. The Colosseum could hold an estimated 50,000 to 80,000 spectators and was used for gladiatorial contests and public spectacles.'
                                 },
-                                {
-                                    name: 'Vatican Museums',
-                                    description: 'Museums displaying works from the extensive collection of the Catholic Church.',
-                                    image: 'https://images.pexels.com/photos/142931/pexels-photo-142931.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-                                    category: 'Museum',
-                                    rating: 4.7,
-                                    price: '€17',
-                                    details: 'The Vatican Museums (Italian: Musei Vaticani) are the public art and sculpture museums in the Vatican City. They display works from the immense collection amassed by the Catholic Church and the papacy throughout the centuries, including several of the most renowned Roman sculptures and most important masterpieces of Renaissance art in the world. The museums contain roughly 70,000 works, of which 20,000 are on display, and currently employ 640 people who work in 40 different administrative, scholarly, and restoration departments.'
-                                },
+
                                 {
                                     name: 'Trevi Fountain',
                                     description: 'Baroque fountain designed by Italian architect Nicola Salvi.',
-                                    image: 'https://images.pexels.com/photos/2972998/pexels-photo-2972998.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+                                    image: 'https://www.museumsrome.com/images/Fontana-di-Trevi-a-Roma.jpg',
                                     category: 'Landmark',
                                     rating: 4.8,
                                     price: 'Free',
@@ -208,7 +200,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 {
                                     name: 'Grand Canal',
                                     description: 'Main waterway through the central districts of Venice.',
-                                    image: 'https://images.pexels.com/photos/5009912/pexels-photo-5009912.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+                                    image: 'https://cdn.britannica.com/63/153463-050-06B6270D/Grand-Canal-Venice.jpg',
                                     category: 'Landmark',
                                     rating: 4.9,
                                     price: 'Free',
@@ -353,7 +345,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 {
                                     name: 'Meiji Shrine',
                                     description: 'Shinto shrine dedicated to Emperor Meiji and Empress Shōken.',
-                                    image: 'https://images.pexels.com/photos/5961943/pexels-photo-5961943.jpeg',
+                                    image: 'https://travel.gaijinpot.com/app/uploads/sites/6/2019/05/Meiji-Jingu-2.jpg',
                                     category: 'Religious Site',
                                     rating: 4.7,
                                     price: 'Free',
@@ -473,7 +465,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 {
                                     name: 'Machu Picchu',
                                     description: '15th-century Inca citadel located on a mountain ridge above the Sacred Valley.',
-                                    image: 'https://images.pexels.com/photos/460931/pexels-photo-460931.jpeg',
+                                    image: 'https://www.machupicchu.org/wp-content/uploads/top-destinations-machu-picchu.jpg',
                                     category: 'Historic Site',
                                     rating: 4.9,
                                     price: '152 PEN',
@@ -506,7 +498,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 {
                                     name: 'Recoleta Cemetery',
                                     description: 'Famous cemetery with ornate mausoleums and the grave of Eva Perón.',
-                                    image: 'https://images.pexels.com/photos/5158322/pexels-photo-5158322.jpeg',
+                                    image: 'https://stephentravels.com/wp-content/uploads/2021/05/argentina_buenos-aires_recoleta-cemetery_passages.jpg',
                                     category: 'Historic Site',
                                     rating: 4.7,
                                     price: 'Free',
@@ -569,7 +561,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 {
                                     name: 'Robben Island',
                                     description: 'Island prison where Nelson Mandela was incarcerated for 18 years.',
-                                    image: 'https://images.pexels.com/photos/1000653/pexels-photo-1000653.jpeg',
+                                    image: 'https://cdn.britannica.com/01/195301-050-05749BD2/Robben-Island-Table-Bay-prison-home-tourism-1999.jpg',
                                     category: 'Historic Site',
                                     rating: 4.6,
                                     price: 'R550',

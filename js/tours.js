@@ -307,31 +307,32 @@ function clearFilters() {
     const durationFilter = document.getElementById('durationFilter');
     const budgetFilter = document.getElementById('budgetFilter');
     const searchInput = document.getElementById('searchInput');
-    const sortOptions = document.getElementById('sortOptions');
 
+    // Reset all filter values
     continentFilter.value = '';
-    countryFilter.value = '';
-    countryFilter.disabled = true;
-    countryFilter.innerHTML = '<option value="">Select Continent First</option>';
     durationFilter.value = '';
     budgetFilter.value = '';
     searchInput.value = '';
-    sortOptions.value = 'popular';
 
-    // Reset the display of all tour cards
+    // Reset country dropdown
+    countryFilter.value = '';
+    countryFilter.disabled = true;
+    countryFilter.innerHTML = '<option value="">Select Continent First</option>';
+
+    // Hide "no results" message
+    document.getElementById('noResults').style.display = 'none';
+
+    // Show all tour cards
     const tourCards = document.querySelectorAll('.tour-card');
     tourCards.forEach(card => {
         card.style.display = 'block';
     });
 
-    // Hide "no results" message
-    document.getElementById('noResults').style.display = 'none';
-
-    // Update tour count
+    // Update tour count with total number of cards
     document.getElementById('tourCount').textContent = `(${tourCards.length})`;
 
-    // Reset sort order to most popular
-    sortToursByProperty('popularity', true);
+    // Important: Call filterTours to reset internal state
+    filterTours();
 }
 
 // Sort tours based on selected option
