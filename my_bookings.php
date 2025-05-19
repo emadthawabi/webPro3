@@ -28,16 +28,17 @@ $customerId = $_SESSION['customerid'];
 
 // Get customer bookings with all details
 $sql = "SELECT c.customerid, c.username, c.email, 
-               t.tourid, t.tourname, t.price AS tour_price, t.rating, t.duration, t.image,
+               NULL as tourid, NULL as tourname, 
+               (COALESCE(f.price, 0) + (COALESCE(h.price, 0) * 7)) as tour_price, 
+               4.0 as rating, 7 as duration, NULL as image,
                d.continent, d.country, d.city, d.description,
                f.airport, f.time AS flight_time, f.begin, f.price AS flight_price, f.type AS flight_type, f.date,
                h.hotelname, h.price AS hotel_price, h.stars, h.numofpeople, h.location
         FROM customer c
-        LEFT JOIN tours t ON c.tourid = t.tourid
-        LEFT JOIN destination d ON c.destid = d.destid
-        LEFT JOIN flights f ON c.flightid = f.flightid
+        JOIN destination d ON c.destid = d.destid
+        JOIN flights f ON c.flightid = f.flightid
         LEFT JOIN hotels h ON c.hotelid = h.hotelid
-        WHERE c.email = ? AND c.tourid IS NOT NULL
+        WHERE c.email = ? AND (c.hotelid IS NOT NULL OR c.flightid IS NOT NULL OR c.destid IS NOT NULL)
         ORDER BY c.customerid DESC"; // Most recent bookings first
 
 $stmt = $conn->prepare($sql);
