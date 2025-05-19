@@ -13,6 +13,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' &&
     $rating = $_POST['rating'];
     $duration = $_POST['duration'];
 
+    // Get the current image path if provided
+    $current_image = isset($_POST['current_image']) ? $_POST['current_image'] : '';
+    $image_path = $current_image; // Default to keeping current image
+
     try {
         // Connect to database
         $db = new mysqli("localhost", "root", "", "pathfinder", 3306);
@@ -22,9 +26,49 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' &&
             throw new Exception("Database connection failed: " . $db->connect_error);
         }
 
+        // Check if a new image was uploaded
+        if (isset($_FILES['tour_image']) && $_FILES['tour_image']['error'] === UPLOAD_ERR_OK) {
+            // Validate file type
+            $allowed_types = ['image/jpeg', 'image/png', 'image/gif'];
+            $file_type = $_FILES['tour_image']['type'];
+
+            if (!in_array($file_type, $allowed_types)) {
+                throw new Exception("Invalid file type. Only JPG, PNG, and GIF images are allowed.");
+            }
+
+            // Validate file size (limit to 5MB)
+            if ($_FILES['tour_image']['size'] > 5242880) {
+                throw new Exception("File is too large. Maximum size is 5MB.");
+            }
+
+            // Create upload directory if it doesn't exist
+            $upload_dir = '../uploadImages/';
+            if (!file_exists($upload_dir)) {
+                mkdir($upload_dir, 0777, true);
+            }
+
+            // Generate unique filename
+            $file_extension = pathinfo($_FILES['tour_image']['name'], PATHINFO_EXTENSION);
+            $filename = 'tour_' . uniqid() . '.' . $file_extension;
+            $upload_path = $upload_dir . $filename;
+
+            // Move uploaded file
+            if (move_uploaded_file($_FILES['tour_image']['tmp_name'], $upload_path)) {
+                // If successful, store only the filename in the database
+                $image_path = $filename;
+
+                // Delete old image if it exists and is not empty
+                if (!empty($current_image) && file_exists($upload_dir . $current_image)) {
+                    unlink($upload_dir . $current_image);
+                }
+            } else {
+                throw new Exception("Failed to upload image.");
+            }
+        }
+
         // Use prepared statement to prevent SQL injection
-        $stmt = $db->prepare("UPDATE tours SET tourname = ?, destid = ?, flightid = ?, hotelid = ?, price = ?, rating = ?, duration = ? WHERE tourid = ?");
-        $stmt->bind_param("siiiidii", $tourname, $destid, $flightid, $hotelid, $price, $rating, $duration, $tourid);
+        $stmt = $db->prepare("UPDATE tours SET tourname = ?, destid = ?, flightid = ?, hotelid = ?, price = ?, rating = ?, duration = ?, image = ? WHERE tourid = ?");
+        $stmt->bind_param("siiiidisi", $tourname, $destid, $flightid, $hotelid, $price, $rating, $duration, $image_path, $tourid);
 
         if ($stmt->execute()) {
             // Return success message as JSON
@@ -40,7 +84,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' &&
                     'hotelid' => $hotelid,
                     'price' => $price,
                     'rating' => $rating,
-                    'duration' => $duration
+                    'duration' => $duration,
+                    'image' => $image_path
                 ]
             ]);
         } else {

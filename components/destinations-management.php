@@ -40,6 +40,7 @@ if (!defined('BASE_PATH')) {
             <th>Country</th>
             <th>City</th>
             <th>Description</th>
+            <!--<th>Image</th>-->
             <th>Actions</th>
         </tr>
         </thead>
@@ -55,12 +56,19 @@ if (!defined('BASE_PATH')) {
 
             if ($result && $result->num_rows > 0) {
                 while ($row = $result->fetch_assoc()) {
-                    echo '<tr data-continent="' . strtolower(htmlspecialchars($row['continent'])) . '">';
+                    echo '<tr data-continent="' . strtolower(htmlspecialchars($row['continent'])) . '" class="destination-row">';
                     echo '<td>' . htmlspecialchars($row['destid']) . '</td>';
                     echo '<td>' . htmlspecialchars($row['continent']) . '</td>';
                     echo '<td>' . htmlspecialchars($row['country']) . '</td>';
                     echo '<td>' . htmlspecialchars($row['city']) . '</td>';
                     echo '<td>' . htmlspecialchars($row['description']) . '</td>';
+                    /*echo '<td>';*/
+                    /*if (!empty($row['destimage'])) {
+                        echo '<img src="' . htmlspecialchars($row['destimage']) . '" alt="Destination image" style="max-width: 100px; max-height: 75px;">';
+                    } else {
+                        echo '<span class="text-muted">No image</span>';
+                    }*/
+                   /* echo '</td>';*/
                     echo '<td>
                                 <div class="action-btns">
                                     <button class="action-btn edit" title="Edit Destination" data-modal-target="edit-destination-modal" data-dest-id="' . htmlspecialchars($row['destid']) . '">
@@ -74,16 +82,21 @@ if (!defined('BASE_PATH')) {
                     echo '</tr>';
                 }
             } else {
-                echo '<tr><td colspan="6" class="text-center">No destinations found</td></tr>';
+                echo '<tr><td colspan="7" class="text-center">No destinations found</td></tr>';
             }
 
             $db->close();
         } catch (Exception $e) {
-            echo '<tr><td colspan="6" class="text-center">Error loading destinations: ' . htmlspecialchars($e->getMessage()) . '</td></tr>';
+            echo '<tr><td colspan="7" class="text-center">Error loading destinations: ' . htmlspecialchars($e->getMessage()) . '</td></tr>';
         }
         ?>
         </tbody>
     </table>
+</div>
+
+<!-- Pagination Controls -->
+<div class="pagination" id="destinations-pagination">
+    <!-- Pagination buttons will be added by JavaScript -->
 </div>
 
 <!-- Debug: Show current script path -->
@@ -102,7 +115,7 @@ if (!defined('BASE_PATH')) {
         </div>
         <div class="modal-body">
             <!-- Direct form submission without page reload -->
-            <form id="add-destination-form" method="POST">
+            <form id="add-destination-form" method="POST" enctype="multipart/form-data">
                 <div class="form-grid">
                     <div class="form-group">
                         <label for="continent">Continent</label>
@@ -131,6 +144,13 @@ if (!defined('BASE_PATH')) {
                         <label for="description">Description</label>
                         <textarea id="description" name="description" class="form-control" rows="4" required></textarea>
                     </div>
+
+                    <!-- Add the new image upload field -->
+                    <div class="form-group">
+                        <label for="destimage">Destination Image</label>
+                        <input type="file" id="destimage" name="destimage" class="form-control" accept="image/*">
+                        <small class="form-text text-muted">Select an image for this destination (optional)</small>
+                    </div>
                 </div>
 
                 <div class="modal-footer">
@@ -150,10 +170,10 @@ if (!defined('BASE_PATH')) {
             <button class="modal-close">&times;</button>
         </div>
         <div class="modal-body">
-            <form id="edit-destination-form" method="POST">
+            <form id="edit-destination-form" method="POST" enctype="multipart/form-data">
                 <div class="form-group">
-                    <label for="edit-country">ID</label>
-                    <input type="number" id="destid" name="destid" class="form-control" required>
+                    <label for="edit-destid">ID</label>
+                    <input type="number" id="edit-destid" name="destid" class="form-control" required >
                 </div>
                 <div class="form-grid">
                     <div class="form-group">
@@ -183,6 +203,17 @@ if (!defined('BASE_PATH')) {
                         <label for="edit-description">Description</label>
                         <textarea id="edit-description" name="description" class="form-control" rows="4" required></textarea>
                     </div>
+
+                    <!-- Add the new image upload field -->
+                    <div class="form-group">
+                        <label for="edit-destimage">Destination Image</label>
+                        <input type="file" id="edit-destimage" name="destimage" class="form-control" accept="image/*">
+                        <small class="form-text text-muted">Select a new image for this destination (optional)</small>
+                        <div id="current-image-preview" class="mt-2">
+                            <p>Current image:</p>
+                            <img id="edit-image-preview" src="" alt="Current destination image" style="max-width: 200px; max-height: 150px;">
+                        </div>
+                    </div>
                 </div>
 
                 <div class="modal-footer">
@@ -195,6 +226,51 @@ if (!defined('BASE_PATH')) {
 </div>
 
 <style>
+    .modal-close {
+        background: rgba(255, 255, 255, 0.15);
+        border: none;
+        color: white;
+        font-size: 1.5rem;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        line-height: 1;
+        padding: 0;
+        margin: 0;
+    }
+    /* Modal Header Styling */
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 18px 24px;
+        background: linear-gradient(to right, #3dbb91, #4ecaa0);
+        border-radius: 8px 8px 0 0;
+        position: relative;
+    }
+
+    .modal-header h3 {
+        color: white;
+        font-size: 1.3rem;
+        font-weight: 600;
+        margin: 0;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    }
+
+    .modal-header::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background-color: rgba(255, 255, 255, 0.2);
+    }
     /* Add New Button Styling */
     .admin-header {
         display: flex;
@@ -272,39 +348,104 @@ if (!defined('BASE_PATH')) {
         font-style: italic;
         color: #666;
     }
-
-    /* Modal Animation */
+    /* Update the modal-overlay CSS */
     .modal-overlay {
-        display: none;
+        display: none; /* Hidden by default */
         position: fixed;
         top: 0;
         left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0,0,0,0.6);
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.5);
         z-index: 1000;
-        justify-content: center;
-        align-items: center;
-        animation: fadeIn 0.3s ease;
+        overflow-y: auto;
+        padding: 0;
+    }
+
+    .modal-overlay.active,
+    .modal-overlay[style*="display: flex"] {
+        display: flex !important;
+        align-items: center; /* Center vertically */
+        justify-content: center; /* Center horizontally */
     }
 
     .modal {
-        background-color: white;
-        border-radius: 8px;
+        background-color: var(--white);
+        border-radius: var(--radius);
         width: 90%;
-        max-width: 600px;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-        animation: slideDown 0.4s ease;
+        max-width: 700px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        margin: 0 auto; /* Remove top/bottom margin, keep horizontal centering */
+        position: relative;
+        z-index: 1001;
+        display: flex;
+        flex-direction: column;
+        max-height: calc(100vh - 60px);
     }
 
-    @keyframes fadeIn {
-        from { opacity: 0; }
-        to { opacity: 1; }
+    .modal-body {
+        padding: 20px;
+        overflow-y: auto;
+        max-height: 60vh;
+    }
+    /* Pagination Styling */
+    .pagination {
+        display: flex;
+        justify-content: center;
+        gap: 8px;
+        margin-top: 20px;
+        margin-bottom: 40px;
     }
 
-    @keyframes slideDown {
-        from { transform: translateY(-50px); opacity: 0; }
-        to { transform: translateY(0); opacity: 1; }
+    .page-btn {
+        min-width: 40px;
+        height: 40px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: white;
+        color: #555;
+        border: 1px solid #ddd;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-weight: 500;
+    }
+
+    .page-btn.active {
+        background-color: #3dbb91;
+        color: white;
+        border-color: #3dbb91;
+    }
+
+    .page-btn:not(.active):hover {
+        background-color: #f9f9f9;
+    }
+
+    .page-btn.prev,
+    .page-btn.next {
+        padding: 0 15px;
+    }
+
+    /* Hidden row class for pagination */
+    tr.destination-row.hidden-page {
+        display: none;
+    }
+
+    /* Image preview styling */
+    #current-image-preview {
+        margin-top: 10px;
+        border: 1px solid #ddd;
+        padding: 10px;
+        border-radius: 4px;
+        display: none;
+    }
+
+    #current-image-preview img {
+        max-width: 100%;
+        height: auto;
+        display: block;
+        margin: 0 auto;
     }
 </style>
 <!-- Notification Toast Component -->
@@ -370,8 +511,8 @@ if (!defined('BASE_PATH')) {
                 if (button.classList.contains('edit')) {
                     const destId = button.getAttribute('data-dest-id');
 
-                    // Fix here: use the correct input ID from your form
-                    const destIdField = document.getElementById('destid');
+                    // Fix here: use the correct input ID 'edit-destid'
+                    const destIdField = document.getElementById('edit-destid');
                     if (destIdField) {
                         destIdField.value = destId;
                     }
@@ -383,13 +524,25 @@ if (!defined('BASE_PATH')) {
                     const city = row.cells[3].textContent.trim();
                     const description = row.cells[4].textContent.trim();
 
+                    // Get current image if exists
+                    const imageCell = row.cells[5];
+                    const imgElement = imageCell.querySelector('img');
+                    const currentImagePreview = document.getElementById('current-image-preview');
+                    const imagePreview = document.getElementById('edit-image-preview');
+
+                    if (imgElement && currentImagePreview && imagePreview) {
+                        imagePreview.src = imgElement.src;
+                        currentImagePreview.style.display = 'block';
+                    } else if (currentImagePreview) {
+                        currentImagePreview.style.display = 'none';
+                    }
+
                     // Set the form field values
                     document.getElementById('edit-continent').value = continent;
                     document.getElementById('edit-country').value = country;
                     document.getElementById('edit-city').value = city;
                     document.getElementById('edit-description').value = description;
                 }
-
             });
         });
 
@@ -421,6 +574,8 @@ if (!defined('BASE_PATH')) {
                             const row = button.closest('tr');
                             if (row) {
                                 row.remove();
+                                // Reinitialize pagination after removing a row
+                                initPagination();
                             } else {
                                 location.reload();
                             }
@@ -439,22 +594,6 @@ if (!defined('BASE_PATH')) {
             });
         });
 
-        // Close modal when clicking close button
-        const closeButtons = document.querySelectorAll('.modal-close, .modal-cancel');
-        closeButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                const modal = button.closest('.modal-overlay');
-                closeModal(modal);
-            });
-        });
-
-        // Close modal when clicking outside
-        window.addEventListener('click', e => {
-            if (e.target.classList.contains('modal-overlay')) {
-                closeModal(e.target);
-            }
-        });
-
         // Function to open modal
         function openModal(modal) {
             if (modal) {
@@ -470,6 +609,22 @@ if (!defined('BASE_PATH')) {
                 document.body.style.overflow = 'auto'; // Enable scrolling
             }
         }
+
+        // Close modal when clicking close button
+        const closeButtons = document.querySelectorAll('.modal-close, .modal-cancel');
+        closeButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const modal = button.closest('.modal-overlay');
+                closeModal(modal);
+            });
+        });
+
+        // Close modal when clicking outside
+        window.addEventListener('click', e => {
+            if (e.target.classList.contains('modal-overlay')) {
+                closeModal(e.target);
+            }
+        });
 
         // Handle form submissions via AJAX
         const addDestinationForm = document.getElementById('add-destination-form');
@@ -520,9 +675,8 @@ if (!defined('BASE_PATH')) {
             editDestinationForm.addEventListener('submit', function(e) {
                 e.preventDefault();
 
-                // Get the destination ID from the hidden input
-                const destId = document.getElementById('destid');
-
+                // Get the destination ID from the form field
+                const destId = document.getElementById('edit-destid').value;
 
                 // Verify that we have a destination ID before proceeding
                 if (!destId) {
@@ -576,7 +730,9 @@ if (!defined('BASE_PATH')) {
                             }
                         } catch (e) {
                             console.error("Error parsing JSON:", e);
+/*
                             alert('Invalid response from server. Please try again.');
+*/
                         }
                     } else {
                         alert('Error updating destination. Status: ' + this.status);
@@ -592,11 +748,94 @@ if (!defined('BASE_PATH')) {
             });
         }
 
+        // Pagination functionality
+        const rowsPerPage = 4; // Show 4 rows per page
+        let currentPage = 1;
+
+        // Initialize pagination
+        function initPagination() {
+            const table = document.getElementById('destinations-table');
+            const rows = table.querySelectorAll('tbody tr.destination-row');
+            const paginationContainer = document.getElementById('destinations-pagination');
+
+            if (rows.length === 0) return;
+
+            // Calculate total pages
+            const totalPages = Math.ceil(rows.length / rowsPerPage);
+
+            // Clear any existing pagination
+            paginationContainer.innerHTML = '';
+
+            // Add previous button
+            if (totalPages > 1) {
+                const prevBtn = document.createElement('button');
+                prevBtn.className = 'page-btn prev';
+                prevBtn.innerHTML = '<i class="fas fa-chevron-left"></i>';
+                prevBtn.addEventListener('click', () => {
+                    if (currentPage > 1) {
+                        goToPage(currentPage - 1);
+                    }
+                });
+                paginationContainer.appendChild(prevBtn);
+            }
+
+            // Add page buttons
+            for (let i = 1; i <= totalPages; i++) {
+                const pageBtn = document.createElement('button');
+                pageBtn.className = 'page-btn' + (i === currentPage ? ' active' : '');
+                pageBtn.textContent = i;
+                pageBtn.addEventListener('click', () => goToPage(i));
+                paginationContainer.appendChild(pageBtn);
+            }
+
+            // Add next button
+            if (totalPages > 1) {
+                const nextBtn = document.createElement('button');
+                nextBtn.className = 'page-btn next';
+                nextBtn.innerHTML = '<i class="fas fa-chevron-right"></i>';
+                nextBtn.addEventListener('click', () => {
+                    if (currentPage < totalPages) {
+                        goToPage(currentPage + 1);
+                    }
+                });
+                paginationContainer.appendChild(nextBtn);
+            }
+
+            // Show the current page
+            goToPage(currentPage);
+        }
+
+        // Function to display a specific page
+        function goToPage(page) {
+            currentPage = page;
+
+            const table = document.getElementById('destinations-table');
+            const rows = table.querySelectorAll('tbody tr.destination-row');
+            const pageButtons = document.querySelectorAll('.page-btn:not(.prev):not(.next)');
+
+            // Update active button
+            pageButtons.forEach(btn => {
+                btn.classList.remove('active');
+                if (parseInt(btn.textContent) === page) {
+                    btn.classList.add('active');
+                }
+            });
+
+            // Show/hide rows based on current page
+            rows.forEach((row, index) => {
+                if (index >= (page - 1) * rowsPerPage && index < page * rowsPerPage) {
+                    row.classList.remove('hidden-page');
+                } else {
+                    row.classList.add('hidden-page');
+                }
+            });
+        }
+
         // Search and Filter functionality
         const searchInput = document.getElementById('destination-search');
         const continentFilter = document.getElementById('continent-filter');
         const table = document.getElementById('destinations-table');
-        const rows = table.querySelectorAll('tbody tr');
+        const rows = table.querySelectorAll('tbody tr.destination-row');
 
         // Search function
         function searchTable() {
@@ -607,6 +846,7 @@ if (!defined('BASE_PATH')) {
             if(rows.length === 0) return;
 
             let noResultsFound = true;
+            let visibleRows = [];
 
             rows.forEach(row => {
                 const continent = row.getAttribute('data-continent') || '';
@@ -628,6 +868,7 @@ if (!defined('BASE_PATH')) {
                 // Show or hide the row
                 if (matchesSearch && matchesFilter) {
                     row.classList.remove('hidden');
+                    visibleRows.push(row);
                     noResultsFound = false;
                 } else {
                     row.classList.add('hidden');
@@ -642,14 +883,26 @@ if (!defined('BASE_PATH')) {
                     noResultsRow = document.createElement('tr');
                     noResultsRow.className = 'no-results-row';
                     const cell = document.createElement('td');
-                    cell.colSpan = 6;
+                    cell.colSpan = 7;
                     cell.className = 'text-center';
                     cell.textContent = 'No destinations match your search criteria';
                     noResultsRow.appendChild(cell);
                     table.querySelector('tbody').appendChild(noResultsRow);
                 }
-            } else if (noResultsRow) {
-                noResultsRow.remove();
+
+                // Hide pagination when no results
+                document.getElementById('destinations-pagination').style.display = 'none';
+            } else {
+                if (noResultsRow) {
+                    noResultsRow.remove();
+                }
+
+                // Show pagination when there are results
+                document.getElementById('destinations-pagination').style.display = 'flex';
+
+                // Reset to first page and reinitialize pagination with visible rows only
+                currentPage = 1;
+                initPagination();
             }
         }
 
@@ -661,5 +914,8 @@ if (!defined('BASE_PATH')) {
         if (continentFilter) {
             continentFilter.addEventListener('change', searchTable);
         }
+
+        // Initialize pagination when the page loads
+        initPagination();
     });
 </script>

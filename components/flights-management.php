@@ -75,7 +75,7 @@ if ($destResult->num_rows > 0) {
 
         if ($result->num_rows > 0) {
             while($row = $result->fetch_assoc()) {
-                echo "<tr data-flight-type='" . htmlspecialchars(strtolower($row['type'])) . "'>";
+                echo "<tr data-flight-type='" . htmlspecialchars(strtolower($row['type'])) . "' class='flight-row'>";
                 echo "<td>" . htmlspecialchars($row['flightid']) . "</td>";
                 echo "<td>" . htmlspecialchars($row['airport']) . "</td>";
                 echo "<td>" . htmlspecialchars($row['begin']) . "</td>";
@@ -103,6 +103,11 @@ if ($destResult->num_rows > 0) {
         ?>
         </tbody>
     </table>
+</div>
+
+<!-- Pagination Container -->
+<div class="pagination" id="flights-pagination">
+    <!-- Pagination buttons will be added by JavaScript -->
 </div>
 
 <!-- Add Flight Modal -->
@@ -177,7 +182,6 @@ if ($destResult->num_rows > 0) {
     <div class="modal">
         <div class="modal-header">
             <h3>Edit Flight</h3>
-            <button class="modal-close">&times;</button>
         </div>
         <div class="modal-body">
             <form id="edit-flight-form" method="POST">
@@ -253,6 +257,50 @@ if ($destResult->num_rows > 0) {
 </div>
 
 <style>
+    /* Modal Header Styling */
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 18px 24px;
+        background: linear-gradient(to right, #3dbb91, #4ecaa0);
+        border-radius: 8px 8px 0 0;
+        position: relative;
+    }
+
+    .modal-header h3 {
+        color: white;
+        font-size: 1.3rem;
+        font-weight: 600;
+        margin: 0;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    }
+    .modal-close {
+        background: rgba(255, 255, 255, 0.15);
+        border: none;
+        color: white;
+        font-size: 1.5rem;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        line-height: 1;
+        padding: 0;
+        margin: 0;
+    }
+    .modal-header::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background-color: rgba(255, 255, 255, 0.2);
+    }
     /* Admin Header Styling */
     .admin-header {
         display: flex;
@@ -353,6 +401,7 @@ if ($destResult->num_rows > 0) {
         max-width: 600px;
         box-shadow: 0 5px 15px rgba(0,0,0,0.3);
         animation: slideDown 0.4s ease;
+        margin: 0 auto; /* Center horizontally */
     }
 
     @keyframes fadeIn {
@@ -463,6 +512,50 @@ if ($destResult->num_rows > 0) {
         font-size: 14px;
     }
 
+    /* Pagination Styling */
+    .pagination {
+        display: flex;
+        justify-content: center;
+        gap: 8px;
+        margin-top: 20px;
+        margin-bottom: 40px;
+    }
+
+    .page-btn {
+        min-width: 40px;
+        height: 40px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: white;
+        color: #555;
+        border: 1px solid #ddd;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-weight: 500;
+    }
+
+    .page-btn.active {
+        background-color: #3dbb91;
+        color: white;
+        border-color: #3dbb91;
+    }
+
+    .page-btn:not(.active):hover {
+        background-color: #f9f9f9;
+    }
+
+    .page-btn.prev,
+    .page-btn.next {
+        padding: 0 15px;
+    }
+
+    /* Hidden row class for pagination */
+    tr.flight-row.hidden-page {
+        display: none;
+    }
+
     /* Responsive Design */
     @media screen and (max-width: 768px) {
         .form-grid {
@@ -481,6 +574,89 @@ if ($destResult->num_rows > 0) {
 
 <script>
     document.addEventListener("DOMContentLoaded", function() {
+        // Pagination variables
+        const rowsPerPage = 4; // Show 4 rows per page
+        let currentPage = 1;
+
+        // Initialize pagination
+        function initPagination() {
+            const table = document.getElementById('flights-table');
+            const rows = table.querySelectorAll('tbody tr.flight-row:not(.hidden)');
+            const paginationContainer = document.getElementById('flights-pagination');
+
+            if (rows.length === 0) return;
+
+            // Calculate total pages
+            const totalPages = Math.ceil(rows.length / rowsPerPage);
+
+            // Clear any existing pagination
+            paginationContainer.innerHTML = '';
+
+            // Add previous button
+            if (totalPages > 1) {
+                const prevBtn = document.createElement('button');
+                prevBtn.className = 'page-btn prev';
+                prevBtn.innerHTML = '<i class="fas fa-chevron-left"></i>';
+                prevBtn.addEventListener('click', () => {
+                    if (currentPage > 1) {
+                        goToPage(currentPage - 1);
+                    }
+                });
+                paginationContainer.appendChild(prevBtn);
+            }
+
+            // Add page buttons
+            for (let i = 1; i <= totalPages; i++) {
+                const pageBtn = document.createElement('button');
+                pageBtn.className = 'page-btn' + (i === currentPage ? ' active' : '');
+                pageBtn.textContent = i;
+                pageBtn.addEventListener('click', () => goToPage(i));
+                paginationContainer.appendChild(pageBtn);
+            }
+
+            // Add next button
+            if (totalPages > 1) {
+                const nextBtn = document.createElement('button');
+                nextBtn.className = 'page-btn next';
+                nextBtn.innerHTML = '<i class="fas fa-chevron-right"></i>';
+                nextBtn.addEventListener('click', () => {
+                    if (currentPage < totalPages) {
+                        goToPage(currentPage + 1);
+                    }
+                });
+                paginationContainer.appendChild(nextBtn);
+            }
+
+            // Show the current page
+            goToPage(currentPage);
+        }
+
+        // Function to display a specific page
+        function goToPage(page) {
+            currentPage = page;
+
+            const table = document.getElementById('flights-table');
+            const rows = table.querySelectorAll('tbody tr.flight-row:not(.hidden)');
+            const pageButtons = document.querySelectorAll('.page-btn:not(.prev):not(.next)');
+
+            // Update active button
+            pageButtons.forEach(btn => {
+                btn.classList.remove('active');
+                if (parseInt(btn.textContent) === page) {
+                    btn.classList.add('active');
+                }
+            });
+
+            // Show/hide rows based on current page
+            rows.forEach((row, index) => {
+                if (index >= (page - 1) * rowsPerPage && index < page * rowsPerPage) {
+                    row.classList.remove('hidden-page');
+                } else {
+                    row.classList.add('hidden-page');
+                }
+            });
+        }
+
         // Delete button event listeners
         const deleteButtons = document.querySelectorAll('.delete-btn');
         deleteButtons.forEach(button => {
@@ -511,6 +687,9 @@ if ($destResult->num_rows > 0) {
                             }
 
                             row.remove();
+
+                            // Reinitialize pagination after removing a row
+                            initPagination();
                         } else {
                             alert("Failed to delete flight.");
                         }
@@ -588,6 +767,10 @@ if ($destResult->num_rows > 0) {
 
                         row.cells[4].innerText = formData.get('price') + '$';
                         row.cells[5].innerText = formData.get('type');
+
+                        // Update data-flight-type attribute for filtering
+                        row.setAttribute('data-flight-type', formData.get('type').toLowerCase());
+
                         row.cells[6].innerText = formData.get('date');
                         row.cells[7].innerText = formData.get('time');
 
@@ -703,7 +886,7 @@ if ($destResult->num_rows > 0) {
         const searchInput = document.getElementById('flight-search');
         const typeFilter = document.getElementById('flight-type-filter');
         const table = document.getElementById('flights-table');
-        const rows = table.querySelectorAll('tbody tr');
+        const rows = table.querySelectorAll('tbody tr.flight-row');
 
         // Search function
         function searchTable() {
@@ -714,6 +897,7 @@ if ($destResult->num_rows > 0) {
             if(rows.length === 0) return;
 
             let noResultsFound = true;
+            let visibleRows = [];
 
             rows.forEach(row => {
                 const flightType = row.getAttribute('data-flight-type') || '';
@@ -741,6 +925,7 @@ if ($destResult->num_rows > 0) {
                 // Show or hide the row
                 if (matchesSearch && matchesFilter) {
                     row.classList.remove('hidden');
+                    visibleRows.push(row);
                     noResultsFound = false;
                 } else {
                     row.classList.add('hidden');
@@ -761,8 +946,20 @@ if ($destResult->num_rows > 0) {
                     noResultsRow.appendChild(cell);
                     table.querySelector('tbody').appendChild(noResultsRow);
                 }
-            } else if (noResultsRow) {
-                noResultsRow.remove();
+
+                // Hide pagination when no results
+                document.getElementById('flights-pagination').style.display = 'none';
+            } else {
+                if (noResultsRow) {
+                    noResultsRow.remove();
+                }
+
+                // Show pagination when there are results
+                document.getElementById('flights-pagination').style.display = 'flex';
+
+                // Reset to first page and reinitialize pagination
+                currentPage = 1;
+                initPagination();
             }
         }
 
@@ -774,6 +971,9 @@ if ($destResult->num_rows > 0) {
         if (typeFilter) {
             typeFilter.addEventListener('change', searchTable);
         }
+
+        // Initialize pagination when the page loads
+        initPagination();
     });
 </script>
 </body>

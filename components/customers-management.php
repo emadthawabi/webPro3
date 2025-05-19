@@ -53,7 +53,7 @@ try {
 
             if ($result && $result->num_rows > 0) {
                 while ($row = $result->fetch_assoc()) {
-                    echo '<tr data-gender="' . htmlspecialchars($row['gender']) . '">';
+                    echo '<tr data-gender="' . htmlspecialchars($row['gender']) . '" class="customer-row">';
                     echo '<td>' . htmlspecialchars($row['customerid']) . '</td>';
                     echo '<td>' . htmlspecialchars($row['username']) . '</td>';
                     echo '<td>' . htmlspecialchars($row['email']) . '</td>';
@@ -86,12 +86,9 @@ try {
     </table>
 </div>
 
-<div class="pagination">
-    <button class="page-btn prev"><i class="fas fa-chevron-left"></i> Previous</button>
-    <button class="page-btn active">1</button>
-    <button class="page-btn">2</button>
-    <button class="page-btn">3</button>
-    <button class="page-btn next">Next <i class="fas fa-chevron-right"></i></button>
+<!-- Pagination Container - Will be filled by JavaScript -->
+<div class="pagination" id="customers-pagination">
+    <!-- Pagination buttons will be added by JavaScript -->
 </div>
 
 <!-- View Customer Modal -->
@@ -99,7 +96,6 @@ try {
     <div class="modal">
         <div class="modal-header">
             <h3>Customer Details</h3>
-            <button class="modal-close">&times;</button>
         </div>
         <div class="modal-body">
             <div class="customer-details">
@@ -168,6 +164,50 @@ try {
 </div>
 
 <style>
+    /* Modal Header Styling */
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 18px 24px;
+        background: linear-gradient(to right, #3dbb91, #4ecaa0);
+        border-radius: 8px 8px 0 0;
+        position: relative;
+    }
+    .modal-close {
+        background: rgba(255, 255, 255, 0.15);
+        border: none;
+        color: white;
+        font-size: 1.5rem;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        line-height: 1;
+        padding: 0;
+        margin: 0;
+    }
+    .modal-header h3 {
+        color: white;
+        font-size: 1.3rem;
+        font-weight: 600;
+        margin: 0;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    }
+
+    .modal-header::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background-color: rgba(255, 255, 255, 0.2);
+    }
     /* Admin Header Styling */
     .admin-header {
         display: flex;
@@ -320,6 +360,7 @@ try {
         max-width: 600px;
         box-shadow: 0 5px 15px rgba(0,0,0,0.3);
         animation: slideDown 0.4s ease;
+        margin: 0 auto; /* Center horizontally */
     }
 
     @keyframes fadeIn {
@@ -374,17 +415,24 @@ try {
     .pagination {
         display: flex;
         justify-content: center;
+        gap: 8px;
         margin-top: 20px;
-        gap: 5px;
+        margin-bottom: 40px;
     }
 
     .page-btn {
-        padding: 8px 15px;
-        border: 1px solid #ddd;
+        min-width: 40px;
+        height: 40px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         background-color: white;
-        border-radius: 4px;
+        color: #555;
+        border: 1px solid #ddd;
         cursor: pointer;
         transition: all 0.3s ease;
+        font-weight: 500;
     }
 
     .page-btn.active {
@@ -393,8 +441,18 @@ try {
         border-color: #3dbb91;
     }
 
-    .page-btn:hover:not(.active) {
-        background-color: #f5f5f5;
+    .page-btn:not(.active):hover {
+        background-color: #f9f9f9;
+    }
+
+    .page-btn.prev,
+    .page-btn.next {
+        padding: 0 15px;
+    }
+
+    /* Hidden row class for pagination */
+    tr.customer-row.hidden-page {
+        display: none;
     }
 
     /* Responsive table */
@@ -420,6 +478,10 @@ try {
 
 <script>
     document.addEventListener("DOMContentLoaded", function() {
+        // Pagination variables
+        const rowsPerPage = 4; // Show 4 rows per page
+        let currentPage = 1;
+
         // Get all view buttons
         const viewButtons = document.querySelectorAll('.action-btn.view');
 
@@ -465,11 +527,90 @@ try {
             });
         }
 
+        // Initialize pagination
+        function initPagination() {
+            const table = document.getElementById('customers-table');
+            const rows = table.querySelectorAll('tbody tr.customer-row');
+            const paginationContainer = document.getElementById('customers-pagination');
+
+            if (rows.length === 0) return;
+
+            // Calculate total pages
+            const totalPages = Math.ceil(rows.length / rowsPerPage);
+
+            // Clear any existing pagination
+            paginationContainer.innerHTML = '';
+
+            // Add previous button
+            if (totalPages > 1) {
+                const prevBtn = document.createElement('button');
+                prevBtn.className = 'page-btn prev';
+                prevBtn.innerHTML = '<i class="fas fa-chevron-left"></i>';
+                prevBtn.addEventListener('click', () => {
+                    if (currentPage > 1) {
+                        goToPage(currentPage - 1);
+                    }
+                });
+                paginationContainer.appendChild(prevBtn);
+            }
+
+            // Add page buttons
+            for (let i = 1; i <= totalPages; i++) {
+                const pageBtn = document.createElement('button');
+                pageBtn.className = 'page-btn' + (i === currentPage ? ' active' : '');
+                pageBtn.textContent = i;
+                pageBtn.addEventListener('click', () => goToPage(i));
+                paginationContainer.appendChild(pageBtn);
+            }
+
+            // Add next button
+            if (totalPages > 1) {
+                const nextBtn = document.createElement('button');
+                nextBtn.className = 'page-btn next';
+                nextBtn.innerHTML = '<i class="fas fa-chevron-right"></i>';
+                nextBtn.addEventListener('click', () => {
+                    if (currentPage < totalPages) {
+                        goToPage(currentPage + 1);
+                    }
+                });
+                paginationContainer.appendChild(nextBtn);
+            }
+
+            // Show the current page
+            goToPage(currentPage);
+        }
+
+        // Function to display a specific page
+        function goToPage(page) {
+            currentPage = page;
+
+            const table = document.getElementById('customers-table');
+            const rows = table.querySelectorAll('tbody tr.customer-row:not(.hidden)');
+            const pageButtons = document.querySelectorAll('.page-btn:not(.prev):not(.next)');
+
+            // Update active button
+            pageButtons.forEach(btn => {
+                btn.classList.remove('active');
+                if (parseInt(btn.textContent) === page) {
+                    btn.classList.add('active');
+                }
+            });
+
+            // Show/hide rows based on current page
+            rows.forEach((row, index) => {
+                if (index >= (page - 1) * rowsPerPage && index < page * rowsPerPage) {
+                    row.classList.remove('hidden-page');
+                } else {
+                    row.classList.add('hidden-page');
+                }
+            });
+        }
+
         // Search and Filter functionality
         const searchInput = document.getElementById('customer-search');
         const genderFilter = document.getElementById('gender-filter');
         const table = document.getElementById('customers-table');
-        const rows = table.querySelectorAll('tbody tr');
+        const rows = table.querySelectorAll('tbody tr.customer-row');
 
         // Search function
         function searchTable() {
@@ -480,6 +621,7 @@ try {
             if(rows.length === 0) return;
 
             let noResultsFound = true;
+            let visibleRows = [];
 
             rows.forEach(row => {
                 const gender = row.getAttribute('data-gender') || '';
@@ -505,6 +647,7 @@ try {
                 // Show or hide the row
                 if (matchesSearch && matchesFilter) {
                     row.classList.remove('hidden');
+                    visibleRows.push(row);
                     noResultsFound = false;
                 } else {
                     row.classList.add('hidden');
@@ -525,8 +668,20 @@ try {
                     noResultsRow.appendChild(cell);
                     table.querySelector('tbody').appendChild(noResultsRow);
                 }
-            } else if (noResultsRow) {
-                noResultsRow.remove();
+
+                // Hide pagination when no results
+                document.getElementById('customers-pagination').style.display = 'none';
+            } else {
+                if (noResultsRow) {
+                    noResultsRow.remove();
+                }
+
+                // Show pagination when there are results
+                document.getElementById('customers-pagination').style.display = 'flex';
+
+                // Reset to first page and reinitialize pagination
+                currentPage = 1;
+                initPagination();
             }
         }
 
@@ -604,6 +759,9 @@ try {
                             const cells = row.querySelectorAll('td');
                             if (cells.length > 0 && cells[0].textContent === customerId) {
                                 row.remove();
+
+                                // Reinitialize pagination after removing a row
+                                initPagination();
                             }
                         });
                     } else {
@@ -666,5 +824,8 @@ try {
                 closeModal(e.target);
             }
         });
+
+        // Initialize pagination when the page loads
+        initPagination();
     });
 </script>

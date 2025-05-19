@@ -92,7 +92,7 @@ if (!defined('BASE_PATH')) {
                     // Format hotel
                     $hotel = htmlspecialchars($row['stars']) . ' Stars';
 
-                    echo '<tr data-price="' . $priceRange . '" data-rating="' . intval($row['rating']) . '">';
+                    echo '<tr data-price="' . $priceRange . '" data-rating="' . intval($row['rating']) . '" class="tour-row">';
                     echo '<td>' . htmlspecialchars($row['tourid']) . '</td>';
                     echo '<td>' . htmlspecialchars($row['tourname']) . '</td>';
                     echo '<td>' . $destination . '</td>';
@@ -104,7 +104,7 @@ if (!defined('BASE_PATH')) {
                     echo '<td>
                                 <div class="action-btns">
                                     <button class="action-btn edit" title="Edit Tour" data-modal-target="edit-tour-modal" data-tour-id="' . htmlspecialchars($row['tourid']) . '">
-                                        <i class="fas fa-edit"></i>
+                                        <i class="fas fa-edit "  ></i>
                                     </button>
                                     <button class="action-btn delete delete-btn" title="Delete Tour" data-tour-id="' . htmlspecialchars($row['tourid']) . '">
                                         <i class="fas fa-trash-alt"></i>
@@ -126,6 +126,11 @@ if (!defined('BASE_PATH')) {
     </table>
 </div>
 
+<!-- Pagination Container -->
+<div class="pagination" id="tours-pagination">
+    <!-- Pagination buttons will be added by JavaScript -->
+</div>
+
 <!-- Add Tour Modal -->
 <div class="modal-overlay" id="add-tour-modal">
     <div class="modal">
@@ -134,8 +139,8 @@ if (!defined('BASE_PATH')) {
             <button class="modal-close">&times;</button>
         </div>
         <div class="modal-body">
-            <!-- To this: -->
-            <form id="add-tour-form" method="POST">
+            <!-- Updated form with enctype for file uploads -->
+            <form id="add-tour-form" method="POST" enctype="multipart/form-data">
                 <div class="form-grid">
                     <div class="form-group">
                         <label for="tourname">Tour Name</label>
@@ -166,8 +171,6 @@ if (!defined('BASE_PATH')) {
                             ?>
                         </select>
                     </div>
-
-
 
                     <div class="form-group">
                         <label for="flightid">Flight</label>
@@ -210,6 +213,18 @@ if (!defined('BASE_PATH')) {
                         <label for="duration">Duration (Days)</label>
                         <input type="number" id="duration" name="duration" class="form-control" min="1" required>
                     </div>
+
+                    <!-- New Tour Image Field -->
+                    <div class="form-group">
+                        <label for="tour_image">Tour Image</label>
+                        <div class="file-input-wrapper">
+                            <input type="file" id="tour_image" name="tour_image" class="form-control-file" accept="image/*">
+                            <div class="file-input-preview">
+                                <img id="tour_image_preview" src="/images/placeholder-image.jpg" alt="Tour Image Preview">
+                                <span>Select Image</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="modal-footer">
@@ -229,8 +244,10 @@ if (!defined('BASE_PATH')) {
             <button class="modal-close">&times;</button>
         </div>
         <div class="modal-body">
-            <form id="edit-tour-form" method="POST">
+            <!-- Updated form with enctype for file uploads -->
+            <form id="edit-tour-form" method="POST" enctype="multipart/form-data">
                 <input type="hidden" id="edit-tourid" name="tourid">
+                <input type="hidden" id="edit-current-image" name="current_image">
 
                 <div class="form-grid">
                     <div class="form-group">
@@ -339,6 +356,19 @@ if (!defined('BASE_PATH')) {
                         <label for="edit-duration">Duration (Days)</label>
                         <input type="number" id="edit-duration" name="duration" class="form-control" min="1" required>
                     </div>
+
+                    <!-- New Tour Image Field for Edit -->
+                    <div class="form-group">
+                        <label for="edit_tour_image">Tour Image</label>
+                        <div class="file-input-wrapper">
+                            <input type="file" id="edit_tour_image" name="tour_image" class="form-control-file" accept="image/*">
+                            <div class="file-input-preview">
+                                <img id="edit_tour_image_preview" src="/images/placeholder-image.jpg" alt="Tour Image Preview">
+                                <span>Change Image</span>
+                            </div>
+                            <p class="form-text text-muted">Current image will be kept if no new image is selected</p>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="modal-footer">
@@ -351,6 +381,51 @@ if (!defined('BASE_PATH')) {
 </div>
 
 <style>
+    .modal-close {
+        background: rgba(255, 255, 255, 0.15);
+        border: none;
+        color: white;
+        font-size: 1.5rem;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        line-height: 1;
+        padding: 0;
+        margin: 0;
+    }
+    /* Modal Header Styling */
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 18px 24px;
+        background: linear-gradient(to right, #3dbb91, #4ecaa0);
+        border-radius: 8px 8px 0 0;
+        position: relative;
+    }
+
+    .modal-header h3 {
+        color: white;
+        font-size: 1.3rem;
+        font-weight: 600;
+        margin: 0;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    }
+
+    .modal-header::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background-color: rgba(255, 255, 255, 0.2);
+    }
     /* Add New Button Styling */
     .admin-header {
         display: flex;
@@ -453,6 +528,7 @@ if (!defined('BASE_PATH')) {
         animation: slideDown 0.4s ease;
         max-height: 90vh;
         overflow-y: auto;
+        margin: 0 auto; /* Center horizontally */
     }
 
     @keyframes fadeIn {
@@ -475,8 +551,104 @@ if (!defined('BASE_PATH')) {
 
     /* Make certain fields span full width */
     .form-grid .form-group:nth-child(1),
-    .form-grid .form-group:nth-child(7) {
+    .form-grid .form-group:nth-child(8) {
         grid-column: span 2;
+    }
+
+    /* Pagination Styling */
+    .pagination {
+        display: flex;
+        justify-content: center;
+        gap: 8px;
+        margin-top: 20px;
+        margin-bottom: 40px;
+    }
+
+    .page-btn {
+        min-width: 40px;
+        height: 40px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: white;
+        color: #555;
+        border: 1px solid #ddd;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-weight: 500;
+    }
+
+    .page-btn.active {
+        background-color: #3dbb91;
+        color: white;
+        border-color: #3dbb91;
+    }
+
+    .page-btn:not(.active):hover {
+        background-color: #f9f9f9;
+    }
+
+    .page-btn.prev,
+    .page-btn.next {
+        padding: 0 15px;
+    }
+
+    /* Hidden row class for pagination */
+    tr.tour-row.hidden-page {
+        display: none;
+    }
+
+    /* File Input Styling */
+    .file-input-wrapper {
+        position: relative;
+        width: 100%;
+    }
+
+    .file-input-wrapper input[type="file"] {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        cursor: pointer;
+        z-index: 2;
+    }
+
+    .file-input-preview {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        border: 2px dashed #ddd;
+        border-radius: 8px;
+        padding: 15px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .file-input-preview:hover {
+        border-color: #3dbb91;
+    }
+
+    .file-input-preview img {
+        max-width: 100%;
+        max-height: 150px;
+        margin-bottom: 10px;
+        border-radius: 4px;
+        object-fit: cover;
+    }
+
+    .file-input-preview span {
+        color: #3dbb91;
+        font-weight: 500;
+    }
+
+    .form-text {
+        font-size: 12px;
+        margin-top: 5px;
     }
 </style>
 
@@ -532,6 +704,124 @@ if (!defined('BASE_PATH')) {
 
 <script>
     document.addEventListener("DOMContentLoaded", function() {
+        // Pagination variables
+        const rowsPerPage = 4; // Show 4 rows per page
+        let currentPage = 1;
+
+        // Initialize image preview functionality
+        function initImagePreviews() {
+            // For Add Tour form
+            const tourImageInput = document.getElementById('tour_image');
+            const tourImagePreview = document.getElementById('tour_image_preview');
+
+            if (tourImageInput && tourImagePreview) {
+                tourImageInput.addEventListener('change', function(e) {
+                    if (this.files && this.files[0]) {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            tourImagePreview.src = e.target.result;
+                        };
+                        reader.readAsDataURL(this.files[0]);
+                    }
+                });
+            }
+
+            // For Edit Tour form
+            const editTourImageInput = document.getElementById('edit_tour_image');
+            const editTourImagePreview = document.getElementById('edit_tour_image_preview');
+
+            if (editTourImageInput && editTourImagePreview) {
+                editTourImageInput.addEventListener('change', function(e) {
+                    if (this.files && this.files[0]) {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            editTourImagePreview.src = e.target.result;
+                        };
+                        reader.readAsDataURL(this.files[0]);
+                    }
+                });
+            }
+        }
+
+        // Initialize pagination
+        function initPagination() {
+            const table = document.getElementById('tours-table');
+            const rows = table.querySelectorAll('tbody tr.tour-row:not(.hidden)');
+            const paginationContainer = document.getElementById('tours-pagination');
+
+            if (rows.length === 0) return;
+
+            // Calculate total pages
+            const totalPages = Math.ceil(rows.length / rowsPerPage);
+
+            // Clear any existing pagination
+            paginationContainer.innerHTML = '';
+
+            // Add previous button
+            if (totalPages > 1) {
+                const prevBtn = document.createElement('button');
+                prevBtn.className = 'page-btn prev';
+                prevBtn.innerHTML = '<i class="fas fa-chevron-left"></i>';
+                prevBtn.addEventListener('click', () => {
+                    if (currentPage > 1) {
+                        goToPage(currentPage - 1);
+                    }
+                });
+                paginationContainer.appendChild(prevBtn);
+            }
+
+            // Add page buttons
+            for (let i = 1; i <= totalPages; i++) {
+                const pageBtn = document.createElement('button');
+                pageBtn.className = 'page-btn' + (i === currentPage ? ' active' : '');
+                pageBtn.textContent = i;
+                pageBtn.addEventListener('click', () => goToPage(i));
+                paginationContainer.appendChild(pageBtn);
+            }
+
+            // Add next button
+            if (totalPages > 1) {
+                const nextBtn = document.createElement('button');
+                nextBtn.className = 'page-btn next';
+                nextBtn.innerHTML = '<i class="fas fa-chevron-right"></i>';
+                nextBtn.addEventListener('click', () => {
+                    if (currentPage < totalPages) {
+                        goToPage(currentPage + 1);
+                    }
+                });
+                paginationContainer.appendChild(nextBtn);
+            }
+
+            // Show the current page
+            goToPage(currentPage);
+        }
+
+        // Function to display a specific page
+        function goToPage(page) {
+            currentPage = page;
+
+            const table = document.getElementById('tours-table');
+            const rows = table.querySelectorAll('tbody tr.tour-row:not(.hidden)');
+            const pageButtons = document.querySelectorAll('.page-btn:not(.prev):not(.next)');
+
+            // Update active button
+            pageButtons.forEach(btn => {
+                btn.classList.remove('active');
+                if (parseInt(btn.textContent) === page) {
+                    btn.classList.add('active');
+                }
+            });
+
+            // Show/hide rows based on current page
+            rows.forEach((row, index) => {
+                if (index >= (page - 1) * rowsPerPage && index < page * rowsPerPage) {
+                    row.classList.remove('hidden-page');
+                } else {
+                    row.classList.add('hidden-page');
+                }
+            });
+        }
+
         // Get all buttons that open modals
         const modalButtons = document.querySelectorAll('[data-modal-target]');
 
@@ -591,6 +881,15 @@ if (!defined('BASE_PATH')) {
                             document.getElementById('edit-rating').value = tourData.rating;
                             document.getElementById('edit-duration').value = tourData.duration;
                             document.getElementById('edit-tourname').value = tourData.tourname;
+
+                            // Set the current image if available
+                            document.getElementById('edit-current-image').value = tourData.image || '';
+
+                            // Update image preview if image exists
+                            const imagePreview = document.getElementById('edit_tour_image_preview');
+                            if (imagePreview && tourData.image) {
+                                imagePreview.src = tourData.image || '/images/placeholder-image.jpg';
+                            }
                         } else {
                             console.error("Error fetching tour details:", response.message);
                         }
@@ -635,6 +934,9 @@ if (!defined('BASE_PATH')) {
                             const row = button.closest('tr');
                             if (row) {
                                 row.remove();
+
+                                // Reinitialize pagination after removing a row
+                                initPagination();
                             } else {
                                 location.reload();
                             }
@@ -751,7 +1053,7 @@ if (!defined('BASE_PATH')) {
         const priceFilter = document.getElementById('price-filter');
         const ratingFilter = document.getElementById('rating-filter');
         const table = document.getElementById('tours-table');
-        const rows = table.querySelectorAll('tbody tr');
+        const rows = table.querySelectorAll('tbody tr.tour-row');
 
         // Search function
         function searchTable() {
@@ -763,6 +1065,7 @@ if (!defined('BASE_PATH')) {
             if(rows.length === 0) return;
 
             let noResultsFound = true;
+            let visibleRows = [];
 
             rows.forEach(row => {
                 const priceRange = row.getAttribute('data-price') || '';
@@ -786,6 +1089,7 @@ if (!defined('BASE_PATH')) {
                 // Show or hide the row
                 if (matchesSearch && matchesPrice && matchesRating) {
                     row.classList.remove('hidden');
+                    visibleRows.push(row);
                     noResultsFound = false;
                 } else {
                     row.classList.add('hidden');
@@ -806,8 +1110,20 @@ if (!defined('BASE_PATH')) {
                     noResultsRow.appendChild(cell);
                     table.querySelector('tbody').appendChild(noResultsRow);
                 }
-            } else if (noResultsRow) {
-                noResultsRow.remove();
+
+                // Hide pagination when no results
+                document.getElementById('tours-pagination').style.display = 'none';
+            } else {
+                if (noResultsRow) {
+                    noResultsRow.remove();
+                }
+
+                // Show pagination when there are results
+                document.getElementById('tours-pagination').style.display = 'flex';
+
+                // Reset to first page and reinitialize pagination
+                currentPage = 1;
+                initPagination();
             }
         }
 
@@ -823,6 +1139,7 @@ if (!defined('BASE_PATH')) {
         if (ratingFilter) {
             ratingFilter.addEventListener('change', searchTable);
         }
+
         // Handle form submissions via AJAX (for the add form)
         const addTourForm = document.getElementById('add-tour-form');
         if (addTourForm) {
@@ -872,6 +1189,12 @@ if (!defined('BASE_PATH')) {
                 xhr.send(formData);
             });
         }
+
+        // Initialize image previews
+        initImagePreviews();
+
+        // Initialize pagination when the page loads
+        initPagination();
     });
 </script>
 <script>
