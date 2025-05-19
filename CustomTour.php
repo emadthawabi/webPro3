@@ -203,28 +203,28 @@ $pageTitle = "CustomTour";
                     <!-- Flights -->
                     <div class="flight-section">
                         <h3>Available Flights</h3>
-                        <div class="flight-filters">
-                            <div class="filter-toggle">
-                                <label class="switch">
-                                    <input type="checkbox" id="directFlightsOnly">
-                                    <span class="slider round"></span>
-                                </label>
-                                <span>Direct flights only</span>
-                            </div>
-                            <div class="sort-by">
-                                <label>Sort by:</label>
-                                <select id="flightSort">
-                                    <option value="price">Price: Low to High</option>
-                                    <option value="time">Departure: Earliest</option>
-                                </select>
-                            </div>
-                        </div>
+<!--                        <div class="flight-filters">-->
+<!--                            <div class="filter-toggle">-->
+<!--                                <label class="switch">-->
+<!--                                    <input type="checkbox" id="directFlightsOnly">-->
+<!--                                    <span class="slider round"></span>-->
+<!--                                </label>-->
+<!--                                <span>Direct flights only</span>-->
+<!--                            </div>-->
+<!--                            <div class="sort-by">-->
+<!--                                <label>Sort by:</label>-->
+<!--                                <select id="flightSort">-->
+<!--                                    <option value="price">Price: Low to High</option>-->
+<!--                                    <option value="time">Departure: Earliest</option>-->
+<!--                                </select>-->
+<!--                            </div>-->
+<!--                        </div>-->
 
                         <div class="flight-cards" id="flights">
                             <?php foreach ($flights as $flight): ?>
                                 <div class="flight-card" data-flightid="<?php echo $flight['flightid']; ?>" data-destid="<?php echo $flight['destid']; ?>">
                                     <div class="flight-airline">
-                                        <img src="images/airline-placeholder.png" alt="Airline Logo">
+<!--                                        <img src="images/airline-placeholder.png" alt="Airline Logo">-->
                                         <span><?php echo htmlspecialchars($flight['airport']); ?></span>
                                     </div>
                                     <div class="flight-details">

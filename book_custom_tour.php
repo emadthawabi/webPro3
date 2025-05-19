@@ -1,5 +1,5 @@
 <?php
-// book_custom_tour.php
+// book_custom_tour.php - Fixed to prevent double booking
 session_start();
 
 // Set content type to JSON
@@ -15,6 +15,32 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
     exit;
 }
 
+// Check if this is a repeated submission (using a token to prevent double submissions)
+if (!isset($_POST['booking_token']) || empty($_POST['booking_token'])) {
+    $_SESSION['booking_token'] = md5(uniqid(mt_rand(), true));
+
+    echo json_encode([
+        'success' => false,
+        'message' => 'Missing booking token',
+        'booking_token' => $_SESSION['booking_token']
+    ]);
+    exit;
+}
+
+// Verify that the submitted token matches the one in the session
+if (!isset($_SESSION['booking_token']) || $_POST['booking_token'] !== $_SESSION['booking_token']) {
+    echo json_encode([
+        'success' => false,
+        'message' => 'Invalid booking token',
+        'booking_token' => $_SESSION['booking_token'] ?? md5(uniqid(mt_rand(), true))
+    ]);
+    exit;
+}
+
+// Get a fresh token for next submission
+$currentToken = $_SESSION['booking_token'];
+$_SESSION['booking_token'] = md5(uniqid(mt_rand(), true));
+
 // Database connection
 $servername = "localhost";
 $username = "root";
@@ -28,7 +54,8 @@ $conn = new mysqli($servername, $username, $password, $dbname);
 if ($conn->connect_error) {
     echo json_encode([
         'success' => false,
-        'message' => 'Connection failed: ' . $conn->connect_error
+        'message' => 'Connection failed: ' . $conn->connect_error,
+        'booking_token' => $_SESSION['booking_token']
     ]);
     exit;
 }
@@ -40,7 +67,8 @@ $customerId = $_SESSION['customerid'];
 if (!isset($_POST['destid']) || !isset($_POST['flightid']) || !isset($_POST['hotelid'])) {
     echo json_encode([
         'success' => false,
-        'message' => 'Missing required tour information'
+        'message' => 'Missing required tour information',
+        'booking_token' => $_SESSION['booking_token']
     ]);
     exit;
 }
@@ -88,17 +116,20 @@ if ($result->num_rows > 0) {
 }
 $stmt->close();
 
-// Validate all components exist
+// Validate required components exist
 if (!$destExists || !$flightExists || !$hotelExists) {
     echo json_encode([
         'success' => false,
-        'message' => 'Invalid destination, flight, or hotel'
+        'message' => 'Invalid destination, flight, or hotel',
+        'booking_token' => $_SESSION['booking_token']
     ]);
     exit;
 }
 
 // Get the current customer information
-$customerSql = "SELECT ssn, username, password, email, gender, bdate, visanum 
+$customerSql = "SELECT ssn, username, password, email, gender, bdate, visanum, 
+                (CASE WHEN hotelid IS NOT NULL OR flightid IS NOT NULL OR destid IS NOT NULL THEN 1 ELSE 0 END) 
+                AS has_existing_tour
                 FROM customer 
                 WHERE customerid = ?";
 $customerStmt = $conn->prepare($customerSql);
@@ -109,121 +140,95 @@ $customerResult = $customerStmt->get_result();
 if ($customerResult->num_rows === 0) {
     echo json_encode([
         'success' => false,
-        'message' => 'Customer not found'
+        'message' => 'Customer not found',
+        'booking_token' => $_SESSION['booking_token']
     ]);
     exit;
 }
 
 $customerData = $customerResult->fetch_assoc();
+$hasExistingTour = $customerData['has_existing_tour'];
 $customerStmt->close();
 
-// Create a tour entry for the custom tour
-$createTourSql = "INSERT INTO tours (tourname, destid, flightid, hotelid, price, rating, duration, image) 
-                 VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+// Response data array
+$responseData = [];
 
-// Calculate estimated price and duration (this is simplified)
-$price = 0;
-$rating = 4.0; // Default rating for custom tours
-$duration = 7; // Default duration (1 week)
-$tourImage = ''; // No image by default
+// If the customer already has a tour, add a new customer entry
+if ($hasExistingTour) {
+    // Insert a new row in the customer table with the same customer info but new tour details
+    $insertSql = "INSERT INTO customer (ssn, username, password, email, gender, bdate, hotelid, flightid, destid, visanum) 
+                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-// Get flight price
-$flightSql = "SELECT price FROM flights WHERE flightid = ?";
-$stmt = $conn->prepare($flightSql);
-$stmt->bind_param("i", $flightId);
-$stmt->execute();
-$result = $stmt->get_result();
-if ($result->num_rows > 0) {
-    $flightData = $result->fetch_assoc();
-    $flightPrice = floatval(str_replace(['$', ','], '', $flightData['price']));
-    $price += $flightPrice;
-}
-$stmt->close();
+    $insertStmt = $conn->prepare($insertSql);
+    $insertStmt->bind_param(
+        "ssssssiiis",
+        $customerData['ssn'],
+        $customerData['username'],
+        $customerData['password'],
+        $customerData['email'],
+        $customerData['gender'],
+        $customerData['bdate'],
+        $hotelId,
+        $flightId,
+        $destId,
+        $customerData['visanum']
+    );
 
-// Get hotel price
-$hotelSql = "SELECT price FROM hotels WHERE hotelid = ?";
-$stmt = $conn->prepare($hotelSql);
-$stmt->bind_param("i", $hotelId);
-$stmt->execute();
-$result = $stmt->get_result();
-if ($result->num_rows > 0) {
-    $hotelData = $result->fetch_assoc();
-    $hotelPrice = floatval(str_replace(['$', ','], '', $hotelData['price']));
-    $price += ($hotelPrice * $duration); // Multiply by duration (days)
-}
-$stmt->close();
-
-// Get destination name for tour name
-$destSql = "SELECT city, country FROM destination WHERE destid = ?";
-$stmt = $conn->prepare($destSql);
-$stmt->bind_param("i", $destId);
-$stmt->execute();
-$result = $stmt->get_result();
-if ($result->num_rows > 0) {
-    $destData = $result->fetch_assoc();
-    $tourName = "Custom Tour: " . $destData['city'] . ", " . $destData['country'];
-} else {
-    $tourName = "Custom Tour";
-}
-$stmt->close();
-
-// Insert the tour
-$tourStmt = $conn->prepare($createTourSql);
-$tourStmt->bind_param("siiiddis", $tourName, $destId, $flightId, $hotelId, $price, $rating, $duration, $tourImage);
-$tourStmt->execute();
-$tourId = $tourStmt->insert_id;
-$tourStmt->close();
-
-if (!$tourId) {
-    echo json_encode([
-        'success' => false,
-        'message' => 'Failed to create custom tour'
-    ]);
-    exit;
-}
-
-// Insert a new row in the customer table with the same customer info but new tour details
-$insertSql = "INSERT INTO customer (ssn, username, password, email, gender, bdate, tourid, flightid, hotelid, destid, visanum) 
-              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-
-$insertStmt = $conn->prepare($insertSql);
-$insertStmt->bind_param(
-    "ssssssiiiis",
-    $customerData['ssn'],
-    $customerData['username'],
-    $customerData['password'],
-    $customerData['email'],
-    $customerData['gender'],
-    $customerData['bdate'],
-    $tourId,
-    $flightId,
-    $hotelId,
-    $destId,
-    $customerData['visanum']
-);
-
-if ($insertStmt->execute()) {
-    // Get the new booking ID (customer ID)
-    $newBookingId = $conn->insert_id;
-
-    echo json_encode([
-        'success' => true,
-        'message' => 'Custom tour booked successfully',
-        'data' => [
+    if ($insertStmt->execute()) {
+        // Get the new booking ID (customer ID)
+        $newBookingId = $conn->insert_id;
+        $responseData = [
             'booking_id' => $newBookingId,
-            'tour_id' => $tourId,
             'flight_id' => $flightId,
             'hotel_id' => $hotelId,
             'dest_id' => $destId
-        ]
-    ]);
+        ];
+
+        echo json_encode([
+            'success' => true,
+            'message' => 'New custom tour booked successfully',
+            'data' => $responseData,
+            'booking_token' => $_SESSION['booking_token']
+        ]);
+    } else {
+        echo json_encode([
+            'success' => false,
+            'message' => 'Failed to book custom tour: ' . $insertStmt->error,
+            'booking_token' => $_SESSION['booking_token']
+        ]);
+    }
+
+    $insertStmt->close();
 } else {
-    echo json_encode([
-        'success' => false,
-        'message' => 'Failed to book custom tour: ' . $insertStmt->error
-    ]);
+    // Update the existing customer record with the new tour details
+    $updateSql = "UPDATE customer SET hotelid = ?, flightid = ?, destid = ? WHERE customerid = ?";
+    $updateStmt = $conn->prepare($updateSql);
+    $updateStmt->bind_param("iiii", $hotelId, $flightId, $destId, $customerId);
+
+    if ($updateStmt->execute()) {
+        $responseData = [
+            'booking_id' => $customerId,
+            'flight_id' => $flightId,
+            'hotel_id' => $hotelId,
+            'dest_id' => $destId
+        ];
+
+        echo json_encode([
+            'success' => true,
+            'message' => 'Custom tour updated successfully',
+            'data' => $responseData,
+            'booking_token' => $_SESSION['booking_token']
+        ]);
+    } else {
+        echo json_encode([
+            'success' => false,
+            'message' => 'Failed to update custom tour: ' . $updateStmt->error,
+            'booking_token' => $_SESSION['booking_token']
+        ]);
+    }
+
+    $updateStmt->close();
 }
 
-// Close connections
-$insertStmt->close();
+// Close connection
 $conn->close();
