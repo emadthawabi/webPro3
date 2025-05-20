@@ -1,9 +1,8 @@
 /* Things To Do Page Styles */
-
-/* Hero Section */
+/* Enhanced Hero Section with Creative Animations */
 .things-to-do-hero {
     position: relative;
-    height: 50vh;
+    height: 75vh; /* Increased height for more impact */
     background: url('../images/ThingsToDo.jpg') no-repeat center center;
     background-size: cover;
     display: flex;
@@ -12,6 +11,9 @@
     text-align: center;
     color: #fff;
     margin-bottom: 3rem;
+    overflow: hidden;
+    /* Parallax effect */
+    background-attachment: fixed;
 }
 
 .things-to-do-hero::before {
@@ -21,35 +23,264 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5);
+    /*
+    background: linear-gradient(135deg, rgba(0,0,0,0.7) 0%, rgba(61,187,145,0.3) 100%);
+    */
+    z-index: 1;
+    transition: all 1s ease;
+}
+
+.things-to-do-hero:hover::before {
+    /*
+    background: linear-gradient(135deg, rgba(0,0,0,0.8) 0%, rgba(61,187,145,0.4) 100%);
+    */
+}
+
+/* Hero Content with Enhanced Blur Animation */
+.things-to-do-hero .hero-content {
+    position: relative;
+    z-index: 3;
+    max-width: 850px;
+    padding: 3rem; /* Increased padding */
+    background: rgba(0, 0, 0, 0.15);
+    border-radius: 20px;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    transform: translateY(0);
+    transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    animation: float 6s ease-in-out infinite;
+
+    /* Blurry background with animation */
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    transition: backdrop-filter 0.8s ease, -webkit-backdrop-filter 0.8s ease;
+}
+
+/*.things-to-do-hero .hero-content:hover {
+    transform: translateY(-10px) scale(1.02);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
+    background: rgba(0, 0, 0, 0.25);
+}*/
+
+/* Enhanced Title Animation */
+.things-to-do-hero .title {
+    font-size: 4.5rem; /* Larger title */
+    margin-bottom: 1.5rem;
+    font-weight: 800;
+    color: var(--white);
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    position: relative;
+    display: inline-block;
+    animation: textGlow 3s ease-in-out infinite alternate;
+}
+
+@keyframes textGlow {
+    0% {
+        text-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+    }
+    100% {
+        text-shadow: 0 0 20px rgba(255, 255, 255, 0.4),
+        0 0 30px rgba(61, 187, 145, 0.3);
+    }
+}
+
+/* Enhanced Subtitle with Animation */
+.things-to-do-hero .subtitle {
+    font-size: 1.8rem; /* Larger subtitle */
+    margin-bottom: 1.5rem;
+    color: var(--white);
+    font-weight: 500;
+    letter-spacing: 3px; /* Increased letter spacing */
+    text-transform: uppercase;
+    position: relative;
+    display: inline-block;
+    animation: fadeInUp 1s ease both;
+}
+
+.things-to-do-hero .subtitle::after {
+    content: '';
+    position: absolute;
+    bottom: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, #FFC107, transparent);
+    animation: lineExpand 1.5s ease both;
+}
+
+@keyframes lineExpand {
+    0% {
+        width: 0;
+        opacity: 0;
+    }
+    100% {
+        width: 100px;
+        opacity: 1;
+    }
+}
+
+/* Enhanced Description Text */
+.things-to-do-hero p {
+    font-size: 1.4rem; /* Slightly larger text */
+    max-width: 700px;
+    margin: 0 auto 2rem;
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 400;
+    line-height: 1.8;
+    animation: fadeInUp 1s ease 0.2s both;
+}
+
+/* Enhanced CTA Button */
+.hero-cta {
+    display: inline-block;
+    margin-top: 2rem;
+    padding: 16px 36px; /* Larger button */
+    background: linear-gradient(45deg, #3dbb91, #2a8c69);
+    color: white;
+    font-size: 1.2rem; /* Larger text */
+    font-weight: 600;
+    text-decoration: none;
+    border-radius: 50px;
+    transition: all 0.4s ease;
+    position: relative;
+    overflow: hidden;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 10px 20px rgba(61, 187, 145, 0.4);
+    animation: fadeInUp 1s ease 0.4s both;
     z-index: 1;
 }
 
-.things-to-do-hero .hero-content {
-    position: relative;
+.hero-cta::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: all 0.8s;
+    z-index: -1;
+}
+
+.hero-cta:hover {
+    transform: translateY(-5px) scale(1.05);
+    box-shadow: 0 15px 30px rgba(61, 187, 145, 0.6);
+}
+
+/*.hero-cta:hover::before {
+    left: 100%;
+}*/
+
+/* Particle Animation Background */
+.particle {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.5);
     z-index: 2;
-    max-width: 800px;
-    padding: 0 20px;
+    animation: floatParticle 15s infinite linear;
 }
 
-.things-to-do-hero .subtitle {
-    font-size: 1.5rem;
-    margin-bottom: 1rem;
-    color: var(--white);
+@keyframes floatParticle {
+    0% {
+        transform: translateY(0) translateX(0) rotate(0deg);
+        opacity: 0;
+    }
+    10% {
+        opacity: 1;
+    }
+    90% {
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(-500px) translateX(100px) rotate(360deg);
+        opacity: 0;
+    }}
+
+
+
+/* Keyframe Animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
-.things-to-do-hero .title {
-    font-size: 3.5rem;
-    margin-bottom: 1.5rem;
-    font-weight: 700;
-    color: var(--white);
+/* Media Queries */
+@media (max-width: 1200px) {
+    .things-to-do-hero {
+        height: 65vh;
+    }
+
+    .things-to-do-hero .title {
+        font-size: 4rem;
+    }
 }
 
-.things-to-do-hero p {
-    font-size: 1.2rem;
-    max-width: 600px;
-    margin: 0 auto;
-    color: var(--white);
+@media (max-width: 992px) {
+    .things-to-do-hero .hero-content {
+        padding: 2.5rem;
+    }
+
+    .things-to-do-hero .title {
+        font-size: 3.5rem;
+    }
+
+    .things-to-do-hero .subtitle {
+        font-size: 1.5rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .things-to-do-hero {
+        height: 60vh;
+        background-attachment: scroll; /* Disable parallax on mobile */
+    }
+
+    .things-to-do-hero .hero-content {
+        padding: 2rem;
+    }
+
+    .things-to-do-hero .title {
+        font-size: 3rem;
+    }
+
+    .things-to-do-hero p {
+        font-size: 1.2rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .things-to-do-hero {
+        height: 55vh;
+    }
+
+    .things-to-do-hero .hero-content {
+        padding: 1.5rem;
+        margin: 0 1rem;
+    }
+
+    .things-to-do-hero .title {
+        font-size: 2.5rem;
+    }
+
+    .things-to-do-hero .subtitle {
+        font-size: 1.2rem;
+        letter-spacing: 2px;
+    }
+
+    .hero-cta {
+        padding: 14px 28px;
+        font-size: 1.1rem;
+    }
 }
 
 /* Destination Filter Section */

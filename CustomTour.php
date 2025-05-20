@@ -84,10 +84,13 @@ $pageTitle = "CustomTour";
 
 <link rel="stylesheet" type="text/css" href="css/CustomTour.css">
 <!-- Hero Section -->
-<section class="tours-hero custom-tour-hero">
+<section class="custom-tour-hero">
     <div class="container">
-        <h1 data-aos="fade-down">Build Your Dream Tour</h1>
-        <p data-aos="fade-up">Create a personalized travel experience by selecting your destination, flights, and accommodations</p>
+        <div class="hero-content">
+            <h1 class="title" data-aos="fade-down">Build Your Dream Tour</h1>
+            <div class="subtitle" data-aos="fade-up">Personalized Experience</div>
+            <p data-aos="fade-up">Create a personalized travel experience by selecting your destination, flights, and accommodations tailored to your preferences</p>
+        </div>
     </div>
 </section>
 

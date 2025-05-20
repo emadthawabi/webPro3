@@ -72,11 +72,13 @@ $pageTitle = "Tours";
 <body>
 <?php include 'header.php'; ?>
 
-<!-- Tours Hero Section -->
 <section class="tours-hero">
     <div class="container">
-        <h1 data-aos="fade-down">Explore Our Tours</h1>
-        <p data-aos="fade-up">Discover amazing adventures around the world with our expertly crafted tours</p>
+        <div class="hero-content">
+            <h1 class="title" data-aos="fade-down">Explore Our Tours</h1>
+            <div class="subtitle" data-aos="fade-up">Unforgettable Journeys</div>
+            <p data-aos="fade-up">Discover amazing adventures around the world with our expertly crafted tours. From exotic beaches to historic landmarks, we have the perfect experience waiting for you.</p>
+        </div>
     </div>
 </section>
 

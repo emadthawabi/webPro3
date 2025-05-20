@@ -13,22 +13,22 @@ $pageTitle = "ThingsToDo";
 <body>
 <?php include 'header.php'; ?>
 
-<!-- Hero Section -->
+<!-- Enhanced Hero Section -->
 <section class="things-to-do-hero">
-    <div class="hero-content">
-        <h3 class="subtitle" data-aos="fade-down">Explore Destinations</h3>
-        <h1 class="title" data-aos="fade-down">Find Amazing Things To Do</h1>
-        <p data-aos="fade-down">Discover unique experiences and attractions tailored to your next destination</p>
+    <!-- Animated background shapes -->
+    <div class="shape shape-1"></div>
+    <div class="shape shape-2"></div>
+
+    <div class="hero-content" data-aos="zoom-in">
+        <h3 class="subtitle" data-aos="fade-down" data-aos-delay="200">Explore Destinations</h3>
+        <h1 class="title" data-aos="fade-down" data-aos-delay="400">Find Amazing Things To Do</h1>
+        <p data-aos="fade-up" data-aos-delay="600">Discover unique experiences and attractions tailored to your next destination</p>
+        <a href="#destination-filter" class="hero-cta" data-aos="fade-up" data-aos-delay="800">Start Exploring</a>
     </div>
-    <div class="hero-back"></div>
 </section>
 
-
-
-
-
 <!-- Search Filters Section -->
-<section class="destination-filter">
+<section id="destination-filter" class="destination-filter">
     <div class="container">
         <div class="filter-wrapper" data-aos="fade-up">
             <h2>Where would you like to explore?</h2>
@@ -42,7 +42,7 @@ $pageTitle = "ThingsToDo";
                         <option value="africa">Africa</option>
                         <option value="north_america">North America</option>
                         <option value="south_america">South America</option>
-<!--                        <option value="oceania">Oceania</option>-->
+                        <!--                        <option value="oceania">Oceania</option>-->
                     </select>
                 </div>
 
@@ -66,6 +66,7 @@ $pageTitle = "ThingsToDo";
     </div>
 </section>
 
+<!-- Rest of the content remains the same -->
 <!-- Results Section -->
 <section class="attractions-results">
     <div class="container">
@@ -78,9 +79,9 @@ $pageTitle = "ThingsToDo";
             </div>
 
             <div id="no-results" >
-<!--                <i class="fa-solid fa-map-pin"></i>-->
-<!--                <h3>No attractions found</h3>-->
-<!--                <p>Please try a different selection</p>-->
+                <!--                <i class="fa-solid fa-map-pin"></i>-->
+                <!--                <h3>No attractions found</h3>-->
+                <!--                <p>Please try a different selection</p>-->
             </div>
         </div>
 
@@ -91,76 +92,6 @@ $pageTitle = "ThingsToDo";
         </div>
     </div>
 </section>
-
-<!-- Featured Experiences -->
-<!--<section class="featured-experiences">-->
-<!--    <div class="container">-->
-<!--        <h2 class="title" data-aos="fade-up">Popular Experiences Worldwide</h2>-->
-<!--        <p class="subtitle" data-aos="fade-up">Trending activities travelers love</p>-->
-
-<!--        <div class="experiences-grid" data-aos="fade-up">-->
-<!--            <div class="experience-card">-->
-<!--                <div class="experience-image">-->
-<!--                    <img src="images/experience-culinary.jpg" alt="Culinary Tours">-->
-<!--                    <div class="experience-tag">Food & Drink</div>-->
-<!--                </div>-->
-<!--                <div class="experience-content">-->
-<!--                    <h3>Culinary Adventures</h3>-->
-<!--                    <p>Explore local cuisines and food markets with expert guides</p>-->
-<!--                    <div class="experience-meta">-->
-<!--                        <span><i class="fa-solid fa-star"></i> 4.9</span>-->
-<!--                        <span><i class="fa-solid fa-globe"></i> Worldwide</span>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
-
-<!--            <div class="experience-card">-->
-<!--                <div class="experience-image">-->
-<!--                    <img src="images/experience-adventure.jpg" alt="Adventure Activities">-->
-<!--                    <div class="experience-tag">Adventure</div>-->
-<!--                </div>-->
-<!--                <div class="experience-content">-->
-<!--                    <h3>Thrilling Outdoor Activities</h3>-->
-<!--                    <p>Experience adrenaline-pumping adventures in nature</p>-->
-<!--                    <div class="experience-meta">-->
-<!--                        <span><i class="fa-solid fa-star"></i> 4.8</span>-->
-<!--                        <span><i class="fa-solid fa-globe"></i> Worldwide</span>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
-
-<!--            <div class="experience-card">-->
-<!--                <div class="experience-image">-->
-<!--                    <img src="images/experience-cultural.jpg" alt="Cultural Tours">-->
-<!--                    <div class="experience-tag">Culture</div>-->
-<!--                </div>-->
-<!--                <div class="experience-content">-->
-<!--                    <h3>Cultural Immersion</h3>-->
-<!--                    <p>Discover local traditions, arts, and heritage sites</p>-->
-<!--                    <div class="experience-meta">-->
-<!--                        <span><i class="fa-solid fa-star"></i> 4.7</span>-->
-<!--                        <span><i class="fa-solid fa-globe"></i> Worldwide</span>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
-
-<!--            <div class="experience-card">-->
-<!--                <div class="experience-image">-->
-<!--                    <img src="images/experience-nature.jpg" alt="Nature Tours">-->
-<!--                    <div class="experience-tag">Nature</div>-->
-<!--                </div>-->
-<!--                <div class="experience-content">-->
-<!--                    <h3>Nature Explorations</h3>-->
-<!--                    <p>Visit breathtaking landscapes and natural wonders</p>-->
-<!--                    <div class="experience-meta">-->
-<!--                        <span><i class="fa-solid fa-star"></i> 4.9</span>-->
-<!--                        <span><i class="fa-solid fa-globe"></i> Worldwide</span>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--        </div>-->
-<!--    </div>-->
-<!--</section>-->
 
 <!-- Travel Tips Section -->
 <section class="travel-tips">
@@ -195,7 +126,7 @@ $pageTitle = "ThingsToDo";
                 </div>
             </div>
 
-<!--            <a href="#" class="learn-btn">More Tips</a>-->
+            <!--            <a href="#" class="learn-btn">More Tips</a>-->
         </div>
 
         <div class="tips-image" data-aos="fade-left">
@@ -205,17 +136,17 @@ $pageTitle = "ThingsToDo";
     </div>
 </section>
 
-
-
 <?php include 'footer.php'; ?>
 
-
-
-
 <script>
-    // Initialize AOS Animation
+    // Initialize AOS Animation with modified settings for hero section
     document.addEventListener('DOMContentLoaded', function() {
-        AOS.init({duration:1000, once:true});
+        AOS.init({
+            duration: 1200,
+            once: false,
+            mirror: true,
+            offset: 120
+        });
 
         // Toggle menu
         document.getElementById("hamburger").addEventListener("click", () => {
@@ -251,6 +182,20 @@ $pageTitle = "ThingsToDo";
                 top: 0,
                 behavior: "smooth"
             });
+        });
+
+        // Smooth scroll for hero CTA button
+        document.querySelector('.hero-cta').addEventListener('click', function(e) {
+            e.preventDefault();
+            const targetId = this.getAttribute('href');
+            const targetElement = document.querySelector(targetId);
+
+            if (targetElement) {
+                window.scrollTo({
+                    top: targetElement.offsetTop - 80,
+                    behavior: 'smooth'
+                });
+            }
         });
 
         // Modal functionality
@@ -322,8 +267,6 @@ $pageTitle = "ThingsToDo";
         evt.currentTarget.classList.add("active");
     }
 </script>
-
-
 
 <!-- Swiper JS -->
 <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
