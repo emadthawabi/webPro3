@@ -463,7 +463,9 @@ document.querySelectorAll('.view-details').forEach(button => {
     button.addEventListener('click', function(e) {
         e.preventDefault();
         const tourName = this.closest('.tour-card').querySelector('h3').textContent;
+/*
         alert(`Viewing details for ${tourName}. This would lead to the tour details page in a complete application.`);
+*/
     });
 });
 

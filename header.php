@@ -11,13 +11,59 @@ if (session_status() === PHP_SESSION_NONE) {
     <span> <i class="fa-solid fa-envelope"> </i> Pathinder33@gmail.com</span>
     <span> <i class="fa-solid fa-clock"></i> Opening hour 08:00 AM </span>
 </header>
+<style>
+    /* Google Font */
+    @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@600&display=swap');
 
+    .logo {
+        display: flex;
+        align-items: center;
+        padding: 10px 20px;
+    }
+
+    .logo-link {
+        display: flex;
+        align-items: center;
+        text-decoration: none;
+        font-family: 'Quicksand', sans-serif;
+        font-size: 1.8rem;
+        font-weight: bold;
+        color: #3dbb91;
+        transition: color 0.3s ease;
+    }
+
+    .logo-link:hover {
+        color: #3dbb91;
+    }
+
+    .logo i {
+        color: #3dbb91;
+        font-size: 2rem;
+        margin-right: 10px;
+        transition: transform 0.3s ease;
+    }
+
+    .logo-link:hover i {
+        transform: rotate(20deg);
+    }
+
+    .logo-text .highlight {
+        color: #3dbb91;
+    }
+
+</style>
 <nav class="navbar"
      id="mainHeader">
     <div class="container nav-container">
+        <!-- Logo Section -->
         <div class="logo">
-            <i class="fa-solid fa-globe">  </i>   &nbsp; PathFinder    <!--might change for a better logo-->
+            <a href="index.php" class="logo-link">
+                <i class="fa-solid fa-compass"></i>
+                <span class="logo-text">Path<span class="highlight">Finder</span></span>
+            </a>
         </div>
+
+
         <ul class="nav-links" id="navLinks">
             <li> <a href="index.php" <?php echo basename($_SERVER['PHP_SELF']) == 'index.php' ? 'class="active"' : ''; ?>> Home </a></li>
             <li> <a href="ThingsToDo.php" <?php echo basename($_SERVER['PHP_SELF']) == 'ThingsToDo.php' ? 'class="active"' : ''; ?>> Things To Do </a></li>
