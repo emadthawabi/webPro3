@@ -232,16 +232,7 @@ $pageTitle = "Tours";
         </div>
 
         <!-- Pagination - Only show if there are enough tours -->
-        <?php if (count($tours) > 10): ?>
-            <div class="pagination">
-                <button class="page-btn active">1</button>
-                <button class="page-btn">2</button>
-                <button class="page-btn">3</button>
-                <span class="page-dots">...</span>
-                <button class="page-btn"><?php echo ceil(count($tours) / 10); ?></button>
-                <button class="page-next">Next <i class="fas fa-chevron-right"></i></button>
-            </div>
-        <?php endif; ?>
+
     </div>
 </section>
 
@@ -394,7 +385,7 @@ $conn->close();
 ?>
 
 
-// Add this script to your tours.php page, right before the closing </body> tag
+ </body>
 <script>
     // Check if user just logged in and there's a pending tour booking
     document.addEventListener('DOMContentLoaded', function() {

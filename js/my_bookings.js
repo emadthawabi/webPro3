@@ -57,50 +57,43 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Cancel booking functionality
-    const cancelBookingBtns = document.querySelectorAll('.cancel-booking');
-    if (cancelBookingBtns.length > 0) {
-        cancelBookingBtns.forEach(button => {
-            button.addEventListener('click', function() {
-                const bookingId = this.getAttribute('data-booking-id');
 
-                if (confirm('Are you sure you want to cancel this booking? This action cannot be undone.')) {
-                    // Create form data
-                    const formData = new FormData();
-                    formData.append('booking_id', bookingId);
 
-                    // Show loading state
-                    this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Cancelling...';
-                    this.disabled = true;
+    // Optional: Add keyboard navigation for tabs
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Tab' && e.target.classList.contains('tab-btn')) {
+            // Allow normal tab navigation
+            return;
+        }
 
-                    // Send cancel request
-                    fetch('cancel_booking.php', {
-                        method: 'POST',
-                        body: formData
-                    })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.success) {
-                                // Show success message and refresh page
-                                alert('Your booking has been successfully cancelled.');
-                                location.reload();
-                            } else {
-                                // Show error message
-                                alert('Failed to cancel booking: ' + data.message);
-                                // Reset button
-                                this.innerHTML = '<i class="fas fa-times"></i> Cancel';
-                                this.disabled = false;
-                            }
-                        })
-                        .catch(error => {
-                            console.error('Error:', error);
-                            alert('An error occurred while cancelling your booking. Please try again.');
-                            // Reset button
-                            this.innerHTML = '<i class="fas fa-times"></i> Cancel';
-                            this.disabled = false;
-                        });
-                }
-            });
-        });
+        if (e.key === 'Enter' && e.target.classList.contains('tab-btn')) {
+            e.target.click();
+        }
+    });
+
+    // Add confirmation for page reload/navigation if there are pending operations
+    let hasPendingOperations = false;
+
+    window.addEventListener('beforeunload', function(e) {
+        if (hasPendingOperations) {
+            e.preventDefault();
+            e.returnValue = 'You have operations in progress. Are you sure you want to leave?';
+            return e.returnValue;
+        }
+    });
+
+    // Helper function to set pending operations
+    function setPendingOperation(isPending) {
+        hasPendingOperations = isPending;
     }
+
+    // Update delete function to use pending operations
+    deleteBookingBtns.forEach(button => {
+        const originalClickHandler = button.onclick;
+        button.addEventListener('click', function(e) {
+            if (!this.disabled) {
+                setPendingOperation(true);
+            }
+        });
+    });
 });

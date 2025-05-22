@@ -19,8 +19,9 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-// Get customer ID from session
+// Get customer ID and email from session
 $customerId = $_SESSION['customerid'];
+$customerEmail = $_SESSION['email']; // Make sure this is set in your login.php
 
 // Handle image upload - keeping as requested
 $message = '';
@@ -88,50 +89,141 @@ $stmt->execute();
 $result = $stmt->get_result();
 $userData = $result->fetch_assoc();
 
-// Get past tours data based on customer's ID instead of email
+// FIXED: Get past tours data based on customer's EMAIL and their individual bookings
 $pastTours = [];
-$tourSql = "SELECT t.*, 
-               d.country, d.city, d.continent, d.description,
-               h.hotelname, h.stars, h.location,
-               f.airport, f.type as flight_type, f.date as flight_date
-        FROM tours t
-        LEFT JOIN destination d ON t.destid = d.destid
-        LEFT JOIN hotels h ON t.hotelid = h.hotelid
-        LEFT JOIN flights f ON t.flightid = f.flightid
-        LEFT JOIN customer c ON t.tourid = c.tourid
-        WHERE c.customerid = ?";
 
-$tourStmt = $conn->prepare($tourSql);
-$tourStmt->bind_param("i", $customerId);
-$tourStmt->execute();
-$tourResult = $tourStmt->get_result();
+// First, get all customer records for this email (since they might have multiple bookings)
+$customerSql = "SELECT DISTINCT c.customerid, c.tourid, c.hotelid, c.flightid, c.destid, c.email 
+                FROM customer c 
+                WHERE c.email = ? AND (c.tourid IS NOT NULL OR c.destid IS NOT NULL)";
 
-while ($tour = $tourResult->fetch_assoc()) {
-    $pastTours[] = $tour;
+$customerStmt = $conn->prepare($customerSql);
+$customerStmt->bind_param("s", $customerEmail);
+$customerStmt->execute();
+$customerResult = $customerStmt->get_result();
+
+$customerBookings = [];
+while ($booking = $customerResult->fetch_assoc()) {
+    $customerBookings[] = $booking;
+}
+
+// Now get the detailed information for each booking
+foreach ($customerBookings as $booking) {
+    $tourSql = "SELECT 
+                    t.tourid, t.tourname, t.price, t.rating, t.duration, t.image,
+                    d.destid, d.continent, d.country, d.city, d.description, d.destimage,
+                    h.hotelid, h.hotelname, h.stars, h.location, h.hotelimage,
+                    f.flightid, f.airport, f.type as flight_type, f.date as flight_date, f.begin
+                FROM customer c
+                LEFT JOIN destination d ON (c.destid = d.destid OR (c.tourid IS NOT NULL AND EXISTS(SELECT 1 FROM tours t2 WHERE t2.tourid = c.tourid AND t2.destid = d.destid)))
+                LEFT JOIN tours t ON c.tourid = t.tourid
+                LEFT JOIN hotels h ON (c.hotelid = h.hotelid OR (c.tourid IS NOT NULL AND EXISTS(SELECT 1 FROM tours t3 WHERE t3.tourid = c.tourid AND t3.hotelid = h.hotelid)))
+                LEFT JOIN flights f ON (c.flightid = f.flightid OR (c.tourid IS NOT NULL AND EXISTS(SELECT 1 FROM tours t4 WHERE t4.tourid = c.tourid AND t4.flightid = f.flightid)))
+                WHERE c.customerid = ?";
+
+    $tourStmt = $conn->prepare($tourSql);
+    $tourStmt->bind_param("i", $booking['customerid']);
+    $tourStmt->execute();
+    $tourResult = $tourStmt->get_result();
+
+    if ($tour = $tourResult->fetch_assoc()) {
+        // Avoid duplicates
+        $tourKey = $tour['destid'] . '_' . $tour['tourid'] . '_' . $booking['customerid'];
+        if (!isset($pastTours[$tourKey])) {
+            $pastTours[$tourKey] = $tour;
+        }
+    }
+}
+
+// Convert associative array back to indexed array
+$pastTours = array_values($pastTours);
+
+// ALTERNATIVE SIMPLER APPROACH: Get destinations and tours directly from customer table
+$simpleDestinations = [];
+$simpleTours = [];
+
+// Get all destinations this customer has been to
+$destSql = "SELECT DISTINCT d.*, c.customerid 
+            FROM customer c 
+            INNER JOIN destination d ON c.destid = d.destid 
+            WHERE c.email = ? AND c.destid IS NOT NULL";
+
+$destStmt = $conn->prepare($destSql);
+$destStmt->bind_param("s", $customerEmail);
+$destStmt->execute();
+$destResult = $destStmt->get_result();
+
+while ($dest = $destResult->fetch_assoc()) {
+    $simpleDestinations[] = $dest;
+}
+
+// Get all tours this customer has booked
+$toursSql = "SELECT DISTINCT t.*, d.continent, d.country, d.city, d.description,
+             h.hotelname, h.stars, h.location,
+             f.airport, f.type as flight_type, f.date as flight_date, f.begin
+             FROM customer c 
+             INNER JOIN tours t ON c.tourid = t.tourid 
+             LEFT JOIN destination d ON t.destid = d.destid
+             LEFT JOIN hotels h ON t.hotelid = h.hotelid  
+             LEFT JOIN flights f ON t.flightid = f.flightid
+             WHERE c.email = ? AND c.tourid IS NOT NULL";
+
+$toursStmt = $conn->prepare($toursSql);
+$toursStmt->bind_param("s", $customerEmail);
+$toursStmt->execute();
+$toursResult = $toursStmt->get_result();
+
+while ($tour = $toursResult->fetch_assoc()) {
+    $simpleTours[] = $tour;
+}
+
+// Use the simpler approach data if the complex one didn't work well
+if (empty($pastTours) && !empty($simpleTours)) {
+    $pastTours = $simpleTours;
 }
 
 // Extract visited destinations and count continents
 $destinationsVisited = [];
 $continentCounts = [];
+
+// Combine data from both tours and direct destinations
+$allDestinations = [];
+
+// Add destinations from tours
 foreach ($pastTours as $tour) {
     if (!empty($tour['city']) && !empty($tour['country'])) {
-        $destinationKey = $tour['city'] . ', ' . $tour['country'];
-        if (!isset($destinationsVisited[$destinationKey])) {
-            $destinationsVisited[$destinationKey] = [
-                'city' => $tour['city'],
-                'country' => $tour['country'],
-                'continent' => $tour['continent'],
-                'description' => $tour['description']
-            ];
+        $destKey = $tour['city'] . ', ' . $tour['country'];
+        $allDestinations[$destKey] = [
+            'city' => $tour['city'],
+            'country' => $tour['country'],
+            'continent' => $tour['continent'],
+            'description' => $tour['description']
+        ];
+    }
+}
 
-            // Count continents for the chart
-            if (!empty($tour['continent'])) {
-                if (!isset($continentCounts[$tour['continent']])) {
-                    $continentCounts[$tour['continent']] = 1;
-                } else {
-                    $continentCounts[$tour['continent']]++;
-                }
-            }
+// Add destinations from direct bookings
+foreach ($simpleDestinations as $dest) {
+    if (!empty($dest['city']) && !empty($dest['country'])) {
+        $destKey = $dest['city'] . ', ' . $dest['country'];
+        $allDestinations[$destKey] = [
+            'city' => $dest['city'],
+            'country' => $dest['country'],
+            'continent' => $dest['continent'],
+            'description' => $dest['description']
+        ];
+    }
+}
+
+$destinationsVisited = $allDestinations;
+
+// Count continents for the chart
+foreach ($destinationsVisited as $dest) {
+    if (!empty($dest['continent'])) {
+        if (!isset($continentCounts[$dest['continent']])) {
+            $continentCounts[$dest['continent']] = 1;
+        } else {
+            $continentCounts[$dest['continent']]++;
         }
     }
 }
@@ -159,10 +251,10 @@ $mapDataJson = json_encode($mapData);
 
 // Calculate travel stats
 $travelStats = [
-    'countries' => count(array_unique(array_column($pastTours, 'country'))),
-    'cities' => count(array_unique(array_column($pastTours, 'city'))),
+    'countries' => count(array_unique(array_column($destinationsVisited, 'country'))),
+    'cities' => count(array_unique(array_column($destinationsVisited, 'city'))),
     'tours' => count($pastTours),
-    'hotels' => count(array_unique(array_column($pastTours, 'hotelid')))
+    'hotels' => count(array_unique(array_filter(array_column($pastTours, 'hotelid'))))
 ];
 
 // Default values if no user data
@@ -252,7 +344,7 @@ if (!empty($styleScores)) {
 }
 
 // Determine accommodation preferences based on hotel stars
-$hotelStars = array_column($pastTours, 'stars');
+$hotelStars = array_filter(array_column($pastTours, 'stars'));
 if (!empty($hotelStars)) {
     $avgStars = array_sum($hotelStars) / count($hotelStars);
     if ($avgStars >= 4.5) {
@@ -269,7 +361,7 @@ if (!empty($hotelStars)) {
 }
 
 // Determine budget range based on tour prices
-$tourPrices = array_column($pastTours, 'price');
+$tourPrices = array_filter(array_column($pastTours, 'price'));
 if (!empty($tourPrices)) {
     $avgPrice = array_sum($tourPrices) / count($tourPrices);
     if ($avgPrice > 1000) {
@@ -292,8 +384,6 @@ $favDestinations = [];
 while ($dest = $destResult->fetch_assoc()) {
     $favDestinations[] = $dest;
 }
-
-
 
 // Account info
 $accountCreationDate = "2023-06-15";
@@ -1038,7 +1128,7 @@ $memberSince = round((time() - strtotime($accountCreationDate)) / (60 * 60 * 24 
                                         <?php echo date('M Y', strtotime($tour['flight_date'] ?? '2024-' . rand(1, 12) . '-' . rand(1, 28))); ?>
                                     </div>
                                     <div class="timeline-content">
-                                        <h4 class="tour-title"><?php echo $tour['tourname']; ?></h4>
+                                        <h4 class="tour-title"><?php echo $tour['tourname'] ?? 'Custom Trip'; ?></h4>
 
                                         <div class="tour-details">
                                             <div class="tour-detail">
@@ -1049,18 +1139,24 @@ $memberSince = round((time() - strtotime($accountCreationDate)) / (60 * 60 * 24 
                                                 <i class="fas fa-globe"></i>
                                                 <span><?php echo $tour['continent']; ?></span>
                                             </div>
-                                            <div class="tour-detail">
-                                                <i class="fas fa-calendar-day"></i>
-                                                <span><?php echo $tour['duration']; ?> days</span>
-                                            </div>
-                                            <div class="tour-detail">
-                                                <i class="fas fa-hotel"></i>
-                                                <span><?php echo $tour['hotelname']; ?> (<?php echo $tour['stars']; ?>★)</span>
-                                            </div>
-                                            <div class="tour-detail">
-                                                <i class="fas fa-plane"></i>
-                                                <span><?php echo $tour['airport']; ?> (<?php echo $tour['flight_type']; ?>)</span>
-                                            </div>
+                                            <?php if (!empty($tour['duration'])): ?>
+                                                <div class="tour-detail">
+                                                    <i class="fas fa-calendar-day"></i>
+                                                    <span><?php echo $tour['duration']; ?> days</span>
+                                                </div>
+                                            <?php endif; ?>
+                                            <?php if (!empty($tour['hotelname'])): ?>
+                                                <div class="tour-detail">
+                                                    <i class="fas fa-hotel"></i>
+                                                    <span><?php echo $tour['hotelname']; ?> <?php echo !empty($tour['stars']) ? '(' . $tour['stars'] . '★)' : ''; ?></span>
+                                                </div>
+                                            <?php endif; ?>
+                                            <?php if (!empty($tour['airport'])): ?>
+                                                <div class="tour-detail">
+                                                    <i class="fas fa-plane"></i>
+                                                    <span><?php echo $tour['airport']; ?> <?php echo !empty($tour['flight_type']) ? '(' . $tour['flight_type'] . ')' : ''; ?></span>
+                                                </div>
+                                            <?php endif; ?>
                                         </div>
                                     </div>
                                 </div>

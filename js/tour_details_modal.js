@@ -64,8 +64,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Book Tour button click
     document.getElementById('bookTourBtn').addEventListener('click', function(e) {
         e.preventDefault();
-        alert('Booking functionality would be implemented here.');
-        // You could redirect to a booking page or show another modal here
+
     });
 
     // Function to open the modal

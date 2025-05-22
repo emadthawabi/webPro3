@@ -239,7 +239,7 @@
 @media (max-width: 768px) {
     .tours-hero {
         height: 60vh;
-        background-attachment: scroll; /* Disable parallax on mobile */
+        background-attachment: scroll;
     }
 
     .tours-hero .hero-content {

@@ -172,7 +172,6 @@ $pageTitle = "Home";
       </div>
     </div>
 
-    <!-- Add pagination -->
     <div class="swiper-pagination"></div>
   </div>
 </section>

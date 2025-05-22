@@ -27,23 +27,35 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
     $visanum = $_POST['visanum'];
     $ssn = $_POST['ssn'];
 
-    // Check if email is already in use by another user
-    $checkEmailSql = "SELECT customerid FROM customer WHERE email = ? AND customerid != ?";
-    $checkStmt = $conn->prepare($checkEmailSql);
-    $checkStmt->bind_param("si", $email, $customerId);
-    $checkStmt->execute();
-    $result = $checkStmt->get_result();
+    // Get current user's email to check if they're changing it
+    $getCurrentEmailSql = "SELECT email FROM customer WHERE customerid = ?";
+    $getCurrentStmt = $conn->prepare($getCurrentEmailSql);
+    $getCurrentStmt->bind_param("i", $customerId);
+    $getCurrentStmt->execute();
+    $currentResult = $getCurrentStmt->get_result();
+    $currentUser = $currentResult->fetch_assoc();
+    $currentEmail = $currentUser['email'];
+    $getCurrentStmt->close();
 
-    if ($result->num_rows > 0) {
-        // Email is already in use by another user
-        $_SESSION['message'] = "Email address is already in use by another account. Please use a different email.";
-        $_SESSION['message_type'] = "error";
+    // Only check if email is in use if the user is actually changing their email
+    if ($email !== $currentEmail) {
+        $checkEmailSql = "SELECT customerid FROM customer WHERE email = ? AND customerid != ?";
+        $checkStmt = $conn->prepare($checkEmailSql);
+        $checkStmt->bind_param("si", $email, $customerId);
+        $checkStmt->execute();
+        $result = $checkStmt->get_result();
+
+        if ($result->num_rows > 0) {
+            // Email is already in use by another user
+            $_SESSION['message'] = "Email address is already in use by another account. Please use a different email.";
+            $_SESSION['message_type'] = "error";
+            $checkStmt->close();
+            $conn->close();
+            header("Location: profile.php");
+            exit();
+        }
         $checkStmt->close();
-        $conn->close();
-        header("Location: profile.php");
-        exit();
     }
-    $checkStmt->close();
 
     // Prepare SQL statement for update
     $sql = "UPDATE customer SET 

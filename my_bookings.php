@@ -26,18 +26,17 @@ if ($conn->connect_error) {
 // Get customer ID
 $customerId = $_SESSION['customerid'];
 
-// Get customer bookings with all details
+// Get customer bookings with all details including tour information and destination image
 $sql = "SELECT c.customerid, c.username, c.email, 
-               NULL as tourid, NULL as tourname, 
-               (COALESCE(f.price, 0) + (COALESCE(h.price, 0) * 7)) as tour_price, 
-               4.0 as rating, 7 as duration, NULL as image,
-               d.continent, d.country, d.city, d.description,
+               t.tourid, t.tourname, t.price as tour_price, t.rating, t.duration, t.image,
+               d.continent, d.country, d.city, d.description, d.destimage,
                f.airport, f.time AS flight_time, f.begin, f.price AS flight_price, f.type AS flight_type, f.date,
                h.hotelname, h.price AS hotel_price, h.stars, h.numofpeople, h.location
         FROM customer c
         JOIN destination d ON c.destid = d.destid
         JOIN flights f ON c.flightid = f.flightid
         LEFT JOIN hotels h ON c.hotelid = h.hotelid
+        LEFT JOIN tours t ON c.tourid = t.tourid
         WHERE c.email = ? AND (c.hotelid IS NOT NULL OR c.flightid IS NOT NULL OR c.destid IS NOT NULL)
         ORDER BY c.customerid DESC"; // Most recent bookings first
 
@@ -46,10 +45,19 @@ $stmt->bind_param("s", $_SESSION['email']); // Use email to find all bookings fo
 $stmt->execute();
 $result = $stmt->get_result();
 
-// Fetch all customer bookings
 $customerBookings = $result->fetch_all(MYSQLI_ASSOC);
 
-// Set page title
+foreach ($customerBookings as &$booking) {
+    if (empty($booking['tourid'])) {
+        // Calculate total price for non-tour bookings
+        $booking['tour_price'] = (floatval($booking['flight_price']) + (floatval($booking['hotel_price']) * 7));
+        $booking['tourname'] = 'My '.$booking['city'] . ' Adventure';
+        $booking['rating'] = 4.0;
+        $booking['duration'] = 7;
+        $booking['image'] = null; // Will use destination image as fallback
+    }
+}
+
 $pageTitle = "My Bookings";
 ?>
 <!DOCTYPE html>
@@ -83,18 +91,64 @@ $pageTitle = "My Bookings";
                             <button class="btn btn-secondary print-booking">
                                 <i class="fas fa-print"></i> Print
                             </button>
-<!--                            <button class="btn btn-danger cancel-booking" data-booking-id="--><?php //echo $booking['customerid']; ?><!--">-->
-<!--                                <i class="fas fa-times"></i> Cancel-->
-<!--                            </button>-->
+
                         </div>
                     </div>
 
                     <div class="booking-card">
                         <div class="booking-image">
-                            <?php if (!empty($booking['image'])): ?>
-                                <img src="uploadImages/<?php echo htmlspecialchars($booking['image']); ?>" alt="<?php echo htmlspecialchars($booking['tourname']); ?>">
+                            <?php
+                            $imagePath = '';
+                            $imageFound = false;
+
+                            // First, try to find the tour image if it exists
+                            if (!empty($booking['image'])) {
+                                // Check multiple possible image directories for tour images
+                                $possiblePaths = [
+                                    'uploadImages/' . $booking['image'],
+                                    'images/' . $booking['image'],
+                                    'assets/images/' . $booking['image'],
+                                    $booking['image']
+                                ];
+
+                                foreach ($possiblePaths as $path) {
+                                    if (file_exists($path)) {
+                                        $imagePath = $path;
+                                        $imageFound = true;
+                                        break;
+                                    }
+                                }
+                            }
+
+                            // If no tour image found, try to use destination image
+                            if (!$imageFound && !empty($booking['destimage'])) {
+                                $destImagePaths = [
+                                    'uploadImages/' . $booking['destimage'],
+                                    'images/' . $booking['destimage'],
+                                    'assets/images/' . $booking['destimage'],
+                                    'images/destinations/' . $booking['destimage'],
+                                    'assets/images/destinations/' . $booking['destimage'],
+                                    $booking['destimage']
+                                ];
+
+                                foreach ($destImagePaths as $path) {
+                                    if (file_exists($path)) {
+                                        $imagePath = $path;
+                                        $imageFound = true;
+                                        break;
+                                    }
+                                }
+                            }
+
+                            if ($imageFound && !empty($imagePath)): ?>
+                                <img src="<?php echo htmlspecialchars($imagePath); ?>" alt="<?php echo htmlspecialchars($booking['tourname']); ?>">
                             <?php else: ?>
-                                <img src="uploadImages/placeholder.jpg" alt="Tour Image Placeholder">
+                                <!-- Fallback to a placeholder when no image is found -->
+                                <div class="image-placeholder">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    <p><?php echo htmlspecialchars($booking['city']); ?></p>
+                                    <small><?php echo htmlspecialchars($booking['country']); ?></small>
+                                </div>
                             <?php endif; ?>
                         </div>
 
@@ -113,17 +167,33 @@ $pageTitle = "My Bookings";
                                     <span class="highlight-value"><?php echo $booking['duration']; ?> days</span>
                                 </div>
                                 <div class="highlight-item">
-                                    <span class="highlight-label">Tour Price:</span>
+                                    <span class="highlight-label">Total Price:</span>
                                     <span class="highlight-value">$<?php echo number_format($booking['tour_price'], 2); ?></span>
                                 </div>
                                 <div class="highlight-item">
-                                    <span class="highlight-label">Flight:</span>
-                                    <span class="highlight-value"><?php echo htmlspecialchars($booking['airport']); ?></span>
+                                    <span class="highlight-label">Rating:</span>
+                                    <span class="highlight-value">
+                                        <?php
+                                        $rating = floatval($booking['rating']);
+                                        for ($i = 1; $i <= 5; $i++) {
+                                            if ($i <= $rating) {
+                                                echo '<i class="fas fa-star"></i>';
+                                            } elseif ($i - 0.5 <= $rating) {
+                                                echo '<i class="fas fa-star-half-alt"></i>';
+                                            } else {
+                                                echo '<i class="far fa-star"></i>';
+                                            }
+                                        }
+                                        echo ' (' . $rating . '/5)';
+                                        ?>
+                                    </span>
                                 </div>
-                                <div class="highlight-item">
-                                    <span class="highlight-label">Hotel:</span>
-                                    <span class="highlight-value"><?php echo htmlspecialchars($booking['hotelname']); ?> (<?php echo $booking['stars']; ?> stars)</span>
-                                </div>
+                                <?php if (!empty($booking['tourid'])): ?>
+                                    <div class="highlight-item">
+                                        <span class="highlight-label">Tour ID:</span>
+                                        <span class="highlight-value">#<?php echo htmlspecialchars($booking['tourid']); ?></span>
+                                    </div>
+                                <?php endif; ?>
                             </div>
 
                             <div class="booking-tabs">
@@ -140,7 +210,7 @@ $pageTitle = "My Bookings";
                                         <span class="detail-value"><?php echo htmlspecialchars($booking['airport']); ?></span>
                                     </div>
                                     <div class="detail-item">
-                                        <span class="detail-label">Departure:</span>
+                                        <span class="detail-label">Departure Time:</span>
                                         <span class="detail-value"><?php echo htmlspecialchars($booking['flight_time']); ?></span>
                                     </div>
                                     <div class="detail-item">
@@ -155,30 +225,44 @@ $pageTitle = "My Bookings";
                                         <span class="detail-label">Flight Date:</span>
                                         <span class="detail-value"><?php echo date('F j, Y', strtotime($booking['date'])); ?></span>
                                     </div>
+                                    <div class="detail-item">
+                                        <span class="detail-label">Flight Price:</span>
+                                        <span class="detail-value">$<?php echo number_format($booking['flight_price'], 2); ?></span>
+                                    </div>
                                 </div>
 
                                 <!-- Hotel Tab -->
                                 <div class="tab-pane" id="hotel-<?php echo $index; ?>-tab">
-                                    <div class="detail-item">
-                                        <span class="detail-label">Hotel Name:</span>
-                                        <span class="detail-value"><?php echo htmlspecialchars($booking['hotelname']); ?></span>
-                                    </div>
-                                    <div class="detail-item">
-                                        <span class="detail-label">Rating:</span>
-                                        <span class="detail-value"><?php echo $booking['stars']; ?> stars</span>
-                                    </div>
-                                    <div class="detail-item">
-                                        <span class="detail-label">Accommodates:</span>
-                                        <span class="detail-value"><?php echo htmlspecialchars($booking['numofpeople']); ?> people</span>
-                                    </div>
-                                    <div class="detail-item">
-                                        <span class="detail-label">Location:</span>
-                                        <span class="detail-value"><?php echo htmlspecialchars($booking['location']); ?></span>
-                                    </div>
-                                    <div class="detail-item">
-                                        <span class="detail-label">Price per night:</span>
-                                        <span class="detail-value">$<?php echo htmlspecialchars($booking['hotel_price']); ?></span>
-                                    </div>
+                                    <?php if (!empty($booking['hotelname'])): ?>
+                                        <div class="detail-item">
+                                            <span class="detail-label">Hotel Name:</span>
+                                            <span class="detail-value"><?php echo htmlspecialchars($booking['hotelname']); ?></span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span class="detail-label">Rating:</span>
+                                            <span class="detail-value"><?php echo $booking['stars']; ?> stars</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span class="detail-label">Accommodates:</span>
+                                            <span class="detail-value"><?php echo htmlspecialchars($booking['numofpeople']); ?> people</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span class="detail-label">Location:</span>
+                                            <span class="detail-value"><?php echo htmlspecialchars($booking['location']); ?></span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span class="detail-label">Price per night:</span>
+                                            <span class="detail-value">$<?php echo number_format($booking['hotel_price'], 2); ?></span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span class="detail-label">Total hotel cost (7 nights):</span>
+                                            <span class="detail-value">$<?php echo number_format($booking['hotel_price'] * 7, 2); ?></span>
+                                        </div>
+                                    <?php else: ?>
+                                        <div class="detail-item">
+                                            <span class="detail-value">No hotel booked for this trip.</span>
+                                        </div>
+                                    <?php endif; ?>
                                 </div>
 
                                 <!-- Destination Tab -->
@@ -212,7 +296,7 @@ $pageTitle = "My Bookings";
                 </div>
                 <h2>No Bookings Found</h2>
                 <p>You haven't booked any tours yet. Start planning your next adventure today!</p>
-                <a href="tours.php" class="btn btn-primary">Explore Tours</a>
+                <a href="Tours.php" class="btn btn-primary">Explore Tours</a>
             </div>
         <?php endif; ?>
     </div>
