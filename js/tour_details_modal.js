@@ -65,6 +65,11 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('bookTourBtn').addEventListener('click', function(e) {
         e.preventDefault();
 
+        // Get the current tour ID from the modal
+        const tourId = this.getAttribute('data-tour-id');
+
+        // Call booking function
+        bookTour(tourId);
     });
 
     // Function to open the modal
@@ -115,9 +120,7 @@ document.addEventListener('DOMContentLoaded', function() {
             });
     }
 
-    // Update this function in your tour_details_modal.js file
-
-// Function to populate tour details into the modal
+    // Function to populate tour details into the modal
     function populateTourDetails(data) {
         // Tour data
         document.getElementById('modal-tour-name').textContent = data.tour.name;
@@ -148,14 +151,34 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('modal-flight-begin').textContent = data.flight.begin;
         document.getElementById('modal-flight-type').textContent = data.flight.type;
         document.getElementById('modal-flight-date').textContent = formatDate(data.flight.date);
-        document.getElementById('modal-flight-price').textContent = data.flight.price;
+        document.getElementById('modal-flight-price').textContent = '$' + data.flight.price;
 
         // Hotel data
         document.getElementById('modal-hotel-name').textContent = data.hotel.name;
         document.getElementById('modal-hotel-stars').textContent = data.hotel.stars + ' stars';
         document.getElementById('modal-hotel-time').textContent = data.hotel.time;
         document.getElementById('modal-hotel-people').textContent = data.hotel.numofpeople + ' people';
-        document.getElementById('modal-hotel-location').textContent = data.hotel.location;
+
+        // Handle hotel location with link
+        const locationLink = document.getElementById('modal-hotel-location');
+        const locationText = locationLink.querySelector('.location-text');
+        locationText.textContent = data.hotel.location;
+
+        // Set the href attribute with the location link from database
+        if (data.hotel.locationlink) {
+            locationLink.href = data.hotel.locationlink;
+            locationLink.classList.remove('no-link');
+            locationLink.style.cursor = 'pointer';
+            // Ensure the onclick handler is removed if it was previously set
+            locationLink.onclick = null;
+        } else {
+            // If no link available, just show text without link functionality
+            locationLink.removeAttribute('href');
+            locationLink.classList.add('no-link');
+            locationLink.style.cursor = 'default';
+            locationLink.onclick = (e) => e.preventDefault();
+        }
+
         document.getElementById('modal-hotel-price').textContent = '$' + data.hotel.price;
 
         // Set tour ID on the booking button
@@ -195,11 +218,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-
-
-
-// Add this to your existing tour_details_modal.js file
-
 // Function to handle booking a tour
 function bookTour(tourId) {
     // Create form data with tour ID
@@ -223,7 +241,7 @@ function bookTour(tourId) {
                 // Show success message
                 showBookingMessage('success', 'Your tour has been booked successfully!');
 
-                // You could add a link to view bookings or other actions here
+                // Redirect to bookings page after 2 seconds
                 setTimeout(() => {
                     window.location.href = 'my_bookings.php';
                 }, 2000);
@@ -317,19 +335,3 @@ function showLoginModal(tourId) {
         }
     }
 }
-
-// Update the document ready function to include the booking functionality
-document.addEventListener('DOMContentLoaded', function() {
-    // ... existing code ...
-
-    // Modify the book tour button event listener
-    document.getElementById('bookTourBtn').addEventListener('click', function(e) {
-        e.preventDefault();
-
-        // Get the current tour ID from the modal
-        const tourId = this.getAttribute('data-tour-id');
-
-        // Call booking function
-        bookTour(tourId);
-    });
-});

@@ -33,12 +33,12 @@ if (!isset($_GET['id']) || empty($_GET['id'])) {
 
 $tourId = intval($_GET['id']);
 
-// Query to get tour details with joined data from all tables
+// Query to get tour details with joined data from all tables INCLUDING locationlink
 $sql = "SELECT 
             t.tourid, t.tourname, t.price, t.rating, t.duration, t.image,
             d.destid, d.continent, d.country, d.city, d.description,
             f.flightid, f.airport, f.time AS flight_time, f.begin, f.destid AS flight_destid, f.price AS flight_price, f.type AS flight_type, f.date AS flight_date,
-            h.hotelid, h.hotelname, h.price AS hotel_price, h.stars, h.time AS hotel_time, h.numofpeople, h.location
+            h.hotelid, h.hotelname, h.price AS hotel_price, h.stars, h.time AS hotel_time, h.numofpeople, h.location, h.locationlink
         FROM tours t
         JOIN destination d ON t.destid = d.destid
         JOIN flights f ON t.flightid = f.flightid
@@ -94,7 +94,8 @@ if ($result->num_rows > 0) {
                 'stars' => $tourDetails['stars'],
                 'time' => $tourDetails['hotel_time'],
                 'numofpeople' => $tourDetails['numofpeople'],
-                'location' => $tourDetails['location']
+                'location' => $tourDetails['location'],
+                'locationlink' => $tourDetails['locationlink']  // Added locationlink
             ]
         ]
     ];
