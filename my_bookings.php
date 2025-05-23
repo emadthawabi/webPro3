@@ -23,39 +23,74 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-// Get customer ID
-$customerId = $_SESSION['customerid'];
+// Get customer email from session
+$customerEmail = $_SESSION['email'];
 
-// Get customer bookings with all details including tour information and destination image
-$sql = "SELECT c.customerid, c.username, c.email, 
-               t.tourid, t.tourname, t.price as tour_price, t.rating, t.duration, t.image,
-               d.continent, d.country, d.city, d.description, d.destimage,
-               f.airport, f.time AS flight_time, f.begin, f.price AS flight_price, f.type AS flight_type, f.date,
-               h.hotelname, h.price AS hotel_price, h.stars, h.numofpeople, h.location
+// Modified query to get distinct bookings - each row represents a separate booking
+$sql = "SELECT DISTINCT 
+               c.customerid, 
+               c.username, 
+               c.email,
+               c.destid,
+               c.flightid, 
+               c.hotelid,
+               c.tourid,
+               t.tourname, 
+               t.price as tour_price, 
+               t.rating, 
+               t.duration, 
+               t.image as tour_image,
+               d.continent, 
+               d.country, 
+               d.city, 
+               d.description, 
+               d.destimage,
+               f.airport, 
+               f.time AS flight_time, 
+               f.begin, 
+               f.price AS flight_price, 
+               f.type AS flight_type, 
+               f.date,
+               h.hotelname, 
+               h.price AS hotel_price, 
+               h.stars, 
+               h.numofpeople, 
+               h.location
         FROM customer c
-        JOIN destination d ON c.destid = d.destid
-        JOIN flights f ON c.flightid = f.flightid
+        LEFT JOIN destination d ON c.destid = d.destid
+        LEFT JOIN flights f ON c.flightid = f.flightid
         LEFT JOIN hotels h ON c.hotelid = h.hotelid
         LEFT JOIN tours t ON c.tourid = t.tourid
-        WHERE c.email = ? AND (c.hotelid IS NOT NULL OR c.flightid IS NOT NULL OR c.destid IS NOT NULL)
+        WHERE c.email = ? 
+        AND (c.hotelid IS NOT NULL OR c.flightid IS NOT NULL OR c.destid IS NOT NULL OR c.tourid IS NOT NULL)
         ORDER BY c.customerid DESC"; // Most recent bookings first
 
 $stmt = $conn->prepare($sql);
-$stmt->bind_param("s", $_SESSION['email']); // Use email to find all bookings for this user
+$stmt->bind_param("s", $customerEmail);
 $stmt->execute();
 $result = $stmt->get_result();
 
-$customerBookings = $result->fetch_all(MYSQLI_ASSOC);
+$customerBookings = [];
+while ($row = $result->fetch_assoc()) {
+    // Process each booking individually
+    $booking = $row;
 
-foreach ($customerBookings as &$booking) {
-    if (empty($booking['tourid'])) {
+    // Handle bookings without specific tours
+    if (empty($booking['tourid']) || $booking['tourid'] == 0) {
         // Calculate total price for non-tour bookings
-        $booking['tour_price'] = (floatval($booking['flight_price']) + (floatval($booking['hotel_price']) * 7));
-        $booking['tourname'] = 'My '.$booking['city'] . ' Adventure';
+        $flightPrice = floatval($booking['flight_price']) ?: 0;
+        $hotelPrice = floatval($booking['hotel_price']) ?: 0;
+        $booking['tour_price'] = $flightPrice + ($hotelPrice * 7);
+        $booking['tourname'] = 'My ' . $booking['city'] . ' Adventure';
         $booking['rating'] = 4.0;
         $booking['duration'] = 7;
-        $booking['image'] = null; // Will use destination image as fallback
+        $booking['image'] = $booking['tour_image']; // Use tour image if available
+    } else {
+        // For actual tour bookings, use the tour image
+        $booking['image'] = $booking['tour_image'];
     }
+
+    $customerBookings[] = $booking;
 }
 
 $pageTitle = "My Bookings";
@@ -91,7 +126,6 @@ $pageTitle = "My Bookings";
                             <button class="btn btn-secondary print-booking">
                                 <i class="fas fa-print"></i> Print
                             </button>
-
                         </div>
                     </div>
 
@@ -188,7 +222,7 @@ $pageTitle = "My Bookings";
                                         ?>
                                     </span>
                                 </div>
-                                <?php if (!empty($booking['tourid'])): ?>
+                                <?php if (!empty($booking['tourid']) && $booking['tourid'] != 0): ?>
                                     <div class="highlight-item">
                                         <span class="highlight-label">Tour ID:</span>
                                         <span class="highlight-value">#<?php echo htmlspecialchars($booking['tourid']); ?></span>
@@ -205,30 +239,36 @@ $pageTitle = "My Bookings";
                             <div class="booking-tab-content">
                                 <!-- Flight Tab -->
                                 <div class="tab-pane active" id="flight-<?php echo $index; ?>-tab">
-                                    <div class="detail-item">
-                                        <span class="detail-label">Airline/Airport:</span>
-                                        <span class="detail-value"><?php echo htmlspecialchars($booking['airport']); ?></span>
-                                    </div>
-                                    <div class="detail-item">
-                                        <span class="detail-label">Departure Time:</span>
-                                        <span class="detail-value"><?php echo htmlspecialchars($booking['flight_time']); ?></span>
-                                    </div>
-                                    <div class="detail-item">
-                                        <span class="detail-label">Origin:</span>
-                                        <span class="detail-value"><?php echo htmlspecialchars($booking['begin']); ?></span>
-                                    </div>
-                                    <div class="detail-item">
-                                        <span class="detail-label">Flight Type:</span>
-                                        <span class="detail-value"><?php echo htmlspecialchars($booking['flight_type']); ?></span>
-                                    </div>
-                                    <div class="detail-item">
-                                        <span class="detail-label">Flight Date:</span>
-                                        <span class="detail-value"><?php echo date('F j, Y', strtotime($booking['date'])); ?></span>
-                                    </div>
-                                    <div class="detail-item">
-                                        <span class="detail-label">Flight Price:</span>
-                                        <span class="detail-value">$<?php echo number_format($booking['flight_price'], 2); ?></span>
-                                    </div>
+                                    <?php if (!empty($booking['airport'])): ?>
+                                        <div class="detail-item">
+                                            <span class="detail-label">Airline/Airport:</span>
+                                            <span class="detail-value"><?php echo htmlspecialchars($booking['airport']); ?></span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span class="detail-label">Departure Time:</span>
+                                            <span class="detail-value"><?php echo htmlspecialchars($booking['flight_time']); ?></span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span class="detail-label">Origin:</span>
+                                            <span class="detail-value"><?php echo htmlspecialchars($booking['begin']); ?></span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span class="detail-label">Flight Type:</span>
+                                            <span class="detail-value"><?php echo htmlspecialchars($booking['flight_type']); ?></span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span class="detail-label">Flight Date:</span>
+                                            <span class="detail-value"><?php echo date('F j, Y', strtotime($booking['date'])); ?></span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span class="detail-label">Flight Price:</span>
+                                            <span class="detail-value">$<?php echo number_format($booking['flight_price'], 2); ?></span>
+                                        </div>
+                                    <?php else: ?>
+                                        <div class="detail-item">
+                                            <span class="detail-value">No flight information available for this booking.</span>
+                                        </div>
+                                    <?php endif; ?>
                                 </div>
 
                                 <!-- Hotel Tab -->
