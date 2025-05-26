@@ -9,6 +9,8 @@ $pageTitle = "Home";
 <html lang="en">
 <head>
     <?php include 'head.php'; ?>
+
+
 </head>
 <body>
 <?php include 'header.php'; ?>
@@ -301,6 +303,7 @@ $pageTitle = "Home";
 <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous"></script>
 <script src="js/custom.js"></script>
+
 
 
 
