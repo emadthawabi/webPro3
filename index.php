@@ -93,7 +93,7 @@ $pageTitle = "Home";
     <div class="story-right" data-aos="fade-right">
       <p class="subtitle">Let's Go Together</p>
       <h2 class="title" data-aos="fade-up">Start Your Journey Here</h2>
-      <p class="desc">
+          <p class="desc">
         Let the spirit of exploration forever fuel your adventures, crafting a tapestry of cherished memories that never cease to grow.
       </p>
 
