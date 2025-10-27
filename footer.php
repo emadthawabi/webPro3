@@ -1,4 +1,14 @@
 <!--Footer-->
+<script type="text/javascript"
+        src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js">
+</script>
+<script type="text/javascript">
+    (function(){
+        emailjs.init({
+            publicKey: "MaCvXcLhq9QX5yh7e",
+        });
+    })();
+</script>
 <footer class="footer">
     <div class="footer-content">
         <div class="footer-col brand">
@@ -90,8 +100,7 @@
                 <?php if(isset($_SESSION['signup_success'])): ?>
                     <div class="auth-alert success"><?php echo $_SESSION['signup_success']; unset($_SESSION['signup_success']); ?></div>
                 <?php endif; ?>
-                <form id="signupForm" action="signup.php" method="post" onsubmit="return validateForm()">
-                    <!-- Add a hidden input to store the current page URL -->
+                <form id="signupForm" action="signup.php" method="post" onsubmit="return handleSignupSubmit(event)">                    <!-- Add a hidden input to store the current page URL -->
                     <input type="hidden" name="referer_page" value="<?php echo basename($_SERVER['PHP_SELF']); ?>">
 
                     <div class="form-group auth-form-group">
@@ -142,8 +151,7 @@
                         <div id="passwordError" class="error-message" style="display: none; color: red; margin-top: 5px;"></div>
                     </div>
 
-                    <button type="submit" class="auth-button">Create Account</button>
-                </form>
+                    <button type="submit" class="auth-button">Create Account</button>                </form>
             </div>
         </div>
     </div>
@@ -187,6 +195,8 @@
         return true;
     }
 </script>
+<script src="js/sendEmail.js"> </script>
+
 
 <?php
 // Show the modal automatically if the flag is set
@@ -205,3 +215,69 @@ if(isset($_SESSION['form_data'])) {
     unset($_SESSION['form_data']);
 }
 ?>
+<script>
+    // Add this to your footer.php script section
+
+    function handleSignupSubmit(event) {
+        // Prevent default form submission
+        event.preventDefault();
+
+        // First validate the form
+        if (!validateForm()) {
+            return false;
+        }
+
+        // Send welcome email first
+        sendMail()
+            .then(function(emailSuccess) {
+                if (emailSuccess !== false) {
+                    // Email sent successfully, now submit the form
+                    document.getElementById('signupForm').submit();
+                }
+            })
+            .catch(function(error) {
+                console.error('Email sending failed:', error);
+                // You can choose whether to proceed with signup even if email fails
+                // Option 1: Proceed anyway
+                document.getElementById('signupForm').submit();
+
+                // Option 2: Don't proceed (comment out the line above)
+                // alert('Please try again - email service is currently unavailable');
+            });
+
+        return false;
+    }
+
+    // Updated sendMail function that returns a promise
+    function sendMail() {
+        const name = document.getElementById("signupName").value;
+        const email = document.getElementById("signupEmail").value;
+
+        if (!name || !email) {
+            alert("Please fill in all required fields");
+            return Promise.resolve(false);
+        }
+
+        const submitButton = document.querySelector('.auth-button');
+        const originalText = submitButton.textContent;
+        submitButton.textContent = 'Sending Welcome Email...';
+        submitButton.disabled = true;
+
+        return emailjs.send("service_dlx5var", "template_jtalee8", {
+            name: name,
+            email: email,
+            to_email: email  // Make sure this matches your template variables
+        })
+            .then(function(response) {
+                console.log('Email sent successfully!', response);
+                submitButton.textContent = 'Creating Account...';
+                return true;
+            })
+            .catch(function(error) {
+                console.error('Failed to send email:', error);
+                submitButton.textContent = originalText;
+                submitButton.disabled = false;
+                throw error;
+            });
+    }
+</script>

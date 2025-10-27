@@ -72,6 +72,10 @@ if(isset($_POST["signupssn"]) and isset($_POST["signupName"]) and isset($_POST["
                 // Insert new user
                 $qs = "INSERT INTO `customer` (`customerid`, `ssn`, `username`, `password`, `email`, `gender`, `bdate`, `tourid`, `hotelid`, `flightid`, `destid`, `visanum`) VALUES ('', '$ssn', '$username', '$password', '$email', '$gender', '$bdate', NULL, NULL, NULL, NULL, '$visanum')";
                 $db->query($qs);
+
+                // Get the newly created customer ID
+                $new_customer_id = $db->insert_id;
+
                 $db->commit();
                 $registration_success = true;
 
@@ -79,7 +83,25 @@ if(isset($_POST["signupssn"]) and isset($_POST["signupName"]) and isset($_POST["
                 if (session_status() == PHP_SESSION_NONE) {
                     session_start();
                 }
-                $_SESSION['signup_success'] = "Registration successful! You can now log in with your credentials.";
+
+                // Automatically log in the new user
+                $_SESSION['loggedin'] = true;
+                $_SESSION['customerid'] = $new_customer_id;
+                $_SESSION['username'] = $username;
+                $_SESSION['email'] = $email;
+
+                // Check if this is an admin user (same logic as login.php)
+                if ($email == "emad@gmail.com" && $password == "1234" ||
+                    $email == "yousef@gmail.com" && $password == "1212") {
+                    $_SESSION['is_admin'] = true;
+                } else {
+                    $_SESSION['is_admin'] = false;
+                }
+
+                // Set success message (optional - you might want to remove this since they're now logged in)
+                $_SESSION['signup_success'] = "Registration successful! You are now logged in.";
+
+                // Redirect to the page they were on (now logged in)
                 header("Location: $referer_page");
                 exit();
             }

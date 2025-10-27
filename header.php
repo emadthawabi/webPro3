@@ -8,7 +8,7 @@ if (session_status() === PHP_SESSION_NONE) {
 <header class="top-bar">
     <div class="container"></div>
     <span> <i class="fa-solid fa-location-dot "></i> Nablus </span>
-    <span> <i class="fa-solid fa-envelope"> </i> Pathinder33@gmail.com</span>
+    <span> <i class="fa-solid fa-envelope"> </i> pathfinder1738@protonmail.com</span>
     <span> <i class="fa-solid fa-clock"></i> Opening hour 08:00 AM </span>
 </header>
 <style>
