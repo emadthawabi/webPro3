@@ -14,8 +14,7 @@ PathFinder is a comprehensive web-based travel platform that simplifies the tour
 
 PathFinder bridges the gap between travel inspiration and action, providing users with an intuitive platform to explore destinations, compare tour packages, and book flights and hotels—all in one place.
 
-![Homepage](<img width="975" height="440" alt="image" src="https://github.com/user-attachments/assets/323b4b1a-63d5-40cc-b8cf-fc2cdd56c901" />
-)
+<img src="https://github.com/user-attachments/assets/323b4b1a-63d5-40cc-b8cf-fc2cdd56c901" alt="PathFinder Homepage" width="800"/>
 
 ---
 
