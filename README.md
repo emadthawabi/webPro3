@@ -94,13 +94,12 @@ Each user has a personalized profile with:
 
 ## 👥 Team
 
-| Name  | Role |
-|------|------------|------|
-| **Emad Thawabi** |  Developer |
-| **Yousef Abu Taha** |  Developer |
+| Name | Role |
+|------|------|
+| **Emad Thawabi** | Developer |
+| **Yousef Abu Taha** | Developer |
 
 > 🎓 **An-Najah National University**
-
 ---
 
 ## 📄 License
