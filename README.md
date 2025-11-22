@@ -27,7 +27,7 @@ PathFinder bridges the gap between travel inspiration and action, providing user
 | 👤 **User Profiles** | Manage bookings, view history, and customize profile with photo uploads |
 | 🔐 **Secure Authentication** | Session-based login system with role-based access control |
 | ⚙️ **Admin Dashboard** | Comprehensive admin panel for managing tours, hotels, flights, and destinations |
-| 📱 **Responsive Design** | Fully responsive interface that works across all devices |
+| 📱 **Responsive Design** | Fully responsive interface |
 
 ---
 
