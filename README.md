@@ -94,10 +94,10 @@ Each user has a personalized profile with:
 
 ## 👥 Team
 
-| Name | Student ID | Role |
+| Name  | Role |
 |------|------------|------|
-| **Emad Thawabi** | 12216929 | Developer |
-| **Yousef Abu Taha** | 12217011 | Developer |
+| **Emad Thawabi** |  Developer |
+| **Yousef Abu Taha** |  Developer |
 
 > 🎓 **An-Najah National University**
 
